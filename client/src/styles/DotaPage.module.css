@@ -1,0 +1,453 @@
+/* DotaPage.module.css */
+
+:root {
+  --dota-primary: #4CAF50;
+  --dota-primary-dark: #388E3C;
+  --dota-secondary: #0A1428;
+  --dota-accent: #EBEEF0;
+  --dota-dark: #1A2A3A;
+  --dota-light: #FFFFFF;
+  --dota-gray: #7E8B98;
+  --dota-border: rgba(76, 175, 80, 0.2);
+}
+
+/* Базовые стили */
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: var(--dota-secondary);
+  color: var(--dota-accent);
+  font-family: 'Arial', sans-serif;
+  line-height: 1.6;
+}
+
+.container {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+/* Хедер */
+.header {
+  background: var(--dota-secondary);
+  padding: 1.5rem 0;
+  border-bottom: 1px solid var(--dota-border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.headerContent {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 3rem;
+}
+
+/* Кнопка "На главную" */
+.backButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1.75rem;
+  border-radius: 30px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--dota-border);
+  color: var(--dota-accent);
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.backButton:hover {
+  background: rgba(76, 175, 80, 0.15);
+  transform: translateY(-2px);
+}
+
+.backIcon {
+  font-size: 1.25rem;
+  color: var(--dota-primary);
+}
+
+/* Заголовок страницы */
+.titleContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+}
+
+.gameLogo {
+  height: 3rem;
+  filter: drop-shadow(0 0 10px rgba(76, 175, 80, 0.3));
+}
+
+.title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  background: linear-gradient(to right, var(--dota-primary), var(--dota-primary-dark));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin: 0;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Баннер */
+.hero {
+  position: relative;
+  height: 28rem;
+  margin: 3rem 0;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  background: linear-gradient(rgba(10, 20, 40, 0.85), rgba(10, 20, 40, 0.9)), 
+              url('/public/images/dota2-banner.jpg') center/cover no-repeat;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.heroContent {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 3rem;
+  background: linear-gradient(0deg, var(--dota-secondary) 20%, transparent 100%);
+}
+
+.gameInfo h2 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  color: var(--dota-light);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.gameInfo p {
+  font-size: 1.15rem;
+  max-width: 36rem;
+  margin-bottom: 2rem;
+  color: rgba(235, 238, 240, 0.9);
+}
+
+.metaInfo {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.metaInfo span {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.95rem;
+  color: var(--dota-gray);
+}
+
+/* Секции */
+.section {
+  margin-bottom: 4rem;
+}
+
+.sectionTitle {
+  font-size: 1.75rem;
+  margin-bottom: 2rem;
+  color: var(--dota-light);
+  position: relative;
+  padding-bottom: 0.75rem;
+}
+
+.sectionTitle::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 3.5rem;
+  height: 0.25rem;
+  background: var(--dota-primary);
+  border-radius: 0.25rem;
+}
+
+/* Карточки турниров */
+.tournaments {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(22rem, 1fr));
+  gap: 1.5rem;
+  position: relative;
+}
+
+.tournamentCard {
+  background: var(--dota-dark);
+  padding: 1.75rem;
+  border-radius: 0.75rem;
+  border-left: 0.25rem solid var(--dota-primary);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  min-height: 220px;
+}
+
+.tournamentCard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(76, 175, 80, 0.05), transparent);
+}
+
+.tournamentCard:hover {
+  transform: translateY(-0.5rem);
+  box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.2);
+}
+
+.tournamentCard.featured {
+  border-left-color: var(--dota-primary-dark);
+}
+
+.featuredBadge {
+  position: absolute;
+  top: 1rem;
+  right: -2.5rem;
+  background: var(--dota-primary-dark);
+  color: white;
+  padding: 0.35rem 3rem;
+  transform: rotate(45deg);
+  font-size: 0.8rem;
+  font-weight: 600;
+  z-index: 2;
+}
+
+.tournamentCard h3 {
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+  color: var(--dota-light);
+  position: relative;
+  padding-right: 5rem;
+  min-height: 3.5rem;
+}
+
+.tournamentMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  color: var(--dota-gray);
+  padding-right: 1rem;
+}
+
+.tournamentMeta span {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.status {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.25rem;
+  background: var(--dota-primary);
+  color: white;
+  padding: 0.35rem 1rem;
+  border-radius: 2rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  max-width: 7rem;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.upcomingStatus {
+  background: var(--dota-primary-dark);
+}
+
+
+.completedStatus {
+  background: #607D8B; /* Новый цвет для завершенных */
+}
+
+.tournamentCard.featured {
+  border-left-color: var(--dota-primary-dark);
+  background: linear-gradient(
+    135deg, 
+    rgba(76, 175, 80, 0.05), 
+    var(--dota-dark)
+  );
+}
+
+.featuredBadge {
+  position: absolute;
+  top: 1rem;
+  left: -2.5rem;
+  background: var(--dota-primary-dark);
+  color: white;
+  padding: 0.35rem 3rem;
+  transform: rotate(-45deg);
+  font-size: 0.8rem;
+  font-weight: 600;
+  z-index: 2;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+/* Таблица команд */
+.teamsTable {
+  background: var(--dota-dark);
+  border-radius: 0.75rem;
+  overflow: hidden;
+}
+
+.tableHeader {
+  display: grid;
+  grid-template-columns: 4rem 1fr 6rem;
+  padding: 1.25rem 1.5rem;
+  background: rgba(10, 20, 40, 0.5);
+  font-weight: 600;
+  color: var(--dota-primary);
+}
+
+.teamRow {
+  display: grid;
+  grid-template-columns: 4rem 1fr 6rem;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid rgba(76, 175, 80, 0.1);
+  transition: background 0.2s ease;
+}
+
+.teamRow:hover {
+  background: rgba(76, 175, 80, 0.05);
+}
+
+.rank {
+  font-weight: 700;
+  color: var(--dota-primary);
+}
+
+.teamName {
+  font-weight: 500;
+}
+
+.points {
+  text-align: right;
+  font-family: 'Courier New', monospace;
+  font-weight: 600;
+}
+
+/* Карточки героев */
+.heroesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 2rem;
+}
+
+.heroCard {
+  background: var(--dota-dark);
+  border-radius: 0.75rem;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.heroCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.heroImage {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-bottom: 1px solid var(--dota-border);
+}
+
+.heroInfo {
+  padding: 1.25rem;
+}
+
+.heroInfo h3 {
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+  color: var(--dota-light);
+}
+
+.heroInfo p {
+  color: var(--dota-gray);
+  font-size: 0.9rem;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+  .headerContent {
+    padding: 0 1.5rem;
+  }
+  
+  .gameLogo {
+    height: 2.5rem;
+  }
+  
+  .title {
+    font-size: 2rem;
+  }
+  
+  .hero {
+    height: 24rem;
+  }
+  
+  .tournaments {
+    grid-template-columns: 1fr;
+  }
+  
+  .heroesGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .headerContent {
+    padding: 0 1rem;
+  }
+  
+  .title {
+    font-size: 1.75rem;
+  }
+  
+  .hero {
+    height: 20rem;
+  }
+  
+  .gameInfo h2 {
+    font-size: 2rem;
+  }
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+  .tournaments {
+    grid-template-columns: 1fr;
+  }
+  
+  .tournamentCard {
+    min-height: auto;
+    padding: 1.5rem;
+  }
+  
+  .tournamentCard h3 {
+    padding-right: 4rem;
+    min-height: auto;
+  }
+  
+  .status {
+    top: 1rem;
+    right: 1rem;
+  }
+  
+  .featuredBadge {
+    right: -3rem;
+    padding: 0.25rem 2.5rem;
+    font-size: 0.7rem;
+  }
+}
