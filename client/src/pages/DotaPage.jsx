@@ -1,7 +1,8 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import styles from '../styles/DotaPage.module.css';
-import { FiArrowLeft, FiCalendar, FiAward, FiUsers, FiZap } from 'react-icons/fi';
+import { FiCalendar, FiAward, FiUsers } from 'react-icons/fi';
+import Header from '../components/Header';
+import Footer from '../components/Footer';
 
 const DotaPage = () => {
   // Данные турниров
@@ -50,32 +51,20 @@ const DotaPage = () => {
 
   return (
     <div className={styles.wrapper}>
-      {/* Хедер */}
-      <header className={styles.header}>
-        <div className={styles.headerContent}>
-          <Link to="/" className={styles.backButton}>
-            <FiArrowLeft className={styles.backIcon} />
-            <span className={styles.backText}>На главную</span>
-          </Link>
-          <div className={styles.titleContainer}>
-            <img src="/images/dota2-logo.png" alt="Dota 2 Logo" className={styles.gameLogo} />
-            <h1 className={styles.title}>DOTA 2</h1>
-          </div>
-        </div>
-      </header>
-
+      <Header />
+      
       {/* Основной контент */}
       <div className={styles.container}>
-        {/* Баннер */}
-        <div className={`${styles.hero} ${styles.dotaHero}`}>
-          <div className={styles.heroContent}>
+        {/* Баннер дисциплины */}
+        <div className={styles.banner}>
+          <div className={styles.bannerContent}>
             <div className={styles.gameInfo}>
               <h2>Dota 2</h2>
-              <p>Командная MOBA-игра с самой большой киберспортивной сценой</p>
+              <p>Многопользовательская командная игра в жанре MOBA</p>
               <div className={styles.metaInfo}>
-                <span><FiZap /> Самый большой призовой фонд в киберспорте</span>
                 <span>Разработчик: Valve</span>
-                <span>Платформы: Windows, Linux, Mac</span>
+                <span>Жанр: MOBA</span>
+                <span>Платформы: Windows, Linux, macOS</span>
               </div>
             </div>
           </div>
@@ -151,6 +140,8 @@ const DotaPage = () => {
           </div>
         </section>
       </div>
+
+      <Footer />
     </div>
   );
 };

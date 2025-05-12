@@ -1,0 +1,111 @@
+.header {
+  background-color: var(--header-bg);
+  padding: 1rem 0;
+  box-shadow: 0 2px 24px 0 rgba(0,255,231,0.08);
+  border-bottom: 2px solid var(--primary-color);
+}
+
+.header-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.logo img {
+  height: 40px;
+  filter: drop-shadow(0 0 8px var(--primary-color));
+}
+
+.nav {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.nav-link {
+  color: var(--text-color);
+  text-decoration: none;
+  font-weight: 700;
+  letter-spacing: 1px;
+  transition: color 0.2s, text-shadow 0.2s;
+  text-shadow: 0 0 6px var(--primary-color), 0 0 2px var(--accent-color);
+}
+
+.nav-link:hover {
+  color: var(--accent-color);
+  text-shadow: 0 0 12px var(--accent-color), 0 0 4px var(--primary-color);
+}
+
+.search-container {
+  display: flex;
+  align-items: center;
+  background-color: var(--search-bg);
+  border-radius: 20px;
+  padding: 0.5rem 1rem;
+  transition: all 0.2s;
+  box-shadow: 0 0 8px 0 var(--primary-color);
+}
+
+.search-container.focused {
+  box-shadow: 0 0 0 2px var(--primary-color), 0 0 16px var(--primary-color);
+}
+
+.search-icon {
+  color: var(--primary-color);
+  margin-right: 0.5rem;
+}
+
+.search-input {
+  border: none;
+  background: none;
+  outline: none;
+  color: var(--text-color);
+  width: 300px;
+  font-size: 1rem;
+}
+
+.auth-buttons {
+  display: flex;
+  gap: 1rem;
+}
+
+.btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1.2rem;
+  border-radius: 20px;
+  border: none;
+  cursor: pointer;
+  font-weight: 700;
+  background: var(--primary-gradient);
+  color: #181a20;
+  box-shadow: 0 0 8px var(--primary-color);
+  transition: all 0.2s;
+  letter-spacing: 1px;
+}
+
+.btn-login {
+  background: transparent;
+  color: var(--primary-color);
+  border: 1px solid var(--primary-color);
+}
+
+.btn-register {
+  background: var(--accent-color);
+  color: #fff;
+  box-shadow: 0 0 8px var(--accent-color);
+}
+
+.btn:hover {
+  opacity: 0.95;
+  filter: brightness(1.1) drop-shadow(0 0 8px var(--primary-color));
+} 

@@ -1,7 +1,8 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import styles from '../styles/ValorantPage.module.css';
-import { FiArrowLeft, FiCalendar, FiAward, FiUsers, FiTarget } from 'react-icons/fi';
+import { FiCalendar, FiAward, FiUsers } from 'react-icons/fi';
+import Header from '../components/Header';
+import Footer from '../components/Footer';
 
 const ValorantPage = () => {
   // Данные турниров
@@ -50,31 +51,20 @@ const ValorantPage = () => {
 
   return (
     <div className={styles.wrapper}>
-      {/* Хедер */}
-      <header className={styles.header}>
-        <div className={styles.headerContent}>
-          <Link to="/" className={styles.backButton}>
-            <FiArrowLeft className={styles.backIcon} />
-            <span className={styles.backText}>На главную</span>
-          </Link>
-          <div className={styles.titleContainer}>
-            <h1 className={styles.title}>VALORANT</h1>
-          </div>
-        </div>
-      </header>
-
+      <Header />
+      
       {/* Основной контент */}
       <div className={styles.container}>
-        {/* Баннер */}
-        <div className={styles.hero}>
-          <div className={styles.heroContent}>
+        {/* Баннер дисциплины */}
+        <div className={styles.banner}>
+          <div className={styles.bannerContent}>
             <div className={styles.gameInfo}>
-              <h2>VALORANT</h2>
-              <p>Тактический шутер 5v5 с уникальными агентами</p>
+              <h2>Valorant</h2>
+              <p>Тактический шутер от первого лица с уникальными способностями</p>
               <div className={styles.metaInfo}>
-                <span><FiTarget /> Тактический gameplay</span>
                 <span>Разработчик: Riot Games</span>
-                <span>Платформы: PC</span>
+                <span>Жанр: FPS</span>
+                <span>Платформы: Windows</span>
               </div>
             </div>
           </div>
@@ -152,6 +142,8 @@ const ValorantPage = () => {
           </div>
         </section>
       </div>
+
+      <Footer />
     </div>
   );
 };

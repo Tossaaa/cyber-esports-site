@@ -1,7 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import styles from '../styles/CS2Page.module.css';
-import { FiArrowLeft, FiCalendar, FiAward, FiUsers } from 'react-icons/fi';
+import { FiArrowLeft, FiCalendar, FiAward, FiUsers, FiTrendingUp, FiBarChart2, FiTarget } from 'react-icons/fi';
+import Header from '../components/Header';
+import Footer from '../components/Footer';
 
 const Cs2Page = () => {
   // Пример данных (можно заменить на реальные из API)
@@ -40,21 +42,19 @@ const Cs2Page = () => {
     { id: 5, name: 'G2 Esports', rank: 5, points: 950 }
   ];
 
+  const statsData = {
+    activePlayers: '1.2M',
+    tournaments: '156',
+    totalPrize: '$12.5M',
+    topWeapon: 'AK-47',
+    topMap: 'Dust II',
+    avgMatchTime: '35 мин'
+  };
+
   return (
     <div className={styles.wrapper}>
-      {/* Хедер */}
-      <header className={styles.header}>
-            <div className={styles.headerContent}>
-                <Link to="/" className={styles.backButton}>
-                <FiArrowLeft className={styles.backIcon} />
-                <span className={styles.backText}>На главную</span>
-                </Link>
-                <div className={styles.titleContainer}>
-                <h1 className={styles.title}>COUNTER-STRIKE 2</h1>
-                </div>
-            </div>
-        </header>
-
+      <Header />
+      
       {/* Основной контент */}
       <div className={styles.container}>
         {/* Баннер дисциплины */}
@@ -71,6 +71,55 @@ const Cs2Page = () => {
             </div>
           </div>
         </div>
+
+        {/* Статистика */}
+        <section className={styles.section}>
+          <h2 className={styles.sectionTitle}>Статистика CS2</h2>
+          <div className={styles.statsGrid}>
+            <div className={styles.statCard}>
+              <FiUsers className={styles.statIcon} />
+              <div className={styles.statContent}>
+                <h3>Активных игроков</h3>
+                <p>{statsData.activePlayers}</p>
+              </div>
+            </div>
+            <div className={styles.statCard}>
+              <FiAward className={styles.statIcon} />
+              <div className={styles.statContent}>
+                <h3>Турниров в 2024</h3>
+                <p>{statsData.tournaments}</p>
+              </div>
+            </div>
+            <div className={styles.statCard}>
+              <FiTrendingUp className={styles.statIcon} />
+              <div className={styles.statContent}>
+                <h3>Призовой фонд</h3>
+                <p>{statsData.totalPrize}</p>
+              </div>
+            </div>
+            <div className={styles.statCard}>
+              <FiTarget className={styles.statIcon} />
+              <div className={styles.statContent}>
+                <h3>Популярное оружие</h3>
+                <p>{statsData.topWeapon}</p>
+              </div>
+            </div>
+            <div className={styles.statCard}>
+              <FiBarChart2 className={styles.statIcon} />
+              <div className={styles.statContent}>
+                <h3>Лучшая карта</h3>
+                <p>{statsData.topMap}</p>
+              </div>
+            </div>
+            <div className={styles.statCard}>
+              <FiCalendar className={styles.statIcon} />
+              <div className={styles.statContent}>
+                <h3>Среднее время матча</h3>
+                <p>{statsData.avgMatchTime}</p>
+              </div>
+            </div>
+          </div>
+        </section>
 
         {/* Разделы страницы */}
         <section className={styles.section}>
@@ -135,6 +184,8 @@ const Cs2Page = () => {
           </div>
         </section>
       </div>
+
+      <Footer />
     </div>
   );
 };

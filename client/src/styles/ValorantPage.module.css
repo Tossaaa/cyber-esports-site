@@ -1,12 +1,12 @@
 /* ValorantPage.module.css */
 
 :root {
-    --valorant-primary: #FF4655;
-    --valorant-primary-dark: #D93A48;
-    --valorant-secondary: #0F1923;
-    --valorant-accent: #ECE8E1;
-    --valorant-dark: #1A242F;
-    --valorant-light: #FFFFFF;
+    --valorant-primary: #ff4655;
+    --valorant-primary-dark: #d93a48;
+    --valorant-secondary: #0f1923;
+    --valorant-accent: #ece8e1;
+    --valorant-dark: #1a242f;
+    --valorant-light: #ffffff;
     --valorant-gray: #768079;
     --valorant-border: rgba(255, 70, 85, 0.2);
   }
@@ -27,6 +27,7 @@
     max-width: 1400px;
     margin: 0 auto;
     padding: 0 2rem;
+    margin-top: 5rem; /* Отступ для фиксированного хедера */
   }
   
   /* Хедер */
@@ -98,7 +99,7 @@
   }
   
   /* Баннер */
-  .hero {
+  .banner {
     position: relative;
     height: 28rem;
     margin: 3rem 0;
@@ -109,7 +110,7 @@
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
   }
   
-  .heroContent {
+  .bannerContent {
     position: absolute;
     bottom: 0;
     left: 0;
@@ -135,7 +136,6 @@
   .metaInfo {
     display: flex;
     gap: 1.5rem;
-    flex-wrap: wrap;
   }
   
   .metaInfo span {
@@ -338,52 +338,58 @@
   }
   
   /* Адаптивность */
-  @media (max-width: 768px) {
-    .headerContent {
+  @media (max-width: 1024px) {
+    .container {
       padding: 0 1.5rem;
+      margin-top: 4.5rem;
     }
     
-    .gameLogo {
-      height: 2.5rem;
-    }
-    
-    .title {
-      font-size: 2rem;
-    }
-    
-    .hero {
+    .banner {
       height: 24rem;
-    }
-    
-    .tournaments, .agentsGrid {
-      grid-template-columns: 1fr;
-    }
-    
-    .featuredBadge {
-      right: -3rem;
-      padding: 0.25rem 2.5rem;
-      font-size: 0.7rem;
     }
   }
   
-  @media (max-width: 480px) {
-    .headerContent {
-      padding: 0 1rem;
+  @media (max-width: 768px) {
+    .container {
+      padding: 0 1.5rem;
+      margin-top: 4rem;
     }
     
-    .title {
-      font-size: 1.75rem;
-    }
-    
-    .hero {
+    .banner {
       height: 20rem;
+      margin: 2rem 0;
+    }
+    
+    .bannerContent {
+      padding: 2rem;
     }
     
     .gameInfo h2 {
       font-size: 2rem;
     }
     
-    .agentImage {
-      height: 200px;
+    .metaInfo {
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .container {
+      padding: 0 1rem;
+      margin-top: 3.5rem;
+    }
+    
+    .banner {
+      height: 18rem;
+      margin: 1.5rem 0;
+    }
+    
+    .bannerContent {
+      padding: 1.5rem;
+    }
+    
+    .gameInfo h2 {
+      font-size: 1.75rem;
     }
   }

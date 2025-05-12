@@ -1,14 +1,14 @@
 /* PUBGPage.module.css */
 
 :root {
-    --pubg-primary: #FF8C00;
-    --pubg-primary-dark: #FF6B00;
-    --pubg-secondary: #1A1A1A;
-    --pubg-accent: #F0F0F0;
-    --pubg-dark: #2D2D2D;
-    --pubg-light: #FFFFFF;
-    --pubg-gray: #808080;
-    --pubg-border: rgba(255, 140, 0, 0.2);
+    --pubg-primary: #ff4655;
+    --pubg-primary-dark: #d93a48;
+    --pubg-secondary: #0f1923;
+    --pubg-accent: #ece8e1;
+    --pubg-dark: #1a242f;
+    --pubg-light: #ffffff;
+    --pubg-gray: #768079;
+    --pubg-border: rgba(255, 70, 85, 0.2);
   }
   
   /* Базовые стили */
@@ -27,6 +27,7 @@
     max-width: 1400px;
     margin: 0 auto;
     padding: 0 2rem;
+    margin-top: 5rem; /* Отступ для фиксированного хедера */
   }
   
   /* Хедер */
@@ -98,18 +99,18 @@
   }
   
   /* Баннер */
-  .hero {
+  .banner {
     position: relative;
     height: 28rem;
     margin: 3rem 0;
     border-radius: 0.75rem;
     overflow: hidden;
-    background: linear-gradient(rgba(26, 26, 26, 0.85), rgba(26, 26, 26, 0.9)), 
+    background: linear-gradient(rgba(15, 25, 35, 0.85), rgba(15, 25, 35, 0.9)), 
                 url('/public/images/pubg-banner.jpg') center/cover no-repeat;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
   }
   
-  .heroContent {
+  .bannerContent {
     position: absolute;
     bottom: 0;
     left: 0;
@@ -129,13 +130,12 @@
     font-size: 1.15rem;
     max-width: 36rem;
     margin-bottom: 2rem;
-    color: rgba(240, 240, 240, 0.9);
+    color: rgba(236, 232, 225, 0.9);
   }
   
   .metaInfo {
     display: flex;
     gap: 1.5rem;
-    flex-wrap: wrap;
   }
   
   .metaInfo span {
@@ -349,42 +349,58 @@
   }
   
   /* Адаптивность */
-  @media (max-width: 768px) {
-    .headerContent {
+  @media (max-width: 1024px) {
+    .container {
       padding: 0 1.5rem;
+      margin-top: 4.5rem;
     }
     
-    .gameLogo {
-      height: 2.5rem;
-    }
-    
-    .title {
-      font-size: 2rem;
-    }
-    
-    .hero {
+    .banner {
       height: 24rem;
-    }
-    
-    .tournaments, .mapsGrid {
-      grid-template-columns: 1fr;
     }
   }
   
-  @media (max-width: 480px) {
-    .headerContent {
-      padding: 0 1rem;
+  @media (max-width: 768px) {
+    .container {
+      padding: 0 1.5rem;
+      margin-top: 4rem;
     }
     
-    .title {
-      font-size: 1.75rem;
-    }
-    
-    .hero {
+    .banner {
       height: 20rem;
+      margin: 2rem 0;
+    }
+    
+    .bannerContent {
+      padding: 2rem;
     }
     
     .gameInfo h2 {
       font-size: 2rem;
+    }
+    
+    .metaInfo {
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .container {
+      padding: 0 1rem;
+      margin-top: 3.5rem;
+    }
+    
+    .banner {
+      height: 18rem;
+      margin: 1.5rem 0;
+    }
+    
+    .bannerContent {
+      padding: 1.5rem;
+    }
+    
+    .gameInfo h2 {
+      font-size: 1.75rem;
     }
   }

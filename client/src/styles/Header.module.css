@@ -1,0 +1,263 @@
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: rgba(15, 25, 35, 0.95);
+  backdrop-filter: blur(10px);
+  z-index: 1000;
+  transition: all 0.3s ease;
+  border-bottom: 1px solid rgba(255, 70, 85, 0.1);
+}
+
+.header.scrolled {
+  background: rgba(15, 25, 35, 0.98);
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+}
+
+.headerContent {
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.logo {
+  display: block;
+  height: 2.8rem;
+  transition: transform 0.3s ease;
+}
+
+.logo:hover {
+  transform: scale(1.05);
+}
+
+.logo img {
+  height: 100%;
+  width: auto;
+}
+
+.nav {
+  display: flex;
+  gap: 2rem;
+}
+
+.navLink {
+  color: var(--cs-accent);
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: color 0.3s ease;
+  position: relative;
+}
+
+.navLink:hover,
+.navLink.active {
+  color: var(--cs-primary);
+}
+
+.navLink.active::after {
+  content: '';
+  position: absolute;
+  bottom: -0.5rem;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: var(--cs-primary);
+}
+
+.headerRight {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.searchContainer {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 0.5rem;
+  padding: 0.5rem 1rem;
+  transition: all 0.3s ease;
+  width: 300px;
+}
+
+.searchContainer.focused {
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 0 2px var(--cs-primary);
+}
+
+.searchIcon {
+  color: var(--cs-accent);
+  margin-right: 0.5rem;
+}
+
+.searchInput {
+  background: none;
+  border: none;
+  color: var(--cs-accent);
+  font-size: 0.9rem;
+  width: 100%;
+  outline: none;
+}
+
+.searchInput::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.searchResults {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: var(--main-dark);
+  border-radius: 0.5rem;
+  margin-top: 0.5rem;
+  padding: 0.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.searchResultItem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  color: var(--main-light);
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.searchResultItem:hover {
+  background: var(--main-secondary);
+}
+
+.authButtons {
+  display: flex;
+  gap: 1rem;
+}
+
+.loginButton,
+.registerButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.loginButton {
+  background: transparent;
+  border: 1px solid var(--cs-primary);
+  color: var(--cs-primary);
+}
+
+.loginButton:hover {
+  background: rgba(255, 70, 85, 0.1);
+  transform: translateY(-2px);
+}
+
+.registerButton {
+  background: var(--cs-primary);
+  border: 1px solid var(--cs-primary);
+  color: var(--cs-light);
+}
+
+.registerButton:hover {
+  background: var(--cs-primary-dark);
+  transform: translateY(-2px);
+}
+
+.mobileMenuButton {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--cs-accent);
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.closeButton {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--cs-accent);
+  font-size: 1.5rem;
+  cursor: pointer;
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+}
+
+@media (max-width: 1200px) {
+  .searchContainer {
+    width: 250px;
+  }
+}
+
+@media (max-width: 992px) {
+  .nav {
+    display: none;
+  }
+
+  .mobileMenuButton {
+    display: block;
+  }
+
+  .nav.active {
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--main-dark);
+    padding: 4rem 2rem 2rem;
+    z-index: 1001;
+  }
+
+  .closeButton {
+    display: block;
+  }
+
+  .searchContainer {
+    width: 200px;
+  }
+}
+
+@media (max-width: 768px) {
+  .headerContent {
+    padding: 1rem;
+  }
+
+  .searchContainer {
+    display: none;
+  }
+
+  .authButtons {
+    display: none;
+  }
+
+  .nav.active {
+    padding: 4rem 1rem 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .logo {
+    height: 2.5rem;
+  }
+} 

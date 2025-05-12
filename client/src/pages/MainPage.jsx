@@ -1,8 +1,28 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
 import styles from "../styles/MainPage.module.css";
 import logo from "../assets/logo.png";
-import { FiSearch, FiUser, FiLogIn, FiArrowRight } from "react-icons/fi";
+import { 
+  FiSearch, 
+  FiUser, 
+  FiLogIn, 
+  FiArrowRight, 
+  FiPlus,
+  FiMenu,
+  FiX,
+  FiFacebook,
+  FiTwitter,
+  FiInstagram,
+  FiYoutube,
+  FiArrowUp
+} from "react-icons/fi";
+import AddNewsForm from "../components/AddNewsForm";
+import NewsModal from "../components/NewsModal";
+import LoginForm from '../components/LoginForm';
+import RegisterForm from '../components/RegisterForm';
+import DisciplinesModal from '../components/DisciplinesModal';
+import Header from '../components/Header';
+import Footer from '../components/Footer';
 
 const disciplines = [
   { id: "cs2", name: "CS2", image: "/images/cs2.jpg", bgColor: "#2a475e" },
@@ -11,7 +31,7 @@ const disciplines = [
   { id: "valorant", name: "Valorant", image: "/images/valorant.jpg", bgColor: "#fa4454" },
 ];
 
-const news = [
+const initialNews = [
   { 
     title: "Обновление в CS2", 
     description: "Valve выпустили новый патч с картами и балансом оружия", 
@@ -26,55 +46,80 @@ const news = [
 
 const MainPage = () => {
   const [searchFocused, setSearchFocused] = useState(false);
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [showSearchResults, setShowSearchResults] = useState(false);
+  const location = useLocation();
+  const [news, setNews] = useState(initialNews);
+  const [showAddNewsForm, setShowAddNewsForm] = useState(false);
+  const [selectedNews, setSelectedNews] = useState(null);
+  const [showLoginForm, setShowLoginForm] = useState(false);
+  const [showRegisterForm, setShowRegisterForm] = useState(false);
+  const [showDisciplinesModal, setShowDisciplinesModal] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+    setShowSearchResults(e.target.value.length > 0);
+  };
+
+  const handleSearchBlur = () => {
+    setTimeout(() => {
+      setShowSearchResults(false);
+      setSearchFocused(false);
+    }, 200);
+  };
+
+  const handleAddNews = (newNews) => {
+    setNews(prev => [newNews, ...prev]);
+    setShowAddNewsForm(false);
+  };
+
+  const handleNewsClick = (newsItem) => {
+    setSelectedNews(newsItem);
+  };
+
+  const handleCloseNewsModal = () => {
+    setSelectedNews(null);
+  };
+
+  const handleSwitchToRegister = () => {
+    setShowLoginForm(false);
+    setShowRegisterForm(true);
+  };
+
+  const handleSwitchToLogin = () => {
+    setShowRegisterForm(false);
+    setShowLoginForm(true);
+  };
 
   return (
     <div className={styles.wrapper}>
-      {/* Шапка с полной шириной */}
-      <div className={styles.headerWrapper}>
-        <div className={styles.container}>
-          <header className={styles.header}>
-            <div className={styles.headerLeft}>
-              <Link to="/">
-                <img src={logo} alt="Logo" className={styles.logo} />
-              </Link>
-              <nav className={styles.nav}>
-                <Link to="/tournaments" className={styles.navLink}>Турниры</Link>
-                <Link to="/teams" className={styles.navLink}>Команды</Link>
-                <Link to="/stats" className={styles.navLink}>Статистика</Link>
-              </nav>
-            </div>
-            
-            <div className={`${styles.searchContainer} ${searchFocused ? styles.focused : ''}`}>
-              <FiSearch className={styles.searchIcon} />
-              <input 
-                type="text" 
-                placeholder="Поиск турниров, команд..." 
-                className={styles.search}
-                onFocus={() => setSearchFocused(true)}
-                onBlur={() => setSearchFocused(false)}
-              />
-            </div>
-
-            <div className={styles.auth}>
-              <button className={`${styles.button} ${styles.login}`}>
-                <FiLogIn /> Войти
-              </button>
-              <button className={`${styles.button} ${styles.register}`}>
-                <FiUser /> Регистрация
-              </button>
-            </div>
-          </header>
-        </div>
-      </div>
+      <Header 
+        onLoginClick={() => setShowLoginForm(true)}
+        onRegisterClick={() => setShowRegisterForm(true)}
+      />
 
       {/* Основной контент */}
       <div className={styles.container}>
         {/* Герой-секция */}
         <section className={styles.hero}>
           <div className={styles.heroContent}>
-            <h1>Киберспортивные турниры</h1>
-            <p>Следите за результатами, статистикой и расписанием киберспортивных событий</p>
-            <button className={styles.heroButton}>
+            <h1>Киберспортивная платформа</h1>
+            <p>Участвуйте в турнирах, следите за матчами и развивайтесь в киберспорте</p>
+            <button 
+              className={styles.heroButton}
+              onClick={() => setShowDisciplinesModal(true)}
+            >
               Ближайшие турниры <FiArrowRight />
             </button>
           </div>
@@ -84,12 +129,15 @@ const MainPage = () => {
         <section className={styles.section}>
           <div className={styles.sectionHeader}>
             <h2 className={styles.sectionTitle}>Популярные дисциплины</h2>
-            <Link to="/disciplines" className={styles.viewAll}>
+            <button 
+              onClick={() => setShowDisciplinesModal(true)} 
+              className={styles.viewAll}
+            >
               Все дисциплины <FiArrowRight />
-            </Link>
+            </button>
           </div>
           <div className={styles.disciplinesGrid}>
-            {disciplines.map((discipline) => (
+            {disciplines.slice(0, 4).map((discipline) => (
               <Link 
                 key={discipline.id} 
                 to={`/discipline/${discipline.id}`} 
@@ -114,79 +162,71 @@ const MainPage = () => {
         <section className={styles.section}>
           <div className={styles.sectionHeader}>
             <h2 className={styles.sectionTitle}>Последние новости</h2>
-            <Link to="/news" className={styles.viewAll}>
-              Все новости <FiArrowRight />
-            </Link>
+            <div className={styles.sectionActions}>
+              <button 
+                className={styles.addNewsButton}
+                onClick={() => setShowAddNewsForm(true)}
+              >
+                <FiPlus /> Добавить новость
+              </button>
+              <Link to="/news" className={styles.viewAll}>
+                Все новости <FiArrowRight />
+              </Link>
+            </div>
           </div>
           <div className={styles.newsGrid}>
-            {news.map((article, index) => (
-              <article key={index} className={styles.newsCard}>
-                {/* Условный рендеринг изображения */}
-                {article.image && (
-                  <div className={styles.newsImageContainer}>
-                    <img 
-                      src={article.image} 
-                      alt={article.title} 
-                      className={styles.newsImage}
-                      onError={(e) => {
-                        e.target.style.display = 'none';
-                        e.target.parentElement.style.display = 'none';
-                      }}
-                    />
-                  </div>
-                )}
-                <div className={styles.newsContent}>
-                  <span className={styles.newsDate}>{article.date}</span>
-                  <h3 className={styles.newsTitle}>{article.title}</h3>
-                  <p className={styles.newsDescription}>{article.description}</p>
-                  <Link to={`/news/${index}`} className={styles.readMore}>
-                    Читать далее <FiArrowRight />
-                  </Link>
-                </div>
-              </article>
+            {news.map((item, index) => (
+              <div 
+                key={index} 
+                className={styles.newsCard}
+                onClick={() => handleNewsClick(item)}
+              >
+                <h3 className={styles.newsTitle}>{item.title}</h3>
+                <p className={styles.newsDescription}>{item.description}</p>
+                <span className={styles.newsDate}>{item.date}</span>
+              </div>
             ))}
           </div>
         </section>
       </div>
 
-      {/* Футер */}
-      <footer className={styles.footer}>
-        <div className={styles.footerContent}>
-          <div className={styles.footerInfo}>
-            <Link to="/" className={styles.footerLogo}>
-              <img src={logo} alt="Логотип" className={styles.logoImage} />
-            </Link>
-            <p className={styles.footerDescription}>
-              Киберспортивная платформа для отслеживания турниров и статистики
-            </p>
-          </div>
-          <div className={styles.footerLinks}>
-            <div className={styles.linksColumn}>
-              <h4 className={styles.linksTitle}>Разделы</h4>
-              <nav className={styles.linksList}>
-                <Link to="/tournaments" className={styles.footerLink}>Турниры</Link>
-                <Link to="/teams" className={styles.footerLink}>Команды</Link>
-                <Link to="/stats" className={styles.footerLink}>Статистика</Link>
-                <Link to="/news" className={styles.footerLink}>Новости</Link>
-              </nav>
-            </div>
-            <div className={styles.linksColumn}>
-              <h4 className={styles.linksTitle}>Поддержка</h4>
-              <nav className={styles.linksList}>
-                <Link to="/help" className={styles.footerLink}>Помощь</Link>
-                <Link to="/faq" className={styles.footerLink}>FAQ</Link>
-                <Link to="/contact" className={styles.footerLink}>Контакты</Link>
-                <Link to="/privacy" className={styles.footerLink}>Политика</Link>
-              </nav>
-            </div>
-          </div>
-        </div>
-        <div className={styles.footerBottom}>
-          <p className={styles.copyright}>
-            © 2025 Esports Platform. Все права защищены.
-          </p>
-        </div>
-      </footer>
+      <Footer />
+
+      {/* Модальные окна */}
+      {showAddNewsForm && (
+        <AddNewsForm 
+          onClose={() => setShowAddNewsForm(false)}
+          onAdd={handleAddNews}
+        />
+      )}
+
+      {selectedNews && (
+        <NewsModal 
+          news={selectedNews}
+          onClose={handleCloseNewsModal}
+        />
+      )}
+
+      {showLoginForm && (
+        <LoginForm 
+          onClose={() => setShowLoginForm(false)}
+          onSwitchToRegister={handleSwitchToRegister}
+        />
+      )}
+
+      {showRegisterForm && (
+        <RegisterForm 
+          onClose={() => setShowRegisterForm(false)}
+          onSwitchToLogin={handleSwitchToLogin}
+        />
+      )}
+
+      {showDisciplinesModal && (
+        <DisciplinesModal 
+          disciplines={disciplines}
+          onClose={() => setShowDisciplinesModal(false)}
+        />
+      )}
     </div>
   );
 };

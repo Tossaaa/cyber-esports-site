@@ -1,9 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import styles from '../styles/PUBGPage.module.css';
-import { FiArrowLeft, FiCalendar, FiAward, FiUsers, FiMap } from 'react-icons/fi';
+import { FiCalendar, FiAward, FiUsers } from 'react-icons/fi';
+import Header from '../components/Header';
+import Footer from '../components/Footer';
 
-const PUBGPage = () => {
+const PubgPage = () => {
   // Данные турниров
   const tournamentData = [
     {
@@ -50,31 +52,20 @@ const PUBGPage = () => {
 
   return (
     <div className={styles.wrapper}>
-      {/* Хедер */}
-      <header className={styles.header}>
-        <div className={styles.headerContent}>
-          <Link to="/" className={styles.backButton}>
-            <FiArrowLeft className={styles.backIcon} />
-            <span className={styles.backText}>На главную</span>
-          </Link>
-          <div className={styles.titleContainer}>
-            <h1 className={styles.title}>PUBG</h1>
-          </div>
-        </div>
-      </header>
-
+      <Header />
+      
       {/* Основной контент */}
       <div className={styles.container}>
-        {/* Баннер */}
-        <div className={styles.hero}>
-          <div className={styles.heroContent}>
+        {/* Баннер дисциплины */}
+        <div className={styles.banner}>
+          <div className={styles.bannerContent}>
             <div className={styles.gameInfo}>
-              <h2>PlayerUnknown's Battlegrounds</h2>
-              <p>Королевская битва, определившая жанр battle royale</p>
+              <h2>PUBG: BATTLEGROUNDS</h2>
+              <p>Королевская битва на выживание в реалистичном мире</p>
               <div className={styles.metaInfo}>
-                <span><FiMap /> 6 уникальных карт</span>
-                <span>Разработчик: KRAFTON</span>
-                <span>Платформы: PC, Консоли, Мобильные</span>
+                <span>Разработчик: Krafton</span>
+                <span>Жанр: Battle Royale</span>
+                <span>Платформы: Windows, PlayStation, Xbox</span>
               </div>
             </div>
           </div>
@@ -145,8 +136,10 @@ const PUBGPage = () => {
           </div>
         </section>
       </div>
+
+      <Footer />
     </div>
   );
 };
 
-export default PUBGPage;
+export default PubgPage;

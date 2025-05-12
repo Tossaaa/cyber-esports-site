@@ -1,0 +1,266 @@
+.footer {
+  background: var(--main-secondary);
+  color: var(--main-accent);
+  padding: 4rem 0 2rem;
+  margin-top: 4rem;
+  border-top: 1px solid rgba(255, 70, 85, 0.1);
+}
+
+.footerContent {
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 4rem;
+}
+
+.footerInfo {
+  max-width: 400px;
+}
+
+.footerLogo {
+  display: inline-block;
+  margin-bottom: 1.5rem;
+}
+
+.footerLogo img {
+  height: 2.8rem;
+  width: auto;
+  transition: transform 0.3s ease;
+}
+
+.footerLogo:hover img {
+  transform: scale(1.05);
+}
+
+.footerDescription {
+  color: var(--main-gray);
+  line-height: 1.6;
+  margin-bottom: 2rem;
+}
+
+.socialLinks {
+  display: flex;
+  gap: 1rem;
+}
+
+.socialLink {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--main-accent);
+  font-size: 1.25rem;
+  transition: all 0.3s ease;
+}
+
+.socialLink:hover {
+  background: var(--main-primary);
+  color: var(--main-light);
+  transform: translateY(-3px);
+}
+
+.footerLinks {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+}
+
+.linksColumn h3 {
+  color: var(--main-light);
+  font-size: 1.1rem;
+  margin-bottom: 1.5rem;
+  position: relative;
+  padding-bottom: 0.75rem;
+}
+
+.linksColumn h3::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 2rem;
+  height: 2px;
+  background: var(--main-primary);
+}
+
+.linksList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footerLink {
+  display: block;
+  color: var(--main-gray);
+  text-decoration: none;
+  margin-bottom: 0.75rem;
+  transition: all 0.3s ease;
+}
+
+.footerLink:hover {
+  color: var(--main-primary);
+  transform: translateX(5px);
+}
+
+.footerLink::before {
+  content: '';
+  display: inline-block;
+  width: 0;
+  height: 1px;
+  background: var(--main-primary);
+  transition: width 0.3s ease;
+  margin-right: 0.5rem;
+  vertical-align: middle;
+}
+
+.footerLink:hover::before {
+  width: 0.5rem;
+}
+
+.subscribeText {
+  color: var(--main-gray);
+  margin-bottom: 1rem;
+  font-size: 0.95rem;
+}
+
+.subscribeForm {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.subscribeInput {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 2rem;
+  color: var(--main-accent);
+  font-size: 0.95rem;
+}
+
+.subscribeInput:focus {
+  outline: none;
+  border-color: var(--main-primary);
+}
+
+.subscribeButton {
+  padding: 0.75rem 1.5rem;
+  background: var(--main-primary);
+  border: none;
+  border-radius: 2rem;
+  color: var(--main-light);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.subscribeButton:hover {
+  background: var(--main-primary-dark);
+  transform: translateY(-2px);
+}
+
+.footerBottom {
+  max-width: 1600px;
+  margin: 3rem auto 0;
+  padding: 2rem 2rem 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.copyright {
+  color: var(--main-gray);
+  font-size: 0.9rem;
+}
+
+.scrollToTop {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: none;
+  border-radius: 50%;
+  color: var(--main-accent);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.scrollToTop:hover {
+  background: var(--main-primary);
+  color: var(--main-light);
+  transform: translateY(-3px);
+}
+
+@media (max-width: 1024px) {
+  .footerContent {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+
+  .footerInfo {
+    max-width: 100%;
+    text-align: center;
+  }
+
+  .footerLogo {
+    margin: 0 auto 1.5rem;
+  }
+
+  .socialLinks {
+    justify-content: center;
+  }
+
+  .footerLinks {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 0 1.5rem;
+  }
+
+  .footerLinks {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .linksColumn {
+    text-align: center;
+  }
+
+  .linksColumn h3::after {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .footerLink:hover {
+    transform: none;
+  }
+
+  .footerLink::before {
+    display: none;
+  }
+
+  .subscribeForm {
+    flex-direction: column;
+  }
+
+  .subscribeButton {
+    width: 100%;
+  }
+
+  .footerBottom {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+  }
+} 

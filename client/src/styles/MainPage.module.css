@@ -35,6 +35,12 @@
   position: sticky;
   top: 0;
   z-index: 1000;
+  transition: all 0.3s ease;
+}
+
+.headerWrapper.scrolled {
+  background: rgba(15, 25, 35, 0.95);
+  backdrop-filter: blur(10px);
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
@@ -48,11 +54,16 @@
   width: 100%;
 }
 
-
 .headerLeft {
   display: flex;
   align-items: center;
   gap: 3rem;
+}
+
+.headerRight {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
 }
 
 .logo {
@@ -76,8 +87,17 @@
   padding: 0.5rem 0;
   transition: color 0.3s ease;
 }
+
 .navLink:hover {
   color: var(--main-primary);
+}
+
+.navLink.active {
+  color: var(--main-primary);
+}
+
+.navLink.active::after {
+  width: 100%;
 }
 
 .navLink::after {
@@ -90,19 +110,21 @@
   background: var(--main-primary);
   transition: width 0.3s ease;
 }
+
 .navLink:hover::after {
   width: 100%;
 }
 
 /* Поиск и авторизация */
 .searchContainer {
+  position: relative;
   display: flex;
   align-items: center;
   background: var(--main-dark);
   border-radius: 2rem;
   padding: 0.5rem 1.5rem;
   transition: all 0.3s ease;
-  max-width: 600px; /* Максимальная ширина */
+  max-width: 600px;
   border: 2px solid transparent;
 }
 
@@ -110,7 +132,6 @@
   border-color: var(--main-primary);
   box-shadow: 0 0 0 3px rgba(255, 70, 85, 0.2);
 }
-
 
 .searchIcon {
   color: var(--main-gray);
@@ -124,11 +145,63 @@
   border: none;
   color: var(--main-accent);
   font-size: 1rem;
-  outline: none; /* Убираем стандартный outline */
+  outline: none;
 }
 
-.search::-moz-focus-inner {
-  border: 0;
+.searchResults {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: var(--main-dark);
+  border-radius: 0.5rem;
+  margin-top: 0.5rem;
+  padding: 0.5rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.searchResultItem {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  color: var(--main-accent);
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  border-radius: 0.25rem;
+}
+
+.searchResultItem:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.searchResultItem svg {
+  color: var(--main-gray);
+  font-size: 1rem;
+}
+
+.mobileMenuButton {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--main-accent);
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0.5rem;
+}
+
+.mobileMenuClose {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--main-accent);
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
 }
 
 input:-webkit-autofill,
@@ -156,6 +229,9 @@ input:-webkit-autofill:focus {
   font-weight: 500;
   transition: all 0.3s ease;
   text-decoration: none;
+  cursor: pointer;
+  font-size: 1rem;
+  font-family: inherit;
 }
 
 .login {
@@ -163,7 +239,6 @@ input:-webkit-autofill:focus {
   border: 2px solid var(--main-primary);
   color: var(--main-primary);
 }
-
 
 .login:hover {
   background: rgba(255, 70, 85, 0.1);
@@ -182,11 +257,15 @@ input:-webkit-autofill:focus {
   box-shadow: 0 2px 8px rgba(255, 70, 85, 0.2);
 }
 
+.button svg {
+  font-size: 1.1rem;
+}
+
 /* Основной контент */
 .hero {
   position: relative;
   height: 600px;
-  margin: 2rem 0;
+  margin: 6rem 0 2rem;
   border-radius: 1rem;
   overflow: hidden;
   background: linear-gradient(rgba(15, 25, 35, 0.9), rgba(15, 25, 35, 0.7)),
@@ -198,22 +277,24 @@ input:-webkit-autofill:focus {
   z-index: 1;
   max-width: 800px;
   padding: 4rem;
+  margin: 0 auto;
 }
 
-.hero h1 {
+.heroContent h1 {
   font-size: 3.5rem;
   font-weight: 700;
   margin-bottom: 1.5rem;
-  background: linear-gradient(90deg, var(--main-accent), var(--main-primary));
+  background: linear-gradient(45deg, var(--cs-primary), var(--cs-accent));
   -webkit-background-clip: text;
-  background-clip: text;
   -webkit-text-fill-color: transparent;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.hero p {
+.heroContent p {
   font-size: 1.25rem;
-  margin-bottom: 2rem;
-  color: rgba(236, 232, 225, 0.9);
+  margin-bottom: 2.5rem;
+  color: var(--cs-accent);
+  line-height: 1.6;
 }
 
 .heroButton {
@@ -225,7 +306,9 @@ input:-webkit-autofill:focus {
   color: var(--main-light);
   border: none;
   border-radius: 2rem;
+  font-size: 1.1rem;
   font-weight: 600;
+  cursor: pointer;
   transition: all 0.3s ease;
 }
 
@@ -233,6 +316,63 @@ input:-webkit-autofill:focus {
   background: var(--main-primary-dark);
   transform: translateY(-2px);
   box-shadow: 0 4px 15px rgba(255, 70, 85, 0.3);
+}
+
+.heroButton svg {
+  transition: transform 0.3s ease;
+}
+
+.heroButton:hover svg {
+  transform: translateX(4px);
+}
+
+.heroButtons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.primaryButton {
+  background: var(--cs-primary);
+  color: var(--cs-light);
+  border: none;
+  padding: 1rem 2rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.primaryButton:hover {
+  background: var(--cs-primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 70, 85, 0.2);
+}
+
+.secondaryButton {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--cs-light);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 1rem 2rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.secondaryButton:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 /* Секции */
@@ -265,16 +405,30 @@ input:-webkit-autofill:focus {
 }
 
 .viewAll {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 0.5rem;
   color: var(--main-primary);
   font-weight: 500;
   transition: gap 0.3s ease;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-size: 1rem;
+  font-family: inherit;
 }
 
 .viewAll:hover {
   gap: 1rem;
+}
+
+.viewAll svg {
+  transition: transform 0.3s ease;
+}
+
+.viewAll:hover svg {
+  transform: translateX(4px);
 }
 
 /* Карточки */
@@ -346,55 +500,51 @@ input:-webkit-autofill:focus {
 /* Новости */
 .newsGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 2rem;
+  margin-top: 2rem;
 }
 
 .newsCard {
-  display: flex;
   background: var(--main-dark);
   border-radius: 1rem;
-  overflow: hidden;
+  padding: 1.5rem;
   transition: all 0.3s ease;
+  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 .newsCard:hover {
-  transform: translateY(-0.5rem);
-  box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.2);
-}
-
-.newsImageContainer {
-  width: 200px;
-  flex-shrink: 0;
-}
-
-.newsImage {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.newsContent {
-  padding: 1.5rem;
-  flex: 1;
-}
-
-.newsDate {
-  display: block;
-  font-size: 0.875rem;
-  color: var(--main-primary);
-  margin-bottom: 0.5rem;
+  transform: translateY(-5px);
+  border-color: var(--main-primary);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
 .newsTitle {
+  color: var(--main-light);
   font-size: 1.25rem;
   font-weight: 600;
-  margin-bottom: 1rem;
+  margin: 0;
+  line-height: 1.4;
 }
 
 .newsDescription {
   color: var(--main-gray);
-  margin-bottom: 1.5rem;
+  font-size: 1rem;
+  line-height: 1.6;
+  margin: 0;
+  flex-grow: 1;
+}
+
+.newsDate {
+  color: var(--main-primary);
+  font-size: 0.9rem;
+  font-weight: 500;
+  display: block;
+  margin-top: auto;
 }
 
 /* Для новостей без изображения */
@@ -414,6 +564,12 @@ input:-webkit-autofill:focus {
   color: var(--main-primary);
   font-weight: 500;
   transition: gap 0.3s ease;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-size: 1rem;
+  font-family: inherit;
 }
 
 .readMore:hover {
@@ -455,12 +611,37 @@ input:-webkit-autofill:focus {
   color: var(--main-gray);
   line-height: 1.6;
   font-size: 1rem;
-  margin: 1.5rem 0 0;
+  margin: 1.5rem 0;
+}
+
+.socialLinks {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.socialLink {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--main-gray);
+  font-size: 1.25rem;
+  transition: all 0.3s ease;
+}
+
+.socialLink:hover {
+  background: var(--main-primary);
+  color: var(--main-light);
+  transform: translateY(-2px);
 }
 
 .footerLinks {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 3rem;
 }
 
@@ -469,7 +650,12 @@ input:-webkit-autofill:focus {
   flex-direction: column;
 }
 
-
+.linksTitle {
+  color: var(--main-light);
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+}
 
 .linksList {
   display: flex;
@@ -503,18 +689,88 @@ input:-webkit-autofill:focus {
   left: -0.5rem;
 }
 
+.subscribeText {
+  color: var(--main-gray);
+  font-size: 0.9rem;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+
+.subscribeForm {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.subscribeInput {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.5rem;
+  color: var(--main-light);
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+}
+
+.subscribeInput:focus {
+  outline: none;
+  border-color: var(--main-primary);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.subscribeButton {
+  padding: 0.75rem 1.5rem;
+  background: var(--main-primary);
+  color: var(--main-light);
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.subscribeButton:hover {
+  background: var(--main-primary-dark);
+  transform: translateY(-1px);
+}
+
 .footerBottom {
   margin-top: 3rem;
   padding-top: 2rem;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1400px;
+  margin: 3rem auto 0;
+  padding: 2rem 2rem 0;
 }
 
 .copyright {
   color: var(--main-gray);
   font-size: 0.875rem;
-  text-align: center;
-  max-width: 1400px;
-  margin: 0 auto;
+}
+
+.scrollToTop {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.05);
+  border: none;
+  border-radius: 50%;
+  color: var(--main-gray);
+  font-size: 1.25rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.scrollToTop:hover {
+  background: var(--main-primary);
+  color: var(--main-light);
+  transform: translateY(-2px);
 }
 
 /* Адаптивность */
@@ -530,29 +786,91 @@ input:-webkit-autofill:focus {
     justify-content: space-between;
   }
   
-  .searchContainer {
+  .headerRight {
     order: 3;
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  .searchContainer {
+    order: 2;
     width: 100%;
   }
   
   .auth {
-    order: 2;
+    order: 1;
   }
 }
 
 /* Адаптивность для кнопок */
 @media (max-width: 768px) {
+  .nav {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 80%;
+    max-width: 400px;
+    height: 100vh;
+    background: var(--main-dark);
+    flex-direction: column;
+    padding: 4rem 2rem 2rem;
+    transition: right 0.3s ease;
+    z-index: 1001;
+  }
+
+  .nav.mobileMenuActive {
+    right: 0;
+  }
+
+  .mobileMenuButton {
+    display: block;
+  }
+
+  .mobileMenuClose {
+    display: block;
+  }
+
+  .navLink {
+    font-size: 1.25rem;
+    padding: 1rem 0;
+  }
+
   .button {
     padding: 0.6rem 1.2rem;
     font-size: 0.9rem;
   }
-  
-  .nav {
-    gap: 1rem;
+
+  .newsGrid {
+    grid-template-columns: 1fr;
   }
   
-  .navLink {
-    font-size: 0.9rem;
+  .newsCard {
+    padding: 1.25rem;
+  }
+  
+  .newsTitle {
+    font-size: 1.1rem;
+  }
+
+  .hero {
+    height: 400px;
+  }
+  
+  .heroContent {
+    padding: 2rem;
+  }
+  
+  .hero h1 {
+    font-size: 2.5rem;
+  }
+  
+  .heroContent p {
+    font-size: 1.1rem;
+  }
+
+  .heroButton {
+    width: 100%;
+    justify-content: center;
   }
 }
 
@@ -572,7 +890,6 @@ input:-webkit-autofill:focus {
   .footerContent {
     grid-template-columns: 1fr;
     gap: 3rem;
-    padding: 0 2rem 2rem;
   }
   
   .footerInfo {
@@ -582,6 +899,14 @@ input:-webkit-autofill:focus {
   
   .footerLogo {
     margin: 0 auto 2rem;
+  }
+  
+  .socialLinks {
+    justify-content: center;
+  }
+  
+  .footerLinks {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
@@ -604,6 +929,14 @@ input:-webkit-autofill:focus {
     height: 200px;
   }
   
+  .footer {
+    padding: 3rem 0 1.5rem;
+  }
+  
+  .footerContent {
+    padding: 0 1rem;
+  }
+  
   .footerLinks {
     grid-template-columns: 1fr;
     gap: 2rem;
@@ -621,22 +954,33 @@ input:-webkit-autofill:focus {
   .footerLink::before {
     display: none;
   }
+  
+  .subscribeForm {
+    flex-direction: column;
+  }
+  
+  .footerBottom {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+    padding: 2rem 1rem 0;
+  }
 }
 
 @media (max-width: 480px) {
   .hero {
-    height: 400px;
+    height: 350px;
   }
   
   .heroContent {
-    padding: 2rem;
+    padding: 1.5rem;
   }
   
-  .hero h1 {
+  .heroContent h1 {
     font-size: 2rem;
   }
   
-  .hero p {
+  .heroContent p {
     font-size: 1rem;
   }
   
@@ -655,4 +999,33 @@ input:-webkit-autofill:focus {
   .footerLogo img {
     width: 140px;
   }
+}
+
+.sectionActions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.addNewsButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: var(--main-primary);
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.addNewsButton:hover {
+  background: var(--main-primary-dark);
+}
+
+.addNewsButton svg {
+  font-size: 1.1rem;
 }
