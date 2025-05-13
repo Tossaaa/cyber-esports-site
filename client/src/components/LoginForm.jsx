@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
-import styles from '../styles/AuthForms.module.css';
+import styles from '../styles/MainPage.module.css';
 import { FiX, FiMail, FiLock } from 'react-icons/fi';
+import { authAPI } from '../api/auth';
 
-const LoginForm = ({ onClose, onSwitchToRegister }) => {
+const LoginForm = ({ onClose, onSwitchToRegister, onLoginSuccess }) => {
   const [formData, setFormData] = useState({
-    email: '',
+    username: '',
     password: ''
   });
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -16,34 +19,65 @@ const LoginForm = ({ onClose, onSwitchToRegister }) => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // TODO: Добавить логику входа
-    console.log('Login data:', formData);
+    setError('');
+    setLoading(true);
+
+    try {
+      const response = await fetch('http://localhost:5001/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username: formData.username, password: formData.password }),
+        credentials: 'include',
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Ошибка при входе');
+      }
+
+      // Сохраняем данные пользователя и токен
+      localStorage.setItem('user', JSON.stringify(data.user));
+      localStorage.setItem('token', data.token);
+
+      onLoginSuccess(data.user);
+      onClose();
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div className={styles.overlay}>
-      <div className={styles.formContainer}>
+    <div className={styles.modalOverlay}>
+      <div className={styles.modal}>
         <button className={styles.closeButton} onClick={onClose}>
           <FiX />
         </button>
         
         <h2>Вход в аккаунт</h2>
         
-        <form onSubmit={handleSubmit} className={styles.form}>
+        {error && <div className={styles.errorMessage}>{error}</div>}
+        
+        <form onSubmit={handleSubmit}>
           <div className={styles.formGroup}>
-            <label htmlFor="email">Email</label>
+            <label htmlFor="username">Имя пользователя</label>
             <div className={styles.inputWrapper}>
               <FiMail className={styles.inputIcon} />
               <input
-                type="email"
-                id="email"
-                name="email"
-                value={formData.email}
+                type="text"
+                id="username"
+                name="username"
+                value={formData.username}
                 onChange={handleChange}
-                placeholder="Введите ваш email"
+                placeholder="Введите имя пользователя"
                 required
+                disabled={loading}
               />
             </div>
           </div>
@@ -58,20 +92,21 @@ const LoginForm = ({ onClose, onSwitchToRegister }) => {
                 name="password"
                 value={formData.password}
                 onChange={handleChange}
-                placeholder="Введите ваш пароль"
+                placeholder="Введите пароль"
                 required
+                disabled={loading}
               />
             </div>
           </div>
 
-          <button type="submit" className={styles.submitButton}>
-            Войти
+          <button type="submit" className={styles.submitButton} disabled={loading}>
+            {loading ? 'Вход...' : 'Войти'}
           </button>
         </form>
 
-        <div className={styles.switchForm}>
+        <div className={styles.modalSwitch}>
           <p>Нет аккаунта?</p>
-          <button onClick={onSwitchToRegister} className={styles.switchButton}>
+          <button onClick={onSwitchToRegister} className={styles.linkButton}>
             Зарегистрироваться
           </button>
         </div>

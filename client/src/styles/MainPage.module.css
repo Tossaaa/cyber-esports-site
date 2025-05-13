@@ -48,8 +48,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1.5rem 0;
-  max-width: 1600px;
+  padding: 0.75rem 0;
+  max-width: 1200px;
   margin: 0 auto;
   width: 100%;
 }
@@ -57,17 +57,18 @@
 .headerLeft {
   display: flex;
   align-items: center;
-  gap: 3rem;
+  gap: 1.5rem;
 }
 
 .headerRight {
   display: flex;
   align-items: center;
-  gap: 2rem;
+  gap: 1rem;
 }
 
 .logo {
-  width: 140px;
+  height: 2.8rem;
+  width: auto;
   transition: transform 0.3s ease;
 }
 
@@ -77,15 +78,16 @@
 
 .nav {
   display: flex;
-  gap: 2rem;
+  gap: 1.25rem;
 }
 
 .navLink {
   color: var(--main-accent);
   font-weight: 500;
   position: relative;
-  padding: 0.5rem 0;
+  padding: 0.3rem 0;
   transition: color 0.3s ease;
+  font-size: 0.9rem;
 }
 
 .navLink:hover {
@@ -121,10 +123,10 @@
   display: flex;
   align-items: center;
   background: var(--main-dark);
-  border-radius: 2rem;
-  padding: 0.5rem 1.5rem;
+  border-radius: 1.5rem;
+  padding: 0.4rem 1.25rem;
   transition: all 0.3s ease;
-  max-width: 600px;
+  max-width: 500px;
   border: 2px solid transparent;
 }
 
@@ -207,8 +209,10 @@
 input:-webkit-autofill,
 input:-webkit-autofill:hover, 
 input:-webkit-autofill:focus {
-  -webkit-box-shadow: 0 0 0 1000px var(--main-dark) inset;
-  -webkit-text-fill-color: var(--main-accent);
+  -webkit-box-shadow: 0 0 0 1000px var(--main-dark) inset !important;
+  -webkit-text-fill-color: var(--main-accent) !important;
+  transition: background-color 5000s ease-in-out 0s;
+  border-color: rgba(255, 255, 255, 0.1) !important;
 }
 
 .search::placeholder {
@@ -224,13 +228,13 @@ input:-webkit-autofill:focus {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.75rem 1.5rem;
-  border-radius: 2rem;
+  padding: 0.5rem 1.25rem;
+  border-radius: 1.5rem;
   font-weight: 500;
   transition: all 0.3s ease;
   text-decoration: none;
   cursor: pointer;
-  font-size: 1rem;
+  font-size: 0.9rem;
   font-family: inherit;
 }
 
@@ -500,35 +504,81 @@ input:-webkit-autofill:focus {
 /* Новости */
 .newsGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 2rem;
-  margin-top: 2rem;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 2.5rem;
+  margin-top: 2.5rem;
 }
 
 .newsCard {
-  background: var(--main-dark);
-  border-radius: 1rem;
-  padding: 1.5rem;
-  transition: all 0.3s ease;
+  background: var(--main-secondary);
+  border-radius: 16px;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  height: 100%;
+  border: 1px solid var(--main-border);
 }
 
 .newsCard:hover {
-  transform: translateY(-5px);
+  transform: translateY(-8px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
   border-color: var(--main-primary);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.newsImageContainer {
+  position: relative;
+  width: 100%;
+  height: 220px;
+  overflow: hidden;
+}
+
+.newsImageContainer::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 100px;
+  background: linear-gradient(to top, var(--main-secondary), transparent);
+  z-index: 1;
+}
+
+.newsImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.newsCard:hover .newsImage {
+  transform: scale(1.1);
+}
+
+.newsContent {
+  padding: 1.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  flex-grow: 1;
+  background: var(--main-secondary);
+  position: relative;
+  z-index: 2;
 }
 
 .newsTitle {
-  color: var(--main-light);
-  font-size: 1.25rem;
-  font-weight: 600;
+  color: var(--main-accent);
+  font-size: 1.4rem;
+  font-weight: 700;
   margin: 0;
   line-height: 1.4;
+  transition: color 0.3s ease;
+}
+
+.newsCard:hover .newsTitle {
+  color: var(--main-primary);
 }
 
 .newsDescription {
@@ -537,24 +587,66 @@ input:-webkit-autofill:focus {
   line-height: 1.6;
   margin: 0;
   flex-grow: 1;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.newsMeta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+  padding-top: 1rem;
+  border-top: 1px solid var(--main-border);
+}
+
+.newsMetaLeft {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.deleteNewsButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  background: rgba(255, 70, 85, 0.1);
+  border: 1px solid rgba(255, 70, 85, 0.2);
+  color: var(--main-primary);
+  border-radius: 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.deleteNewsButton:hover {
+  background: rgba(255, 70, 85, 0.2);
+  transform: translateY(-2px);
+}
+
+.deleteNewsButton svg {
+  font-size: 1.1rem;
 }
 
 .newsDate {
   color: var(--main-primary);
   font-size: 0.9rem;
   font-weight: 500;
-  display: block;
-  margin-top: auto;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
-/* Для новостей без изображения */
-.newsCard:not(:has(.newsImageContainer)) .newsContent {
-  width: 100%;
-  padding: 2rem;
-}
-
-.newsImageContainer:empty {
-  display: none;
+.newsAuthor {
+  color: var(--main-gray);
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .readMore {
@@ -562,18 +654,47 @@ input:-webkit-autofill:focus {
   align-items: center;
   gap: 0.5rem;
   color: var(--main-primary);
-  font-weight: 500;
-  transition: gap 0.3s ease;
+  font-weight: 600;
+  transition: all 0.3s ease;
   background: none;
   border: none;
-  padding: 0;
+  padding: 0.5rem 0;
   cursor: pointer;
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-family: inherit;
+  position: relative;
+}
+
+.readMore::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--main-primary);
+  transition: width 0.3s ease;
 }
 
 .readMore:hover {
-  gap: 1rem;
+  gap: 0.75rem;
+}
+
+.readMore:hover::after {
+  width: 100%;
+}
+
+/* Для новостей без изображения */
+.newsCard:not(:has(.newsImageContainer)) .newsContent {
+  padding: 2rem;
+}
+
+.newsCard:not(:has(.newsImageContainer)) {
+  background: linear-gradient(145deg, var(--main-secondary), var(--main-dark));
+}
+
+.newsImageContainer:empty {
+  display: none;
 }
 
 /* Футер */
@@ -842,14 +963,36 @@ input:-webkit-autofill:focus {
 
   .newsGrid {
     grid-template-columns: 1fr;
+    gap: 1.5rem;
   }
   
   .newsCard {
-    padding: 1.25rem;
+    max-width: 500px;
+    margin: 0 auto;
   }
   
   .newsTitle {
-    font-size: 1.1rem;
+    font-size: 1.25rem;
+  }
+
+  .newsDescription {
+    font-size: 0.95rem;
+  }
+
+  .newsMeta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .newsMetaLeft {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .deleteNewsButton {
+    padding: 0.4rem;
+    font-size: 0.85rem;
   }
 
   .hero {
@@ -1028,4 +1171,354 @@ input:-webkit-autofill:focus {
 
 .addNewsButton svg {
   font-size: 1.1rem;
+}
+
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(15, 25, 35, 0.95);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  backdrop-filter: blur(8px);
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.modal {
+  background: var(--main-dark);
+  padding: 2.5rem;
+  border-radius: 1.5rem;
+  width: 100%;
+  max-width: 400px;
+  position: relative;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 70, 85, 0.1);
+  animation: slideUp 0.4s ease;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.modal h2 {
+  color: var(--main-light);
+  margin-bottom: 1.5rem;
+  font-size: 1.75rem;
+  font-weight: 700;
+  text-align: center;
+  position: relative;
+  padding-bottom: 0.75rem;
+}
+
+.modal h2::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 3px;
+  background: var(--main-primary);
+  border-radius: 3px;
+}
+
+.closeButton {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: var(--main-accent);
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0.75rem;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+}
+
+.closeButton:hover {
+  background: rgba(255, 70, 85, 0.2);
+  color: var(--main-primary);
+  transform: rotate(90deg);
+}
+
+.formGroup {
+  margin-bottom: 1.25rem;
+}
+
+.formGroup label {
+  display: block;
+  color: var(--main-accent);
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.inputWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.inputIcon {
+  position: absolute;
+  left: 1rem;
+  color: var(--main-accent);
+  font-size: 1.25rem;
+  transition: color 0.3s ease;
+}
+
+.formGroup input {
+  width: 100%;
+  padding: 0.75rem 1rem 0.75rem 3rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.5rem;
+  color: var(--main-light);
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+.formGroup input:focus {
+  outline: none;
+  border-color: var(--main-primary);
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0 0 3px rgba(255, 70, 85, 0.1);
+}
+
+.formGroup input:focus + .inputIcon {
+  color: var(--main-primary);
+}
+
+.formGroup input::placeholder {
+  color: var(--main-accent);
+  opacity: 0.7;
+}
+
+.submitButton {
+  width: 100%;
+  padding: 0.75rem;
+  background: var(--main-primary);
+  color: var(--main-light);
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 0.75rem;
+  box-sizing: border-box;
+}
+
+.submitButton:hover {
+  background: var(--main-primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 70, 85, 0.2);
+}
+
+.submitButton:active {
+  transform: translateY(0);
+}
+
+.submitButton:disabled {
+  background: rgba(255, 70, 85, 0.5);
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.modalSwitch {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.modalSwitch p {
+  color: var(--main-accent);
+  font-size: 0.9rem;
+  margin-right: 0.5rem;
+}
+
+.linkButton {
+  background: none;
+  border: none;
+  color: var(--main-primary);
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  margin-left: 0.5rem;
+  transition: color 0.3s ease;
+}
+
+.linkButton:hover {
+  color: var(--main-primary-dark);
+  text-decoration: underline;
+}
+
+.errorMessage {
+  background: rgba(255, 70, 85, 0.1);
+  border: 1px solid rgba(255, 70, 85, 0.2);
+  color: var(--main-primary);
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+/* Адаптивность для модальных окон */
+@media (max-width: 768px) {
+  .modalOverlay {
+    padding: 1rem;
+  }
+  
+  .modal {
+    padding: 1.5rem;
+    border-radius: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .modal {
+    padding: 1.25rem;
+  }
+  
+  .modalSwitch {
+    font-size: 0.85rem;
+  }
+}
+
+.userMenu {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.userInfo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 2rem;
+  transition: all 0.3s ease;
+}
+
+.userInfo:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.userIcon {
+  color: var(--main-primary);
+  font-size: 1.1rem;
+}
+
+.userName {
+  color: var(--main-accent);
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+.logoutButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: rgba(255, 70, 85, 0.1);
+  border: 1px solid rgba(255, 70, 85, 0.2);
+  color: var(--main-primary);
+  border-radius: 2rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.logoutButton:hover {
+  background: rgba(255, 70, 85, 0.2);
+  transform: translateY(-1px);
+}
+
+.logoutButton svg {
+  font-size: 1.1rem;
+}
+
+@media (max-width: 768px) {
+  .userMenu {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5rem;
+  }
+
+  .userInfo {
+    justify-content: center;
+  }
+
+  .logoutButton {
+    justify-content: center;
+  }
+}
+
+.confirmMessage {
+  text-align: center;
+  color: var(--main-accent);
+  margin: 1.5rem 0;
+  font-size: 1.1rem;
+}
+
+.confirmButtons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.cancelButton {
+  background: transparent;
+  border: 2px solid var(--main-gray);
+  color: var(--main-accent);
+}
+
+.cancelButton:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: var(--main-accent);
+}
+
+.confirmButton {
+  background: var(--main-primary);
+  border: 2px solid var(--main-primary);
+  color: var(--main-light);
+}
+
+.confirmButton:hover {
+  background: var(--main-primary-dark);
+  box-shadow: 0 0 15px rgba(255, 70, 85, 0.3);
 }

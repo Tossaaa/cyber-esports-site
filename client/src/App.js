@@ -8,6 +8,7 @@ import Cs2Page from './pages/Cs2Page';
 import DotaPage from "./pages/DotaPage";
 import PUBGPage from "./pages/PubgPage";
 import ValorantPage from "./pages/ValorantPage";
+import AuthPage from "./pages/AuthPage";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
         <Route path="/discipline/dota" element={<DotaPage />} />
         <Route path="/discipline/pubg" element={<PUBGPage />} />
         <Route path="/discipline/valorant" element={<ValorantPage />} />
+        <Route path="/auth" element={<AuthPage />} />
       </Routes>
     </Router>
   );

@@ -4,74 +4,101 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.8);
+  background-color: rgba(15, 25, 35, 0.95);
+  backdrop-filter: blur(10px);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1000;
-  padding: 2rem;
+  padding: 20px;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .modal {
-  background: var(--main-dark);
-  border-radius: 1rem;
+  background: var(--main-secondary);
+  border-radius: 12px;
+  max-width: 900px;
   width: 100%;
-  max-width: 800px;
   max-height: 90vh;
   overflow-y: auto;
   position: relative;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--main-border);
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 .closeButton {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  background: none;
-  border: none;
-  color: var(--main-gray);
-  font-size: 1.5rem;
-  cursor: pointer;
-  padding: 0.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: color 0.3s ease;
-  z-index: 2;
+  position: absolute !important;
+  top: 1.5rem !important;
+  right: 1.5rem !important;
+  background: rgba(0, 0, 0, 0.5) !important;
+  border: none !important;
+  color: var(--main-light) !important;
+  font-size: 1.25rem !important;
+  cursor: pointer !important;
+  padding: 0.75rem !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: all 0.3s ease !important;
+  border-radius: 50% !important;
+  width: 40px !important;
+  height: 40px !important;
+  z-index: 2 !important;
+  backdrop-filter: blur(4px) !important;
 }
 
 .closeButton:hover {
-  color: var(--main-light);
+  background-color: var(--main-primary) !important;
+  color: var(--main-light) !important;
+  transform: rotate(90deg) !important;
 }
 
 .imageContainer {
   width: 100%;
-  height: 300px;
+  height: 400px;
   position: relative;
+  overflow: hidden;
 }
 
-.image {
+.imageContainer img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
 .content {
-  padding: 2rem;
-}
-
-.date {
-  display: block;
-  color: var(--main-primary);
-  font-size: 0.9rem;
-  margin-bottom: 1rem;
+  padding: 2.5rem;
+  display: flex;
+  flex-direction: column;
+  min-height: 300px;
 }
 
 .title {
+  color: var(--main-light);
   font-size: 2rem;
   font-weight: 700;
-  color: var(--main-light);
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
   line-height: 1.3;
 }
 
@@ -79,30 +106,198 @@
   color: var(--main-gray);
   font-size: 1.1rem;
   line-height: 1.6;
+  margin-bottom: 2rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
 }
 
+.fullContent {
+  color: var(--main-light);
+  font-size: 1.1rem;
+  line-height: 1.8;
+  white-space: pre-wrap;
+  flex-grow: 1;
+}
+
+.footer {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--main-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.meta {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  color: var(--main-gray);
+  font-size: 0.9rem;
+}
+
+.date, .author {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.deleteButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: rgba(255, 70, 85, 0.1);
+  border: 1px solid rgba(255, 70, 85, 0.2);
+  color: var(--main-primary);
+  border-radius: 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.deleteButton:hover {
+  background: rgba(255, 70, 85, 0.2);
+  transform: translateY(-2px);
+}
+
+.deleteButton svg {
+  font-size: 1.1rem;
+}
+
+/* Стилизация скроллбара */
+.modal::-webkit-scrollbar {
+  width: 8px;
+}
+
+.modal::-webkit-scrollbar-track {
+  background: var(--main-dark);
+  border-radius: 4px;
+}
+
+.modal::-webkit-scrollbar-thumb {
+  background: var(--main-primary);
+  border-radius: 4px;
+}
+
+.modal::-webkit-scrollbar-thumb:hover {
+  background: var(--main-primary-dark);
+}
+
+/* Адаптивность */
 @media (max-width: 768px) {
-  .overlay {
-    padding: 1rem;
-  }
-  
   .modal {
     max-height: 95vh;
   }
-  
-  .imageContainer {
-    height: 200px;
+
+  .closeButton {
+    top: 1rem !important;
+    right: 1rem !important;
+    width: 35px !important;
+    height: 35px !important;
+    padding: 0.5rem !important;
+    font-size: 1rem !important;
   }
-  
+
+  .imageContainer {
+    height: 300px;
+  }
+
   .content {
     padding: 1.5rem;
   }
-  
+
   .title {
     font-size: 1.5rem;
   }
-  
+
   .description {
     font-size: 1rem;
+    padding: 0.75rem;
   }
+
+  .fullContent {
+    font-size: 1rem;
+  }
+
+  .footer {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+
+  .meta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .editButton, .deleteButton {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .imageContainer {
+    height: 200px;
+  }
+
+  .content {
+    padding: 1rem;
+  }
+
+  .title {
+    font-size: 1.3rem;
+  }
+
+  .description {
+    font-size: 0.9rem;
+    padding: 0.5rem;
+  }
+
+  .fullContent {
+    font-size: 0.9rem;
+  }
+
+  .deleteButton {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+.actions {
+  display: flex;
+  gap: 1rem;
+}
+
+.editButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: rgba(70, 130, 255, 0.1);
+  border: 1px solid rgba(70, 130, 255, 0.2);
+  color: var(--main-primary);
+  border-radius: 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.editButton:hover {
+  background: rgba(70, 130, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+.editButton svg {
+  font-size: 1.1rem;
 } 

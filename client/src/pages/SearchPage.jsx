@@ -10,8 +10,7 @@ function SearchPage() {
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
-    console.log("Поиск по запросу: ", searchQuery);
-    // Добавь логику для поиска новостей
+    // TODO: Добавить логику для поиска новостей
   };
 
   return (

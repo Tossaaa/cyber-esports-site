@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
-import styles from '../styles/AuthForms.module.css';
-import { FiX, FiMail, FiLock, FiUser } from 'react-icons/fi';
+import styles from '../styles/MainPage.module.css';
+import { FiX, FiLock, FiUser } from 'react-icons/fi';
+import { authAPI } from '../api/auth';
 
-const RegisterForm = ({ onClose, onSwitchToLogin }) => {
+const RegisterForm = ({ onClose, onSwitchToLogin, onLoginSuccess }) => {
   const [formData, setFormData] = useState({
     username: '',
-    email: '',
     password: '',
     confirmPassword: ''
   });
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -18,26 +20,61 @@ const RegisterForm = ({ onClose, onSwitchToLogin }) => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setError('');
+    setLoading(true);
+
     if (formData.password !== formData.confirmPassword) {
-      alert('Пароли не совпадают');
+      setError('Пароли не совпадают');
+      setLoading(false);
       return;
     }
-    // TODO: Добавить логику регистрации
-    console.log('Register data:', formData);
+
+    try {
+      const response = await fetch('http://localhost:5001/api/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 
+          username: formData.username, 
+          password: formData.password 
+        }),
+        credentials: 'include',
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Ошибка при регистрации');
+      }
+
+      // Сохраняем данные пользователя и токен
+      localStorage.setItem('user', JSON.stringify(data.user));
+      localStorage.setItem('token', data.token);
+
+      onLoginSuccess(data.user);
+      onClose();
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div className={styles.overlay}>
-      <div className={styles.formContainer}>
+    <div className={styles.modalOverlay}>
+      <div className={styles.modal}>
         <button className={styles.closeButton} onClick={onClose}>
           <FiX />
         </button>
         
         <h2>Регистрация</h2>
         
-        <form onSubmit={handleSubmit} className={styles.form}>
+        {error && <div className={styles.errorMessage}>{error}</div>}
+        
+        <form onSubmit={handleSubmit}>
           <div className={styles.formGroup}>
             <label htmlFor="username">Имя пользователя</label>
             <div className={styles.inputWrapper}>
@@ -50,22 +87,7 @@ const RegisterForm = ({ onClose, onSwitchToLogin }) => {
                 onChange={handleChange}
                 placeholder="Введите имя пользователя"
                 required
-              />
-            </div>
-          </div>
-
-          <div className={styles.formGroup}>
-            <label htmlFor="email">Email</label>
-            <div className={styles.inputWrapper}>
-              <FiMail className={styles.inputIcon} />
-              <input
-                type="email"
-                id="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                placeholder="Введите ваш email"
-                required
+                disabled={loading}
               />
             </div>
           </div>
@@ -82,6 +104,7 @@ const RegisterForm = ({ onClose, onSwitchToLogin }) => {
                 onChange={handleChange}
                 placeholder="Введите пароль"
                 required
+                disabled={loading}
               />
             </div>
           </div>
@@ -96,20 +119,21 @@ const RegisterForm = ({ onClose, onSwitchToLogin }) => {
                 name="confirmPassword"
                 value={formData.confirmPassword}
                 onChange={handleChange}
-                placeholder="Повторите пароль"
+                placeholder="Подтвердите пароль"
                 required
+                disabled={loading}
               />
             </div>
           </div>
 
-          <button type="submit" className={styles.submitButton}>
-            Зарегистрироваться
+          <button type="submit" className={styles.submitButton} disabled={loading}>
+            {loading ? 'Регистрация...' : 'Зарегистрироваться'}
           </button>
         </form>
 
-        <div className={styles.switchForm}>
+        <div className={styles.modalSwitch}>
           <p>Уже есть аккаунт?</p>
-          <button onClick={onSwitchToLogin} className={styles.switchButton}>
+          <button onClick={onSwitchToLogin} className={styles.linkButton}>
             Войти
           </button>
         </div>

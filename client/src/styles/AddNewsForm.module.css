@@ -1,16 +1,15 @@
-.overlay {
+.modalOverlay {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.85);
-  backdrop-filter: blur(8px);
+  background: rgba(15, 25, 35, 0.95);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1000;
-  padding: 2rem;
+  backdrop-filter: blur(8px);
   animation: fadeIn 0.3s ease;
 }
 
@@ -23,15 +22,15 @@
   }
 }
 
-.formContainer {
-  background: rgba(15, 25, 35, 0.95);
-  padding: 2rem;
+.modal {
+  background: var(--main-dark);
+  padding: 2.5rem;
   border-radius: 1.5rem;
-  width: 90%;
-  max-width: 400px;
+  width: 100%;
+  max-width: 500px;
   position: relative;
-  border: 1px solid rgba(255, 70, 85, 0.1);
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 70, 85, 0.1);
   animation: slideUp 0.4s ease;
 }
 
@@ -52,7 +51,7 @@
   right: 1.5rem;
   background: rgba(255, 255, 255, 0.1);
   border: none;
-  color: var(--cs-accent);
+  color: var(--main-accent);
   font-size: 1.5rem;
   cursor: pointer;
   padding: 0.75rem;
@@ -67,12 +66,12 @@
 
 .closeButton:hover {
   background: rgba(255, 70, 85, 0.2);
-  color: var(--cs-primary);
+  color: var(--main-primary);
   transform: rotate(90deg);
 }
 
-.formContainer h2 {
-  color: var(--cs-light);
+.modal h2 {
+  color: var(--main-light);
   margin-bottom: 1.5rem;
   font-size: 1.75rem;
   font-weight: 700;
@@ -81,7 +80,7 @@
   padding-bottom: 0.75rem;
 }
 
-.formContainer h2::after {
+.modal h2::after {
   content: '';
   position: absolute;
   bottom: 0;
@@ -89,8 +88,19 @@
   transform: translateX(-50%);
   width: 80px;
   height: 3px;
-  background: var(--cs-primary);
+  background: var(--main-primary);
   border-radius: 3px;
+}
+
+.errorMessage {
+  background: rgba(255, 70, 85, 0.1);
+  border: 1px solid rgba(255, 70, 85, 0.2);
+  color: var(--main-primary);
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  text-align: center;
 }
 
 .formGroup {
@@ -99,32 +109,24 @@
 
 .formGroup label {
   display: block;
-  color: var(--cs-accent);
+  color: var(--main-accent);
   margin-bottom: 0.5rem;
   font-size: 0.9rem;
   font-weight: 500;
   transition: color 0.3s ease;
 }
 
-.formGroup input[type="text"],
+.formGroup input,
 .formGroup textarea {
   width: 100%;
-  padding: 0.75rem;
+  padding: 0.75rem 1rem;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 0.5rem;
-  color: var(--cs-light);
+  color: var(--main-light);
   font-size: 0.95rem;
   transition: all 0.3s ease;
   box-sizing: border-box;
-}
-
-.formGroup input[type="text"]:focus,
-.formGroup textarea:focus {
-  outline: none;
-  border-color: var(--cs-primary);
-  background: rgba(255, 255, 255, 0.08);
-  box-shadow: 0 0 0 3px rgba(255, 70, 85, 0.1);
 }
 
 .formGroup textarea {
@@ -133,79 +135,79 @@
   line-height: 1.5;
 }
 
-.formGroup input[type="file"] {
-  width: 100%;
-  padding: 0.75rem;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 0.5rem;
-  color: var(--cs-accent);
-  font-size: 0.9rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-sizing: border-box;
-}
-
-.formGroup input[type="file"]:hover {
+.formGroup input:focus,
+.formGroup textarea:focus {
+  outline: none;
+  border-color: var(--main-primary);
   background: rgba(255, 255, 255, 0.08);
-  border-color: var(--cs-primary);
+  box-shadow: 0 0 0 3px rgba(255, 70, 85, 0.1);
 }
 
-.formGroup input[type="file"]::-webkit-file-upload-button {
-  background: var(--cs-primary);
-  color: var(--cs-light);
-  padding: 0.4rem 0.75rem;
-  border: none;
-  border-radius: 0.4rem;
-  font-size: 0.85rem;
+.formGroup input::placeholder,
+.formGroup textarea::placeholder {
+  color: var(--main-accent);
+  opacity: 0.7;
+}
+
+.formActions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  margin-top: 2rem;
+}
+
+.cancelButton,
+.submitButton {
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
   font-weight: 500;
+  font-size: 0.95rem;
   cursor: pointer;
   transition: all 0.3s ease;
-  margin-right: 0.75rem;
 }
 
-.formGroup input[type="file"]::-webkit-file-upload-button:hover {
-  background: var(--cs-primary-dark);
-  transform: translateY(-1px);
+.cancelButton {
+  background: transparent;
+  border: 2px solid var(--main-gray);
+  color: var(--main-accent);
+}
+
+.cancelButton:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: var(--main-accent);
 }
 
 .submitButton {
-  width: 100%;
-  padding: 0.75rem;
-  background: var(--cs-primary);
-  color: var(--cs-light);
-  border: none;
-  border-radius: 0.5rem;
-  font-size: 0.95rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  margin-top: 0.75rem;
-  box-sizing: border-box;
+  background: var(--main-primary);
+  border: 2px solid var(--main-primary);
+  color: var(--main-light);
 }
 
 .submitButton:hover {
-  background: var(--cs-primary-dark);
-  transform: translateY(-2px);
+  background: var(--main-primary-dark);
+  transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(255, 70, 85, 0.2);
 }
 
-.submitButton:active {
-  transform: translateY(0);
+.cancelButton:disabled,
+.submitButton:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
 }
 
 /* Адаптивность */
 @media (max-width: 768px) {
-  .overlay {
+  .modalOverlay {
     padding: 1rem;
   }
   
-  .formContainer {
+  .modal {
     padding: 1.5rem;
     border-radius: 1rem;
   }
   
-  .formContainer h2 {
+  .modal h2 {
     font-size: 1.5rem;
     margin-bottom: 1.25rem;
   }
@@ -214,19 +216,18 @@
     margin-bottom: 1rem;
   }
   
-  .formGroup input[type="text"],
-  .formGroup textarea,
-  .formGroup input[type="file"] {
-    padding: 0.625rem;
+  .formGroup input,
+  .formGroup textarea {
+    padding: 0.625rem 1rem;
   }
 }
 
 @media (max-width: 480px) {
-  .formContainer {
+  .modal {
     padding: 1.25rem;
   }
   
-  .formContainer h2 {
+  .modal h2 {
     font-size: 1.35rem;
     margin-bottom: 1rem;
   }
@@ -235,14 +236,62 @@
     font-size: 0.85rem;
   }
   
-  .formGroup input[type="text"],
-  .formGroup textarea,
-  .formGroup input[type="file"] {
+  .formGroup input,
+  .formGroup textarea {
     font-size: 0.9rem;
   }
   
   .submitButton {
-    padding: 0.625rem;
+    padding: 0.625rem 1.5rem;
     font-size: 0.9rem;
   }
+}
+
+.fileInput {
+  display: block;
+  width: 100%;
+  padding: 0.75rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.5rem;
+  color: var(--main-light);
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.fileInput:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--main-primary);
+}
+
+.fileInput::-webkit-file-upload-button {
+  background: var(--main-primary);
+  color: var(--main-light);
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.fileInput::-webkit-file-upload-button:hover {
+  background: var(--main-primary-dark);
+}
+
+.imagePreview {
+  margin-top: 1rem;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  max-width: 100%;
+  height: 200px;
+  border: 1px solid var(--main-border);
+}
+
+.imagePreview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 } 

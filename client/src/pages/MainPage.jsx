@@ -14,11 +14,12 @@ import {
   FiTwitter,
   FiInstagram,
   FiYoutube,
-  FiArrowUp
+  FiArrowUp,
+  FiTrash2
 } from "react-icons/fi";
 import AddNewsForm from "../components/AddNewsForm";
 import NewsModal from "../components/NewsModal";
-import LoginForm from '../components/LoginForm';
+import LoginForm from '../components/LoginForm.jsx';
 import RegisterForm from '../components/RegisterForm';
 import DisciplinesModal from '../components/DisciplinesModal';
 import Header from '../components/Header';
@@ -51,12 +52,61 @@ const MainPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [showSearchResults, setShowSearchResults] = useState(false);
   const location = useLocation();
-  const [news, setNews] = useState(initialNews);
+  const [news, setNews] = useState([]);
   const [showAddNewsForm, setShowAddNewsForm] = useState(false);
   const [selectedNews, setSelectedNews] = useState(null);
+  const [editingNews, setEditingNews] = useState(null);
   const [showLoginForm, setShowLoginForm] = useState(false);
   const [showRegisterForm, setShowRegisterForm] = useState(false);
   const [showDisciplinesModal, setShowDisciplinesModal] = useState(false);
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    // Загружаем данные пользователя при монтировании компонента
+    const userData = localStorage.getItem('user');
+    if (userData) {
+      setUser(JSON.parse(userData));
+    }
+
+    // Загружаем новости
+    const fetchNews = async () => {
+      try {
+        const response = await fetch('http://localhost:5001/api/news');
+        if (!response.ok) {
+          throw new Error('Ошибка при загрузке новостей');
+        }
+        const data = await response.json();
+        // Удаляем дубликаты по id
+        const uniqueNews = data.reduce((acc, current) => {
+          const x = acc.find(item => item.id === current.id);
+          if (!x) {
+            return acc.concat([current]);
+          } else {
+            return acc;
+          }
+        }, []);
+        setNews(uniqueNews);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchNews();
+  }, []);
+
+  const handleLoginSuccess = (userData) => {
+    setUser(userData);
+    // Обновляем состояние пользователя в Header
+    const header = document.querySelector('header');
+    if (header) {
+      const event = new CustomEvent('userLoggedIn', { detail: userData });
+      header.dispatchEvent(event);
+    }
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -79,9 +129,19 @@ const MainPage = () => {
     }, 200);
   };
 
-  const handleAddNews = (newNews) => {
-    setNews(prev => [newNews, ...prev]);
-    setShowAddNewsForm(false);
+  const handleAddNews = async (newNews) => {
+    try {
+      // После успешного добавления загружаем свежий список новостей
+      const newsResponse = await fetch('http://localhost:5001/api/news');
+      if (!newsResponse.ok) {
+        throw new Error('Ошибка при загрузке новостей');
+      }
+      const newsData = await newsResponse.json();
+      setNews(newsData);
+      setShowAddNewsForm(false);
+    } catch (err) {
+      setError(err.message);
+    }
   };
 
   const handleNewsClick = (newsItem) => {
@@ -100,6 +160,57 @@ const MainPage = () => {
   const handleSwitchToLogin = () => {
     setShowRegisterForm(false);
     setShowLoginForm(true);
+  };
+
+  const handleDeleteNews = async (newsId, e) => {
+    if (e) {
+      e.stopPropagation(); // Предотвращаем открытие модального окна новости
+    }
+    
+    if (!window.confirm('Вы уверены, что хотите удалить эту новость?')) {
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`http://localhost:5001/api/news/${newsId}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error('Ошибка при удалении новости');
+      }
+
+      setNews(prev => prev.filter(item => item.id !== newsId));
+      if (selectedNews && selectedNews.id === newsId) {
+        setSelectedNews(null);
+      }
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  const handleEditNews = (news) => {
+    setEditingNews(news);
+    setSelectedNews(null);
+  };
+
+  const handleUpdateNews = async (updatedNews) => {
+    try {
+      // Загружаем свежий список новостей
+      const response = await fetch('http://localhost:5001/api/news');
+      if (!response.ok) {
+        throw new Error('Ошибка при загрузке новостей');
+      }
+      const newsData = await response.json();
+      setNews(newsData);
+      setEditingNews(null);
+    } catch (err) {
+      setError(err.message);
+    }
   };
 
   return (
@@ -162,31 +273,68 @@ const MainPage = () => {
         <section className={styles.section}>
           <div className={styles.sectionHeader}>
             <h2 className={styles.sectionTitle}>Последние новости</h2>
-            <div className={styles.sectionActions}>
+            {user && user.role === 'admin' && (
               <button 
                 className={styles.addNewsButton}
                 onClick={() => setShowAddNewsForm(true)}
               >
                 <FiPlus /> Добавить новость
               </button>
-              <Link to="/news" className={styles.viewAll}>
-                Все новости <FiArrowRight />
-              </Link>
+            )}
+          </div>
+          {loading ? (
+            <div className={styles.loading}>Загрузка новостей...</div>
+          ) : error ? (
+            <div className={styles.error}>{error}</div>
+          ) : (
+            <div className={styles.newsGrid}>
+              {news.map((item) => (
+                <div 
+                  key={item.id} 
+                  className={styles.newsCard}
+                  onClick={() => handleNewsClick(item)}
+                >
+                  {item.image_url && (
+                    <div className={styles.newsImageContainer}>
+                      <img 
+                        src={item.image_url} 
+                        alt={item.title} 
+                        className={styles.newsImage}
+                        onError={(e) => {
+                          e.target.onerror = null;
+                          e.target.src = '/images/default-news.jpg';
+                        }}
+                      />
+                    </div>
+                  )}
+                  <div className={styles.newsContent}>
+                    <h3 className={styles.newsTitle}>{item.title}</h3>
+                    <p className={styles.newsDescription}>{item.description}</p>
+                    <div className={styles.newsMeta}>
+                      <div className={styles.newsMetaLeft}>
+                        <span className={styles.newsDate}>
+                          {new Date(item.created_at).toLocaleDateString('ru-RU')}
+                        </span>
+                        {item.author_name && (
+                          <span className={styles.newsAuthor}>
+                            Автор: {item.author_name}
+                          </span>
+                        )}
+                      </div>
+                      {user && user.role === 'admin' && (
+                        <button 
+                          className={styles.deleteNewsButton}
+                          onClick={(e) => handleDeleteNews(item.id, e)}
+                        >
+                          <FiTrash2 /> Удалить
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
-          </div>
-          <div className={styles.newsGrid}>
-            {news.map((item, index) => (
-              <div 
-                key={index} 
-                className={styles.newsCard}
-                onClick={() => handleNewsClick(item)}
-              >
-                <h3 className={styles.newsTitle}>{item.title}</h3>
-                <p className={styles.newsDescription}>{item.description}</p>
-                <span className={styles.newsDate}>{item.date}</span>
-              </div>
-            ))}
-          </div>
+          )}
         </section>
       </div>
 
@@ -196,7 +344,16 @@ const MainPage = () => {
       {showAddNewsForm && (
         <AddNewsForm 
           onClose={() => setShowAddNewsForm(false)}
-          onAdd={handleAddNews}
+          onAddNews={handleAddNews}
+        />
+      )}
+
+      {editingNews && (
+        <AddNewsForm 
+          onClose={() => setEditingNews(null)}
+          onAddNews={handleUpdateNews}
+          initialData={editingNews}
+          isEditing={true}
         />
       )}
 
@@ -204,27 +361,34 @@ const MainPage = () => {
         <NewsModal 
           news={selectedNews}
           onClose={handleCloseNewsModal}
-        />
-      )}
-
-      {showLoginForm && (
-        <LoginForm 
-          onClose={() => setShowLoginForm(false)}
-          onSwitchToRegister={handleSwitchToRegister}
-        />
-      )}
-
-      {showRegisterForm && (
-        <RegisterForm 
-          onClose={() => setShowRegisterForm(false)}
-          onSwitchToLogin={handleSwitchToLogin}
+          onDelete={handleDeleteNews}
+          onEdit={handleEditNews}
+          isAdmin={user && user.role === 'admin'}
         />
       )}
 
       {showDisciplinesModal && (
         <DisciplinesModal 
-          disciplines={disciplines}
           onClose={() => setShowDisciplinesModal(false)}
+          disciplines={disciplines}
+        />
+      )}
+
+      {/* Модальное окно входа */}
+      {showLoginForm && (
+        <LoginForm 
+          onClose={() => setShowLoginForm(false)}
+          onSwitchToRegister={handleSwitchToRegister}
+          onLoginSuccess={handleLoginSuccess}
+        />
+      )}
+
+      {/* Модальное окно регистрации */}
+      {showRegisterForm && (
+        <RegisterForm 
+          onClose={() => setShowRegisterForm(false)}
+          onSwitchToLogin={handleSwitchToLogin}
+          onLoginSuccess={handleLoginSuccess}
         />
       )}
     </div>
