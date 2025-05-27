@@ -1,0 +1,200 @@
+.authPage {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--main-secondary);
+  padding: 1rem;
+}
+
+.authContainer {
+  width: 100%;
+  max-width: 400px;
+  background: var(--main-dark);
+  padding: 2.5rem;
+  border-radius: 1.5rem;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 70, 85, 0.1);
+}
+
+.authHeader {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  position: relative;
+  padding-bottom: 0.75rem;
+}
+
+.authHeader::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 3px;
+  background: var(--main-primary);
+  border-radius: 3px;
+}
+
+.authTitle {
+  color: var(--main-light);
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+
+.authSubtitle {
+  color: var(--main-gray);
+  font-size: 0.9rem;
+}
+
+.formGroup {
+  margin-bottom: 1.25rem;
+  position: relative;
+}
+
+.formGroup label {
+  display: block;
+  color: var(--main-accent);
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.inputWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.inputIcon {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--main-accent);
+  font-size: 1.25rem;
+  transition: color 0.3s ease;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.formGroup input {
+  width: 100%;
+  padding: 0.75rem 2.75rem 0.75rem 3rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.5rem;
+  color: var(--main-light);
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+  line-height: 1.5;
+  height: 2.75rem;
+}
+
+.formGroup input:focus {
+  outline: none;
+  border-color: var(--main-primary);
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 0 2px rgba(255, 70, 85, 0.1);
+}
+
+.formGroup input:focus + .inputIcon {
+  color: var(--main-primary);
+}
+
+.formGroup input::placeholder {
+  color: var(--main-gray);
+}
+
+.submitButton {
+  width: 100%;
+  padding: 1rem;
+  background: var(--main-primary);
+  color: var(--main-light);
+  border: none;
+  border-radius: 0.75rem;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 1rem;
+}
+
+.submitButton:hover {
+  background: var(--main-primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 70, 85, 0.2);
+}
+
+.submitButton:disabled {
+  background: var(--main-gray);
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.authSwitch {
+  text-align: center;
+  margin-top: 1.5rem;
+  color: var(--main-accent);
+  font-size: 0.9rem;
+}
+
+.linkButton {
+  background: none;
+  border: none;
+  color: var(--main-primary);
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  margin-left: 0.25rem;
+  transition: color 0.3s ease;
+}
+
+.linkButton:hover {
+  color: var(--main-primary-dark);
+  text-decoration: underline;
+}
+
+.errorMessage {
+  background: rgba(255, 70, 85, 0.1);
+  border: 1px solid rgba(255, 70, 85, 0.2);
+  color: var(--main-primary);
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+@media (max-width: 480px) {
+  .authPage {
+    padding: 0.75rem;
+  }
+
+  .authContainer {
+    padding: 1.5rem;
+  }
+
+  .authTitle {
+    font-size: 1.5rem;
+  }
+
+  .authSubtitle {
+    font-size: 0.85rem;
+  }
+
+  .formGroup input {
+    font-size: 0.9rem;
+  }
+
+  .submitButton {
+    padding: 0.875rem;
+  }
+} 

@@ -10,12 +10,15 @@ const db = require('./database/db');
 
 const app = express();
 
-// Middleware
+// Настройки CORS
 app.use(cors({
-    origin: ['http://localhost:3000', 'http://localhost:5173'], // Добавляем поддержку разных портов
-    credentials: true
+    origin: 'http://localhost:3000', // URL вашего клиентского приложения
+    credentials: true // Разрешаем передачу куки и заголовков авторизации
 }));
+
+// Middleware для парсинга JSON и URL-encoded данных
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // Обслуживание статических файлов
 app.use('/uploads', express.static(path.join(__dirname, '../public/uploads')));
@@ -44,7 +47,10 @@ app.use('/api/upload', uploadRoutes);
 // Error handling middleware
 app.use((err, req, res, next) => {
     console.error('Server error:', err);
-    res.status(500).json({ message: 'Что-то пошло не так!' });
+    res.status(500).json({ 
+        message: 'Что-то пошло не так!',
+        error: process.env.NODE_ENV === 'development' ? err.message : undefined
+    });
 });
 
 const PORT = process.env.PORT || 5001;

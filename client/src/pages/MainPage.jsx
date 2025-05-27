@@ -26,10 +26,14 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 
 const disciplines = [
-  { id: "cs2", name: "CS2", image: "/images/cs2.jpg", bgColor: "#2a475e" },
-  { id: "dota", name: "Dota 2", image: "/images/dota2.jpg", bgColor: "#1e3d6b" },
-  { id: "pubg", name: "PUBG", image: "/images/pubg.jpg", bgColor: "#3a5a78" },
-  { id: "valorant", name: "Valorant", image: "/images/valorant.jpg", bgColor: "#fa4454" },
+  { id: "cs2", name: "CS2", image: "/images/cs2.jpg", bgColor: "#2a475e", status: "active" },
+  { id: "dota", name: "Dota 2", image: "/images/dota2.jpg", bgColor: "#1e3d6b", status: "active" },
+  { id: "valorant", name: "Valorant", image: "/images/valorant.jpg", bgColor: "#fa4454", status: "active" },
+  { id: "pubg", name: "PUBG", image: "/images/pubg.jpg", bgColor: "#3a5a78", status: "active" },
+  { id: "lol", name: "League of Legends", image: "/images/lol.jpg", bgColor: "#0AC8B9", status: "development" },
+  { id: "fortnite", name: "Fortnite", image: "/images/fortnite.jpg", bgColor: "#7B68EE", status: "development" },
+  { id: "apex", name: "Apex Legends", image: "/images/apex.jpg", bgColor: "#FF4655", status: "development" },
+  { id: "overwatch", name: "Overwatch 2", image: "/images/overwatch.jpg", bgColor: "#FF9C41", status: "development" }
 ];
 
 const initialNews = [
@@ -73,10 +77,21 @@ const MainPage = () => {
     // Загружаем новости
     const fetchNews = async () => {
       try {
-        const response = await fetch('http://localhost:5001/api/news');
+        setLoading(true);
+        setError(null);
+        
+        const response = await fetch('http://localhost:5001/api/news', {
+          method: 'GET',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+
         if (!response.ok) {
-          throw new Error('Ошибка при загрузке новостей');
+          throw new Error(`Ошибка сервера: ${response.status}`);
         }
+
         const data = await response.json();
         // Удаляем дубликаты по id
         const uniqueNews = data.reduce((acc, current) => {
@@ -89,7 +104,8 @@ const MainPage = () => {
         }, []);
         setNews(uniqueNews);
       } catch (err) {
-        setError(err.message);
+        console.error('Ошибка при загрузке новостей:', err);
+        setError(err.message || 'Не удалось загрузить новости. Пожалуйста, попробуйте позже.');
       } finally {
         setLoading(false);
       }
@@ -98,8 +114,10 @@ const MainPage = () => {
     fetchNews();
   }, []);
 
-  const handleLoginSuccess = (userData) => {
+  const handleLoginSuccess = (userData, token) => {
     setUser(userData);
+    localStorage.setItem('user', JSON.stringify(userData));
+    localStorage.setItem('token', token);
     // Обновляем состояние пользователя в Header
     const header = document.querySelector('header');
     if (header) {
@@ -225,13 +243,13 @@ const MainPage = () => {
         {/* Герой-секция */}
         <section className={styles.hero}>
           <div className={styles.heroContent}>
-            <h1>Киберспортивная платформа</h1>
-            <p>Участвуйте в турнирах, следите за матчами и развивайтесь в киберспорте</p>
+            <h1>Киберспорт - это больше чем игра</h1>
+            <p>Присоединяйтесь к сообществу, участвуйте в турнирах и станьте частью киберспортивной истории</p>
             <button 
               className={styles.heroButton}
               onClick={() => setShowDisciplinesModal(true)}
             >
-              Ближайшие турниры <FiArrowRight />
+              Смотреть турниры <FiArrowRight />
             </button>
           </div>
         </section>
@@ -248,7 +266,7 @@ const MainPage = () => {
             </button>
           </div>
           <div className={styles.disciplinesGrid}>
-            {disciplines.slice(0, 4).map((discipline) => (
+            {disciplines.filter(d => d.status === "active").map((discipline) => (
               <Link 
                 key={discipline.id} 
                 to={`/discipline/${discipline.id}`} 
@@ -273,6 +291,7 @@ const MainPage = () => {
         <section className={styles.section}>
           <div className={styles.sectionHeader}>
             <h2 className={styles.sectionTitle}>Последние новости</h2>
+            <div className={styles.sectionActions}>
             {user && user.role === 'admin' && (
               <button 
                 className={styles.addNewsButton}
@@ -281,6 +300,10 @@ const MainPage = () => {
                 <FiPlus /> Добавить новость
               </button>
             )}
+              <Link to="/news" className={styles.viewAll}>
+                Все новости <FiArrowRight />
+              </Link>
+            </div>
           </div>
           {loading ? (
             <div className={styles.loading}>Загрузка новостей...</div>
@@ -288,7 +311,7 @@ const MainPage = () => {
             <div className={styles.error}>{error}</div>
           ) : (
             <div className={styles.newsGrid}>
-              {news.map((item) => (
+              {news.slice(0, 4).map((item) => (
                 <div 
                   key={item.id} 
                   className={styles.newsCard}

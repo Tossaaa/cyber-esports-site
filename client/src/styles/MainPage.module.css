@@ -270,10 +270,11 @@ input:-webkit-autofill:focus {
   position: relative;
   height: 600px;
   margin: 6rem 0 2rem;
-  border-radius: 1rem;
+  border-radius: 1.5rem;
   overflow: hidden;
-  background: linear-gradient(rgba(15, 25, 35, 0.9), rgba(15, 25, 35, 0.7)),
+  background: linear-gradient(rgba(15, 25, 35, 0.85), rgba(15, 25, 35, 0.75)),
               url('/public/images/hero-bg.jpg') center/cover;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
 }
 
 .heroContent {
@@ -282,52 +283,57 @@ input:-webkit-autofill:focus {
   max-width: 800px;
   padding: 4rem;
   margin: 0 auto;
+  text-align: center;
 }
 
 .heroContent h1 {
-  font-size: 3.5rem;
-  font-weight: 700;
+  font-size: 4rem;
+  font-weight: 800;
   margin-bottom: 1.5rem;
-  background: linear-gradient(45deg, var(--cs-primary), var(--cs-accent));
+  background: linear-gradient(45deg, var(--main-primary), var(--main-primary-dark));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  line-height: 1.2;
 }
 
 .heroContent p {
-  font-size: 1.25rem;
+  font-size: 1.35rem;
   margin-bottom: 2.5rem;
-  color: var(--cs-accent);
+  color: var(--main-accent);
   line-height: 1.6;
+  opacity: 0.9;
 }
 
 .heroButton {
   display: inline-flex;
   align-items: center;
   gap: 0.75rem;
-  padding: 1rem 2rem;
+  padding: 1.25rem 2.5rem;
   background: var(--main-primary);
   color: var(--main-light);
   border: none;
-  border-radius: 2rem;
-  font-size: 1.1rem;
+  border-radius: 2.5rem;
+  font-size: 1.2rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(255, 70, 85, 0.2);
 }
 
 .heroButton:hover {
   background: var(--main-primary-dark);
   transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(255, 70, 85, 0.3);
+  box-shadow: 0 6px 20px rgba(255, 70, 85, 0.3);
 }
 
 .heroButton svg {
   transition: transform 0.3s ease;
+  font-size: 1.3rem;
 }
 
 .heroButton:hover svg {
-  transform: translateX(4px);
+  transform: translateX(6px);
 }
 
 .heroButtons {
@@ -388,13 +394,14 @@ input:-webkit-autofill:focus {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 2rem;
+  margin-bottom: 2.5rem;
 }
 
 .sectionTitle {
-  font-size: 2rem;
+  font-size: 2.25rem;
   font-weight: 700;
   position: relative;
+  color: var(--main-light);
 }
 
 .sectionTitle::after {
@@ -402,29 +409,39 @@ input:-webkit-autofill:focus {
   position: absolute;
   bottom: -0.75rem;
   left: 0;
-  width: 3.5rem;
+  width: 4rem;
   height: 0.25rem;
   background: var(--main-primary);
   border-radius: 0.25rem;
 }
 
+.sectionActions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
 .viewAll {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   gap: 0.5rem;
-  color: var(--main-primary);
-  font-weight: 500;
-  transition: gap 0.3s ease;
-  background: none;
-  border: none;
-  padding: 0;
-  cursor: pointer;
+  padding: 0.75rem 1.5rem;
+  background: var(--main-secondary);
+  color: var(--main-accent);
+  border: 1px solid var(--main-border);
+  border-radius: 0.75rem;
   font-size: 1rem;
-  font-family: inherit;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.3s ease;
 }
 
 .viewAll:hover {
-  gap: 1rem;
+  background: var(--main-primary);
+  color: white;
+  border-color: var(--main-primary);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 70, 85, 0.2);
 }
 
 .viewAll svg {
@@ -438,34 +455,29 @@ input:-webkit-autofill:focus {
 /* Карточки */
 .disciplinesGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 2rem;
+  margin: 2rem auto 0;
+  max-width: 1400px;
+  justify-content: center;
 }
 
 .disciplineCard {
   background: var(--main-dark);
-  border-radius: 1rem;
+  border-radius: 1.25rem;
   overflow: hidden;
-  transition: all 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
-  height: 400px;
+  height: 320px;
+  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
 
 .disciplineCard:hover {
-  transform: translateY(-0.5rem);
-  box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.2);
-}
-
-.disciplineCard::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(to top, var(--card-bg), transparent);
-  opacity: 0.7;
-  z-index: 1;
+  transform: translateY(-8px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+  border-color: var(--main-primary);
 }
 
 .cardImageContainer {
@@ -474,10 +486,31 @@ input:-webkit-autofill:focus {
   height: 100%;
 }
 
+.cardImageContainer::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(0, 0, 0, 0.2) 50%,
+    rgba(0, 0, 0, 0.8) 100%
+  );
+  z-index: 1;
+}
+
 .cardImage {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.disciplineCard:hover .cardImage {
+  transform: scale(1.1);
 }
 
 .cardContent {
@@ -487,18 +520,80 @@ input:-webkit-autofill:focus {
   width: 100%;
   padding: 2rem;
   z-index: 2;
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.9) 0%,
+    rgba(0, 0, 0, 0.7) 50%,
+    transparent 100%
+  );
 }
 
 .cardTitle {
   font-size: 1.75rem;
   font-weight: 700;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.75rem;
   color: var(--main-light);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  transition: color 0.3s ease;
+}
+
+.disciplineCard:hover .cardTitle {
+  color: var(--main-primary);
 }
 
 .cardMeta {
-  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 0.95rem;
   color: rgba(255, 255, 255, 0.8);
+}
+
+.cardMeta span {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.cardMeta svg {
+  font-size: 1.1rem;
+  color: var(--main-primary);
+}
+
+.developmentBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.8rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 1rem;
+  font-size: 0.85rem;
+  color: var(--main-accent);
+  backdrop-filter: blur(4px);
+}
+
+.developmentBadge::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  background: #FFD700;
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 /* Новости */
@@ -996,23 +1091,55 @@ input:-webkit-autofill:focus {
   }
 
   .hero {
-    height: 400px;
+    height: 450px;
+    margin: 4rem 0 2rem;
+    border-radius: 1rem;
   }
   
   .heroContent {
     padding: 2rem;
   }
   
-  .hero h1 {
+  .heroContent h1 {
     font-size: 2.5rem;
   }
   
   .heroContent p {
     font-size: 1.1rem;
+    margin-bottom: 2rem;
   }
 
   .heroButton {
-    width: 100%;
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+  }
+
+  .disciplinesGrid {
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.5rem;
+    max-width: 1200px;
+  }
+  
+  .disciplineCard {
+    height: 300px;
+  }
+  
+  .cardContent {
+    padding: 1.5rem;
+  }
+  
+  .cardTitle {
+    font-size: 1.5rem;
+  }
+
+  .sectionActions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+  }
+
+  .viewAll {
+    text-align: center;
     justify-content: center;
   }
 }
@@ -1058,9 +1185,11 @@ input:-webkit-autofill:focus {
     padding: 0 1rem;
   }
   
-  .disciplinesGrid,
-  .newsGrid {
-    grid-template-columns: 1fr;
+  .disciplinesGrid {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 400px));
+    gap: 1.5rem;
+    max-width: 600px;
+    margin: 2rem auto 0;
   }
   
   .newsCard {
@@ -1112,7 +1241,8 @@ input:-webkit-autofill:focus {
 
 @media (max-width: 480px) {
   .hero {
-    height: 350px;
+    height: 400px;
+    margin: 3rem 0 1.5rem;
   }
   
   .heroContent {
@@ -1142,35 +1272,44 @@ input:-webkit-autofill:focus {
   .footerLogo img {
     width: 140px;
   }
-}
 
-.sectionActions {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
+  .heroButton {
+    width: 100%;
+    justify-content: center;
+    padding: 0.9rem 1.5rem;
+    font-size: 1rem;
+  }
+
+  .disciplinesGrid {
+    grid-template-columns: 1fr;
+    max-width: 400px;
+    gap: 1.25rem;
+  }
 }
 
 .addNewsButton {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.5rem 1rem;
+  padding: 0.75rem 1.5rem;
   background: var(--main-primary);
   color: white;
   border: none;
-  border-radius: 0.5rem;
-  font-size: 0.9rem;
+  border-radius: 0.75rem;
+  font-size: 1rem;
   font-weight: 500;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: all 0.3s ease;
 }
 
 .addNewsButton:hover {
   background: var(--main-primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 70, 85, 0.2);
 }
 
 .addNewsButton svg {
-  font-size: 1.1rem;
+  font-size: 1.2rem;
 }
 
 .modalOverlay {
@@ -1186,6 +1325,7 @@ input:-webkit-autofill:focus {
   z-index: 1000;
   backdrop-filter: blur(8px);
   animation: fadeIn 0.3s ease;
+  padding: 1rem;
 }
 
 @keyframes fadeIn {
@@ -1202,7 +1342,9 @@ input:-webkit-autofill:focus {
   padding: 2.5rem;
   border-radius: 1.5rem;
   width: 100%;
-  max-width: 400px;
+  max-width: 1200px;
+  max-height: 90vh;
+  overflow-y: auto;
   position: relative;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
   border: 1px solid rgba(255, 70, 85, 0.1);
@@ -1222,12 +1364,12 @@ input:-webkit-autofill:focus {
 
 .modal h2 {
   color: var(--main-light);
-  margin-bottom: 1.5rem;
-  font-size: 1.75rem;
+  margin-bottom: 2rem;
+  font-size: 2rem;
   font-weight: 700;
   text-align: center;
   position: relative;
-  padding-bottom: 0.75rem;
+  padding-bottom: 1rem;
 }
 
 .modal h2::after {
@@ -1236,7 +1378,7 @@ input:-webkit-autofill:focus {
   bottom: 0;
   left: 50%;
   transform: translateX(-50%);
-  width: 80px;
+  width: 100px;
   height: 3px;
   background: var(--main-primary);
   border-radius: 3px;
@@ -1259,6 +1401,7 @@ input:-webkit-autofill:focus {
   justify-content: center;
   width: 3rem;
   height: 3rem;
+  z-index: 2;
 }
 
 .closeButton:hover {
@@ -1402,7 +1545,7 @@ input:-webkit-autofill:focus {
   
   .modal {
     padding: 1.5rem;
-    border-radius: 1rem;
+    max-height: 95vh;
   }
 }
 
@@ -1521,4 +1664,259 @@ input:-webkit-autofill:focus {
 .confirmButton:hover {
   background: var(--main-primary-dark);
   box-shadow: 0 0 15px rgba(255, 70, 85, 0.3);
+}
+
+.inputHint {
+  display: block;
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--main-gray);
+}
+
+.inputGroup {
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+.inputIcon {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--main-gray);
+  font-size: 1.2rem;
+}
+
+.inputGroup input {
+  width: 100%;
+  padding: 0.75rem 1rem 0.75rem 2.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  background: var(--main-dark);
+  color: var(--main-accent);
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.inputGroup input:focus {
+  outline: none;
+  border-color: var(--main-primary);
+  box-shadow: 0 0 0 2px rgba(255, 70, 85, 0.2);
+}
+
+.passwordToggle {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--main-gray);
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.3s ease;
+}
+
+.passwordToggle:hover {
+  color: var(--main-accent);
+}
+
+.passwordToggle:focus {
+  outline: none;
+}
+
+.modalDisciplines {
+  margin-top: 2rem;
+}
+
+.disciplinesSection {
+  margin-bottom: 3rem;
+}
+
+.disciplinesSection:last-child {
+  margin-bottom: 0;
+}
+
+.sectionSubtitle {
+  font-size: 1.5rem;
+  color: var(--main-accent);
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+}
+
+.modalDisciplinesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.modalDisciplineCard {
+  background: var(--main-dark);
+  border-radius: 1rem;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  position: relative;
+  height: 200px;
+  cursor: pointer;
+  text-decoration: none;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.modalDisciplineCard:hover {
+  transform: translateY(-0.25rem);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  border-color: var(--main-primary);
+}
+
+.modalCardImageContainer {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.modalCardImageContainer img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s ease;
+}
+
+.modalDisciplineCard:hover .modalCardImageContainer img {
+  transform: scale(1.1);
+}
+
+.modalCardContent {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 1.5rem;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent);
+  z-index: 2;
+}
+
+.modalCardContent h4 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: var(--main-light);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.modalCardContent span {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.developmentCard {
+  cursor: default;
+  opacity: 0.8;
+}
+
+.developmentCard:hover {
+  transform: none;
+  box-shadow: none;
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.developmentOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+.developmentBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 1rem;
+  font-size: 0.9rem;
+  color: var(--main-accent);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.developmentBadge::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  background: #FFD700;
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@media (max-width: 768px) {
+  .modal {
+    padding: 1.5rem;
+    max-height: 95vh;
+  }
+
+  .modal h2 {
+    font-size: 1.75rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .modalDisciplinesGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .modalDisciplineCard {
+    height: 180px;
+  }
+  
+  .modalCardContent {
+    padding: 1.25rem;
+  }
+  
+  .modalCardContent h4 {
+    font-size: 1.1rem;
+  }
+
+  .sectionSubtitle {
+    font-size: 1.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .modal {
+    padding: 1.25rem;
+  }
+
+  .modal h2 {
+    font-size: 1.5rem;
+  }
+
+  .closeButton {
+    top: 1rem;
+    right: 1rem;
+    width: 2.5rem;
+    height: 2.5rem;
+  }
 }

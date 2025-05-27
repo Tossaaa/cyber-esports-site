@@ -215,29 +215,47 @@
   gap: 1rem;
 }
 
+.userAvatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: var(--main-dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background-size: cover;
+  background-position: center;
+  border: 2px solid var(--main-primary);
+  transition: all 0.3s ease;
+}
+
+.userAvatar svg {
+  width: 24px;
+  height: 24px;
+  color: var(--main-primary);
+}
+
 .userInfo {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.75rem;
   padding: 0.5rem 1rem;
   background: rgba(255, 255, 255, 0.05);
   border-radius: 2rem;
   transition: all 0.3s ease;
+  text-decoration: none;
 }
 
 .userInfo:hover {
   background: rgba(255, 255, 255, 0.1);
-}
-
-.userIcon {
-  color: var(--main-primary);
-  font-size: 1.1rem;
+  transform: translateY(-1px);
 }
 
 .userDetails {
   display: flex;
   flex-direction: column;
-  gap: 0.2rem;
+  gap: 0.25rem;
 }
 
 .userName {
@@ -249,27 +267,29 @@
 .userRole {
   color: var(--main-gray);
   font-size: 0.8rem;
-  text-transform: capitalize;
 }
 
 .logoutButton {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 1rem;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
   background: rgba(255, 70, 85, 0.1);
-  border: 1px solid rgba(255, 70, 85, 0.2);
+  border: 2px solid var(--main-primary);
   color: var(--main-primary);
-  border-radius: 2rem;
-  font-size: 0.95rem;
-  font-weight: 500;
+  border-radius: 50%;
+  font-size: 1.1rem;
   cursor: pointer;
   transition: all 0.3s ease;
+  padding: 0;
 }
 
 .logoutButton:hover {
-  background: rgba(255, 70, 85, 0.2);
+  background: var(--main-primary);
+  color: var(--main-light);
   transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(255, 70, 85, 0.2);
 }
 
 .logoutButton svg {
@@ -365,16 +385,17 @@
   }
 
   .userMenu {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 0.5rem;
+    flex-direction: row;
+    align-items: center;
+    gap: 1rem;
   }
 
   .userInfo {
-    justify-content: center;
+    flex: 1;
   }
 
   .logoutButton {
-    justify-content: center;
+    width: 36px;
+    height: 36px;
   }
 } 

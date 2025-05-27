@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from '../styles/MainPage.module.css';
+import styles from '../styles/ConfirmModal.module.css';
 import { FiX } from 'react-icons/fi';
 
 const ConfirmModal = ({ isOpen, onClose, onConfirm, title, message }) => {

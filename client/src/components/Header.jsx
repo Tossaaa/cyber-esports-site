@@ -127,16 +127,24 @@ const Header = ({ onLoginClick, onRegisterClick }) => {
 
             {user ? (
               <div className={styles.userMenu}>
-                <div className={styles.userInfo}>
-                  <FiUser className={styles.userIcon} />
+                <Link to="/profile" className={styles.userInfo}>
+                  <div 
+                    className={styles.userAvatar}
+                    style={{
+                      backgroundImage: localStorage.getItem(`avatar_${user.id}`) 
+                        ? `url(${localStorage.getItem(`avatar_${user.id}`)})`
+                        : 'none'
+                    }}
+                  >
+                    {!localStorage.getItem(`avatar_${user.id}`) && <FiUser />}
+                  </div>
                   <div className={styles.userDetails}>
                     <span className={styles.userName}>{user.username}</span>
                     <span className={styles.userRole}>{user.role === 'admin' ? 'Администратор' : 'Пользователь'}</span>
                   </div>
-                </div>
-                <button className={styles.logoutButton} onClick={handleLogoutClick}>
+                </Link>
+                <button className={styles.logoutButton} onClick={handleLogoutClick} title="Выйти">
                   <FiLogOut />
-                  <span>Выйти</span>
                 </button>
               </div>
             ) : (

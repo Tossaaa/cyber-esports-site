@@ -3,7 +3,7 @@ const bcrypt = require('bcryptjs');
 
 class UserService {
     // Регистрация пользователя
-    register(username, password) {
+    register(username, email, password) {
         return new Promise((resolve, reject) => {
             // Хешируем пароль
             bcrypt.hash(password, 10, (err, hashedPassword) => {
@@ -24,18 +24,22 @@ class UserService {
 
                     // Сохраняем пользователя в базу данных
                     db.run(
-                        'INSERT INTO users (username, password, role) VALUES (?, ?, ?)',
-                        [username, hashedPassword, role],
+                        'INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, ?)',
+                        [username, email, hashedPassword, role],
                         function(err) {
                             if (err) {
                                 if (err.message.includes('UNIQUE constraint failed')) {
-                                    reject(new Error('Пользователь с таким именем уже существует'));
+                                    if (err.message.includes('users.email')) {
+                                        reject(new Error('Пользователь с таким email уже существует'));
+                                    } else {
+                                        reject(new Error('Пользователь с таким именем уже существует'));
+                                    }
                                 } else {
                                     reject(err);
                                 }
                                 return;
                             }
-                            resolve({ id: this.lastID, username, role });
+                            resolve({ id: this.lastID, username, email, role });
                         }
                     );
                 });
@@ -46,37 +50,40 @@ class UserService {
     // Вход пользователя
     login(username, password) {
         return new Promise((resolve, reject) => {
-            db.get(
-                'SELECT * FROM users WHERE username = ?',
-                [username],
-                (err, user) => {
+            // Проверяем, является ли username email'ом
+            const isEmail = username.includes('@');
+            const query = isEmail 
+                ? 'SELECT * FROM users WHERE email = ?'
+                : 'SELECT * FROM users WHERE username = ?';
+
+            db.get(query, [username], (err, user) => {
+                if (err) {
+                    reject(err);
+                    return;
+                }
+                if (!user) {
+                    reject(new Error('Пользователь не найден'));
+                    return;
+                }
+
+                // Проверяем пароль
+                bcrypt.compare(password, user.password, (err, isMatch) => {
                     if (err) {
                         reject(err);
                         return;
                     }
-                    if (!user) {
-                        reject(new Error('Пользователь не найден'));
+                    if (!isMatch) {
+                        reject(new Error('Неверный пароль'));
                         return;
                     }
-
-                    // Проверяем пароль
-                    bcrypt.compare(password, user.password, (err, isMatch) => {
-                        if (err) {
-                            reject(err);
-                            return;
-                        }
-                        if (!isMatch) {
-                            reject(new Error('Неверный пароль'));
-                            return;
-                        }
-                        resolve({ 
-                            id: user.id, 
-                            username: user.username,
-                            role: user.role || 'user'
-                        });
+                    resolve({ 
+                        id: user.id, 
+                        username: user.username,
+                        email: user.email,
+                        role: user.role || 'user'
                     });
-                }
-            );
+                });
+            });
         });
     }
 
@@ -84,7 +91,7 @@ class UserService {
     getUserById(id) {
         return new Promise((resolve, reject) => {
             db.get(
-                'SELECT id, username, role FROM users WHERE id = ?',
+                'SELECT id, username, email, role FROM users WHERE id = ?',
                 [id],
                 (err, user) => {
                     if (err) {

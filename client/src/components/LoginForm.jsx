@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import styles from '../styles/MainPage.module.css';
-import { FiX, FiMail, FiLock } from 'react-icons/fi';
+import { useNavigate } from 'react-router-dom';
+import styles from '../styles/AuthModal.module.css';
+import { FiX, FiLock, FiUser, FiEye, FiEyeOff } from 'react-icons/fi';
 import { authAPI } from '../api/auth';
 
 const LoginForm = ({ onClose, onSwitchToRegister, onLoginSuccess }) => {
@@ -10,6 +11,8 @@ const LoginForm = ({ onClose, onSwitchToRegister, onLoginSuccess }) => {
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -25,29 +28,15 @@ const LoginForm = ({ onClose, onSwitchToRegister, onLoginSuccess }) => {
     setLoading(true);
 
     try {
-      const response = await fetch('http://localhost:5001/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ username: formData.username, password: formData.password }),
-        credentials: 'include',
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Ошибка при входе');
+      const response = await authAPI.login(formData);
+      if (response.success) {
+        onLoginSuccess(response.user, response.token);
+        onClose();
+      } else {
+        setError(response.message || 'Ошибка при входе');
       }
-
-      // Сохраняем данные пользователя и токен
-      localStorage.setItem('user', JSON.stringify(data.user));
-      localStorage.setItem('token', data.token);
-
-      onLoginSuccess(data.user);
-      onClose();
     } catch (err) {
-      setError(err.message);
+      setError(err.message || 'Произошла ошибка при входе');
     } finally {
       setLoading(false);
     }
@@ -59,54 +48,67 @@ const LoginForm = ({ onClose, onSwitchToRegister, onLoginSuccess }) => {
         <button className={styles.closeButton} onClick={onClose}>
           <FiX />
         </button>
-        
-        <h2>Вход в аккаунт</h2>
-        
+
+        <div className={styles.modalHeader}>
+          <h2 className={styles.modalTitle}>Вход в аккаунт</h2>
+          <p className={styles.modalSubtitle}>Войдите, чтобы получить доступ к своему аккаунту</p>
+        </div>
+
         {error && <div className={styles.errorMessage}>{error}</div>}
-        
+
         <form onSubmit={handleSubmit}>
           <div className={styles.formGroup}>
-            <label htmlFor="username">Имя пользователя</label>
+            <label>Email или имя пользователя</label>
             <div className={styles.inputWrapper}>
-              <FiMail className={styles.inputIcon} />
+              <FiUser className={styles.inputIcon} />
               <input
                 type="text"
-                id="username"
                 name="username"
                 value={formData.username}
                 onChange={handleChange}
-                placeholder="Введите имя пользователя"
                 required
-                disabled={loading}
+                placeholder="Введите email или имя пользователя"
               />
             </div>
           </div>
 
           <div className={styles.formGroup}>
-            <label htmlFor="password">Пароль</label>
+            <label>Пароль</label>
             <div className={styles.inputWrapper}>
               <FiLock className={styles.inputIcon} />
               <input
-                type="password"
-                id="password"
+                type={showPassword ? "text" : "password"}
                 name="password"
                 value={formData.password}
                 onChange={handleChange}
-                placeholder="Введите пароль"
                 required
-                disabled={loading}
+                placeholder="Введите пароль"
               />
+              <button
+                type="button"
+                className={styles.passwordToggle}
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? <FiEyeOff /> : <FiEye />}
+              </button>
             </div>
           </div>
 
-          <button type="submit" className={styles.submitButton} disabled={loading}>
+          <button
+            type="submit"
+            className={styles.submitButton}
+            disabled={loading}
+          >
             {loading ? 'Вход...' : 'Войти'}
           </button>
         </form>
 
         <div className={styles.modalSwitch}>
-          <p>Нет аккаунта?</p>
-          <button onClick={onSwitchToRegister} className={styles.linkButton}>
+          Нет аккаунта?{' '}
+          <button
+            className={styles.linkButton}
+            onClick={onSwitchToRegister}
+          >
             Зарегистрироваться
           </button>
         </div>

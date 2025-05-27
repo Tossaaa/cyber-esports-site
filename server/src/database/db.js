@@ -24,6 +24,7 @@ const db = new sqlite3.Database(dbPath, (err) => {
         CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             username TEXT UNIQUE NOT NULL,
+            email TEXT UNIQUE NOT NULL,
             password TEXT NOT NULL,
             role TEXT DEFAULT 'user',
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP
@@ -51,10 +52,83 @@ const db = new sqlite3.Database(dbPath, (err) => {
         )
     `, (err) => {
         if (err) {
-            console.error('Error creating news table:', err);
+            console.error('Ошибка при создании таблицы новостей:', err);
         } else {
-            console.log('News table created or already exists');
+            console.log('Таблица новостей создана или уже существует');
         }
+    });
+
+    // Создаем таблицу команд
+    db.run(`
+        CREATE TABLE IF NOT EXISTS teams (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
+            description TEXT,
+            logo_url TEXT,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        )
+    `, (err) => {
+        if (err) {
+            console.error('Error creating teams table:', err);
+        } else {
+            console.log('Teams table created or already exists');
+        }
+    });
+
+    // Создаем таблицу турниров
+    db.run(`
+        CREATE TABLE IF NOT EXISTS tournaments (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            title TEXT NOT NULL,
+            description TEXT,
+            start_date DATETIME,
+            end_date DATETIME,
+            prize_pool TEXT,
+            status TEXT DEFAULT 'upcoming',
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        )
+    `, (err) => {
+        if (err) {
+            console.error('Error creating tournaments table:', err);
+        } else {
+            console.log('Tournaments table created or already exists');
+        }
+    });
+
+    // Создаем таблицу игроков
+    db.run(`
+        CREATE TABLE IF NOT EXISTS players (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            nickname TEXT NOT NULL,
+            real_name TEXT,
+            team_id INTEGER,
+            role TEXT,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (team_id) REFERENCES teams(id)
+        )
+    `, (err) => {
+        if (err) {
+            console.error('Error creating players table:', err);
+        } else {
+            console.log('Players table created or already exists');
+        }
+    });
+});
+
+// Обработка ошибок базы данных
+db.on('error', (err) => {
+    console.error('Database error:', err);
+});
+
+// Закрытие соединения при завершении работы приложения
+process.on('SIGINT', () => {
+    db.close((err) => {
+        if (err) {
+            console.error('Error closing database:', err);
+        } else {
+            console.log('Database connection closed');
+        }
+        process.exit(0);
     });
 });
 
