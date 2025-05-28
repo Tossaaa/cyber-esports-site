@@ -7,8 +7,6 @@ import ConfirmModal from "../components/ConfirmModal";
 import ChangePasswordForm from '../components/ChangePasswordForm';
 import ChangeEmailForm from '../components/ChangeEmailForm';
 import ChangeNameForm from '../components/ChangeNameForm';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
 
 const ProfilePage = () => {
   const [user, setUser] = useState(null);
@@ -140,7 +138,6 @@ const ProfilePage = () => {
 
   return (
     <div className={styles.wrapper}>
-      <Header />
       <div className={styles.container}>
         <div className={styles.profileSection}>
           <h1 className={styles.pageTitle}>Профиль</h1>
@@ -230,7 +227,6 @@ const ProfilePage = () => {
           </div>
         </div>
       </div>
-      <Footer />
 
       <ConfirmModal
         isOpen={showDeleteConfirm}

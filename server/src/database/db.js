@@ -46,6 +46,7 @@ const db = new sqlite3.Database(dbPath, (err) => {
             content TEXT,
             image_url TEXT,
             author_id INTEGER,
+            game_tag TEXT,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (author_id) REFERENCES users(id)
@@ -111,6 +112,30 @@ const db = new sqlite3.Database(dbPath, (err) => {
             console.error('Error creating players table:', err);
         } else {
             console.log('Players table created or already exists');
+        }
+    });
+
+    // Создаем таблицу игрока месяца
+    db.run(`
+        CREATE TABLE IF NOT EXISTS player_of_month (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
+            team TEXT NOT NULL,
+            role TEXT NOT NULL,
+            image TEXT NOT NULL,
+            kills INTEGER NOT NULL,
+            headshots INTEGER NOT NULL,
+            rating REAL NOT NULL,
+            mvp INTEGER NOT NULL,
+            game TEXT NOT NULL,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        )
+    `, (err) => {
+        if (err) {
+            console.error('Error creating player_of_month table:', err);
+        } else {
+            console.log('Player of month table created or already exists');
         }
     });
 });

@@ -364,3 +364,223 @@
     font-size: 0.95rem;
   }
 } 
+
+.newsGameTag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 6px;
+  background: rgba(255, 70, 85, 0.1);
+  border: 1px solid rgba(255, 70, 85, 0.2);
+  border-radius: 4px;
+  font-size: 12px;
+  color: var(--main-primary);
+  margin-left: 8px;
+  transition: all 0.3s ease;
+}
+
+.newsGameTag:hover {
+  background: rgba(255, 70, 85, 0.2);
+  transform: translateY(-1px);
+}
+
+.newsGameTag svg {
+  width: 12px;
+  height: 12px;
+  color: var(--main-primary);
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.filterContainer {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.filterIcon {
+  position: absolute;
+  left: 1rem;
+  color: var(--main-accent);
+  font-size: 1.1rem;
+  pointer-events: none;
+  transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.filterContainer:hover .filterIcon {
+  color: var(--main-primary);
+}
+
+.filterContainer:focus-within .filterIcon {
+  transform: rotate(180deg);
+  color: var(--main-primary);
+}
+
+.tagFilter {
+  padding: 0.75rem 1rem 0.75rem 2.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.5rem;
+  color: var(--main-light);
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 1em;
+  min-width: 200px;
+  transform-origin: top;
+}
+
+.tagFilterDefault {
+  border-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.tagFilterDefault:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+.tagFilterDefault:focus {
+  border-color: var(--main-primary);
+  background-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0 0 3px rgba(255, 70, 85, 0.1);
+}
+
+.tagFilter:not(.tagFilterDefault) {
+  border-color: var(--main-primary);
+  background-color: rgba(255, 70, 85, 0.05);
+  color: var(--main-primary);
+}
+
+.tagFilter:not(.tagFilterDefault):hover {
+  background-color: rgba(255, 70, 85, 0.08);
+  border-color: var(--main-primary);
+}
+
+.tagFilter:not(.tagFilterDefault):focus {
+  background-color: rgba(255, 70, 85, 0.08);
+  box-shadow: 0 0 0 3px rgba(255, 70, 85, 0.15);
+}
+
+.tagFilter option {
+  background-color: var(--main-secondary);
+  color: var(--main-light);
+  padding: 0.75rem;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+}
+
+.tagFilter option:hover {
+  background-color: rgba(255, 70, 85, 0.1);
+  color: var(--main-primary);
+}
+
+/* Анимация для опций в выпадающем списке */
+.tagFilter option {
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media (max-width: 768px) {
+  .headerActions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+  }
+
+  .tagFilter {
+    width: 100%;
+  }
+}
+
+.modalOverlay {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  background: rgba(15, 25, 35, 0.95) !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  z-index: 1000 !important;
+  backdrop-filter: blur(8px) !important;
+  padding: 1rem !important;
+}
+
+.modal {
+  background: var(--main-dark) !important;
+  padding: 2.5rem !important;
+  border-radius: 1.5rem !important;
+  width: 100% !important;
+  max-width: 1200px !important;
+  height: auto !important;
+  max-height: 80vh !important;
+  overflow-y: auto !important;
+  position: relative !important;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5) !important;
+  border: 1px solid rgba(255, 70, 85, 0.1) !important;
+}
+
+/* Стилизация скроллбара */
+.modal::-webkit-scrollbar {
+  width: 10px !important;
+}
+
+.modal::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border-radius: 8px !important;
+  margin: 4px !important;
+}
+
+.modal::-webkit-scrollbar-thumb {
+  background: var(--main-primary) !important;
+  border-radius: 8px !important;
+  border: 2px solid var(--main-dark) !important;
+  transition: all 0.3s ease !important;
+}
+
+.modal::-webkit-scrollbar-thumb:hover {
+  background: var(--main-primary-dark) !important;
+  border: 1px solid var(--main-dark) !important;
+}
+
+/* Firefox */
+.modal {
+  scrollbar-width: thin !important;
+  scrollbar-color: var(--main-primary) rgba(255, 255, 255, 0.05) !important;
+}
+
+@media (max-width: 768px) {
+  .modalOverlay {
+    padding: 1rem !important;
+  }
+  
+  .modal {
+    padding: 1.5rem !important;
+    max-height: 85vh !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .modal {
+    padding: 1.25rem !important;
+    max-height: 90vh !important;
+  }
+} 

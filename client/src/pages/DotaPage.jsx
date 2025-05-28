@@ -1,8 +1,6 @@
 import React from 'react';
 import styles from '../styles/DotaPage.module.css';
 import { FiCalendar, FiAward, FiUsers } from 'react-icons/fi';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
 
 const DotaPage = () => {
   // Данные турниров
@@ -51,8 +49,6 @@ const DotaPage = () => {
 
   return (
     <div className={styles.wrapper}>
-      <Header />
-      
       {/* Основной контент */}
       <div className={styles.container}>
         {/* Баннер дисциплины */}
@@ -140,8 +136,6 @@ const DotaPage = () => {
           </div>
         </section>
       </div>
-
-      <Footer />
     </div>
   );
 };

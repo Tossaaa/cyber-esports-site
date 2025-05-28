@@ -15,15 +15,15 @@ import {
   FiInstagram,
   FiYoutube,
   FiArrowUp,
-  FiTrash2
+  FiTrash2,
+  FiCalendar,
+  FiTag
 } from "react-icons/fi";
 import AddNewsForm from "../components/AddNewsForm";
 import NewsModal from "../components/NewsModal";
 import LoginForm from '../components/LoginForm.jsx';
 import RegisterForm from '../components/RegisterForm';
 import DisciplinesModal from '../components/DisciplinesModal';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
 
 const disciplines = [
   { id: "cs2", name: "CS2", image: "/images/cs2.jpg", bgColor: "#2a475e", status: "active" },
@@ -48,6 +48,17 @@ const initialNews = [
     date: "Вчера"
   },
 ];
+
+const gameTags = {
+  cs2: 'CS2',
+  dota: 'Dota 2',
+  valorant: 'Valorant',
+  pubg: 'PUBG',
+  lol: 'League of Legends',
+  fortnite: 'Fortnite',
+  apex: 'Apex Legends',
+  overwatch: 'Overwatch 2'
+};
 
 const MainPage = () => {
   const [searchFocused, setSearchFocused] = useState(false);
@@ -149,13 +160,8 @@ const MainPage = () => {
 
   const handleAddNews = async (newNews) => {
     try {
-      // После успешного добавления загружаем свежий список новостей
-      const newsResponse = await fetch('http://localhost:5001/api/news');
-      if (!newsResponse.ok) {
-        throw new Error('Ошибка при загрузке новостей');
-      }
-      const newsData = await newsResponse.json();
-      setNews(newsData);
+      // Обновляем список новостей с полученными данными
+      setNews(prev => [newNews, ...prev]);
       setShowAddNewsForm(false);
     } catch (err) {
       setError(err.message);
@@ -233,11 +239,6 @@ const MainPage = () => {
 
   return (
     <div className={styles.wrapper}>
-      <Header 
-        onLoginClick={() => setShowLoginForm(true)}
-        onRegisterClick={() => setShowRegisterForm(true)}
-      />
-
       {/* Основной контент */}
       <div className={styles.container}>
         {/* Герой-секция */}
@@ -360,8 +361,6 @@ const MainPage = () => {
           )}
         </section>
       </div>
-
-      <Footer />
 
       {/* Модальные окна */}
       {showAddNewsForm && (

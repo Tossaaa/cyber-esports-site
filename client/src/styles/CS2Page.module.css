@@ -9,6 +9,9 @@
   --cs-light: #ffffff;
   --cs-gray: #768079;
   --cs-border: rgba(255, 70, 85, 0.2);
+  --cs-success: #4CAF50;
+  --cs-warning: #FFC107;
+  --cs-info: #2196F3;
 }
 
 /* Базовые стили */
@@ -24,94 +27,31 @@
 
 .container {
   width: 100%;
-  max-width: 1400px;
+  max-width: 1600px;
   margin: 0 auto;
   padding: 0 2rem;
-  margin-top: 5rem; /* Добавляем отступ для фиксированного хедера */
-}
-
-/* Хедер */
-.header {
-  background: var(--cs-secondary);
-  padding: 1.5rem 0;
-  border-bottom: 1px solid var(--cs-border);
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-}
-
-.headerContent {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 2rem;
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 0 3rem;
-}
-
-.backButton {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.75rem 1.75rem;
-  border-radius: 30px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid var(--cs-border);
-  color: var(--cs-accent);
-  font-weight: 600;
-  transition: all 0.3s ease;
-  margin-left: 1rem;
-}
-
-.backButton:hover {
-  background: rgba(255, 70, 85, 0.15);
-  transform: translateY(-2px);
-}
-
-.backIcon {
-  font-size: 1.25rem;
-  color: var(--cs-primary);
-}
-
-.titleContainer {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-grow: 1;
-  padding: 0 2rem;
-}
-
-.gameLogo {
-  height: 3rem;
-  filter: drop-shadow(0 0 10px rgba(255, 70, 85, 0.3));
-}
-
-.title {
-  font-size: 2.5rem;
-  font-weight: 800;
-  letter-spacing: 0.5px;
-  background: linear-gradient(to right, var(--cs-primary), var(--cs-primary-dark));
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  margin: 0;
-  text-align: center;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-  padding: 0.5rem 0;
+  margin-top: 5rem;
 }
 
 /* Баннер */
 .banner {
   position: relative;
-  height: 28rem;
+  height: 32rem;
   margin: 3rem 0;
-  border-radius: 0.75rem;
+  border-radius: 1rem;
   overflow: hidden;
   background: linear-gradient(rgba(15, 25, 35, 0.85), rgba(15, 25, 35, 0.9)), 
               url('/public/images/cs2-banner.jpg') center/cover no-repeat;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.bannerOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, rgba(255, 70, 85, 0.1), transparent);
 }
 
 .bannerContent {
@@ -119,19 +59,21 @@
   bottom: 0;
   left: 0;
   right: 0;
-  padding: 3rem;
+  padding: 4rem;
   background: linear-gradient(0deg, var(--cs-secondary) 20%, transparent 100%);
 }
 
-.gameInfo h2 {
-  font-size: 2.5rem;
+.gameInfo h1 {
+  font-size: 3.5rem;
   margin-bottom: 1rem;
   color: var(--cs-light);
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  font-weight: 800;
+  letter-spacing: 0.5px;
 }
 
 .gameInfo p {
-  font-size: 1.15rem;
+  font-size: 1.25rem;
   max-width: 36rem;
   margin-bottom: 2rem;
   color: rgba(236, 232, 225, 0.9);
@@ -139,15 +81,86 @@
 
 .metaInfo {
   display: flex;
-  gap: 1.5rem;
+  gap: 2rem;
+  margin-bottom: 2rem;
 }
 
 .metaInfo span {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  font-size: 0.95rem;
+  font-size: 1rem;
   color: var(--cs-gray);
+}
+
+.bannerActions {
+  display: flex;
+  gap: 1rem;
+}
+
+.primaryButton, .secondaryButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.primaryButton {
+  background: var(--cs-primary);
+  color: var(--cs-light);
+  border: none;
+}
+
+.primaryButton:hover {
+  background: var(--cs-primary-dark);
+  transform: translateY(-2px);
+}
+
+.secondaryButton {
+  background: transparent;
+  color: var(--cs-light);
+  border: 2px solid var(--cs-primary);
+}
+
+.secondaryButton:hover {
+  background: rgba(255, 70, 85, 0.1);
+  transform: translateY(-2px);
+}
+
+/* Навигация по разделам */
+.tabs {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 3rem;
+  border-bottom: 1px solid var(--cs-border);
+  padding-bottom: 1rem;
+}
+
+.tab {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  background: transparent;
+  color: var(--cs-gray);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-radius: 0.5rem;
+}
+
+.tab:hover {
+  color: var(--cs-light);
+  background: rgba(255, 70, 85, 0.1);
+}
+
+.tab.active {
+  color: var(--cs-primary);
+  background: rgba(255, 70, 85, 0.1);
 }
 
 /* Секции */
@@ -156,7 +169,7 @@
 }
 
 .sectionTitle {
-  font-size: 1.75rem;
+  font-size: 2rem;
   margin-bottom: 2rem;
   color: var(--cs-light);
   position: relative;
@@ -168,135 +181,296 @@
   position: absolute;
   bottom: 0;
   left: 0;
-  width: 3.5rem;
+  width: 4rem;
   height: 0.25rem;
   background: var(--cs-primary);
   border-radius: 0.25rem;
 }
 
-/* Карточки турниров */
-.tournaments {
+/* Статистика */
+.statsGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(22rem, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 1.5rem;
-  position: relative;
+}
+
+.statCard {
+  background: var(--cs-dark);
+  padding: 1.5rem;
+  border-radius: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  transition: all 0.3s ease;
+  border: 1px solid var(--cs-border);
+}
+
+.statCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  border-color: var(--cs-primary);
+}
+
+.statIcon {
+  font-size: 2rem;
+  color: var(--cs-primary);
+  transition: all 0.3s ease;
+}
+
+.statCard:hover .statIcon {
+  transform: scale(1.1);
+}
+
+.statContent h3 {
+  font-size: 1rem;
+  color: var(--cs-gray);
+  margin-bottom: 0.5rem;
+}
+
+.statContent p {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--cs-light);
+}
+
+/* Предстоящие матчи */
+.matchesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.matchCard {
+  background: var(--cs-dark);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  border: 1px solid var(--cs-border);
+  transition: all 0.3s ease;
+}
+
+.matchCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  border-color: var(--cs-primary);
+}
+
+.matchHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.tournamentName {
+  font-size: 0.9rem;
+  color: var(--cs-gray);
+}
+
+.matchStatus {
+  background: var(--cs-success);
+  color: var(--cs-light);
+  padding: 0.25rem 0.75rem;
+  border-radius: 1rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.teamsContainer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+.team {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.team img {
+  width: 4rem;
+  height: 4rem;
+  object-fit: contain;
+}
+
+.team span {
+  font-size: 0.9rem;
+  color: var(--cs-light);
+}
+
+.vs {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--cs-primary);
+}
+
+.matchFooter {
+  display: flex;
+  justify-content: space-between;
+  color: var(--cs-gray);
+  font-size: 0.9rem;
+}
+
+.matchDate, .matchTime {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Турниры */
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.addButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: var(--cs-primary);
+  color: white;
+  border: none;
+  border-radius: 0.75rem;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.addButton:hover {
+  background: var(--cs-primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 70, 85, 0.2);
+}
+
+.addIcon {
+  font-size: 1.2rem;
+}
+
+.tournamentsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 2rem;
 }
 
 .tournamentCard {
   background: var(--cs-dark);
-  padding: 1.75rem;
-  border-radius: 0.75rem;
-  border-left: 0.25rem solid var(--cs-primary);
+  border-radius: 12px;
+  padding: 1.5rem;
   transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
-  min-height: 220px;
-}
-
-.tournamentCard.upcoming {
-  border-left-color: #4CAF50;
-}
-
-.tournamentCard::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(135deg, rgba(255, 70, 85, 0.05), transparent);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  border: 1px solid var(--cs-border);
 }
 
 .tournamentCard:hover {
-  transform: translateY(-0.5rem);
-  box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.2);
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  border-color: var(--cs-primary);
+}
+
+.tournamentHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.organizerLogo {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
+
+.tournamentStatus {
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  background: var(--cs-dark);
+  color: var(--cs-gray);
 }
 
 .tournamentCard h3 {
-  font-size: 1.25rem;
-  margin-bottom: 1rem;
+  font-size: 1.2rem;
+  font-weight: 600;
   color: var(--cs-light);
-  position: relative;
-  padding-right: 5rem;
-  min-height: 3.5rem;
+  margin: 0;
 }
 
 .tournamentMeta {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
-  margin-bottom: 1.5rem;
-  color: var(--cs-gray);
-  padding-right: 1rem;
 }
 
 .tournamentMeta span {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-}
-
-.status {
-  position: absolute;
-  top: 1.25rem;
-  right: 1.25rem;
-  background: var(--cs-primary);
-  color: white;
-  padding: 0.35rem 1rem;
-  border-radius: 2rem;
-  font-size: 0.8rem;
-  font-weight: 600;
-  max-width: 7rem;
-  text-align: center;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.upcomingStatus {
-  background: #4CAF50;
+  gap: 0.75rem;
+  color: var(--cs-gray);
+  font-size: 0.95rem;
 }
 
 .detailsLink {
-  display: inline-block;
-  margin-top: auto;
   color: var(--cs-primary);
-  font-weight: 600;
-  transition: color 0.2s ease;
   text-decoration: none;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.3s ease;
 }
 
 .detailsLink:hover {
   color: var(--cs-primary-dark);
-  text-decoration: underline;
+  gap: 0.75rem;
 }
 
-/* Таблица команд */
+/* Топ команд */
 .teamsTable {
   background: var(--cs-dark);
-  border-radius: 0.75rem;
+  border-radius: 1rem;
   overflow: hidden;
 }
 
 .tableHeader {
   display: grid;
-  grid-template-columns: 4rem 1fr 6rem;
-  padding: 1.25rem 1.5rem;
-  background: rgba(15, 25, 35, 0.5);
+  grid-template-columns: 0.5fr 2fr 1fr;
+  padding: 1rem 1.5rem;
+  background: rgba(255, 70, 85, 0.1);
+  color: var(--cs-light);
   font-weight: 600;
-  color: var(--cs-primary);
 }
 
 .teamRow {
   display: grid;
-  grid-template-columns: 4rem 1fr 6rem;
-  padding: 1.25rem 1.5rem;
-  border-bottom: 1px solid rgba(255, 70, 85, 0.1);
-  transition: background 0.2s ease;
+  grid-template-columns: 0.5fr 2fr 1fr;
+  padding: 1rem 1.5rem;
+  align-items: center;
+  border-bottom: 1px solid var(--cs-border);
+  transition: all 0.3s ease;
 }
 
 .teamRow:hover {
   background: rgba(255, 70, 85, 0.05);
+}
+
+.teamInfo {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.teamLogo {
+  width: 2rem;
+  height: 2rem;
+  object-fit: contain;
 }
 
 .rank {
@@ -305,299 +479,1138 @@
 }
 
 .teamName {
-  font-weight: 500;
+  color: var(--cs-light);
 }
 
 .points {
-  text-align: right;
-  font-family: 'Courier New', monospace;
+  color: var(--cs-gray);
   font-weight: 600;
 }
 
-/* Новостной блок */
-.newsGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 2rem;
-  margin-top: 1.5rem;
-}
-
-.newsCard {
-  background: var(--cs-dark);
-  border-radius: 0.75rem;
-  overflow: hidden;
-  transition: all 0.3s ease;
-  border: 1px solid var(--cs-border);
+/* Игрок месяца */
+.playerSpotlight {
+  background: linear-gradient(135deg, var(--cs-dark) 0%, var(--cs-secondary) 100%);
+  border-radius: 16px;
+  padding: 2.5rem;
+  display: flex;
+  gap: 3rem;
   position: relative;
+  overflow: hidden;
+  border: 1px solid var(--cs-border);
+  transition: all 0.3s ease;
+  min-height: 200px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
 
-.newsCard:hover {
+.playerSpotlight::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, rgba(255, 70, 85, 0.05) 0%, transparent 100%);
+  z-index: 0;
+}
+
+.playerSpotlight:hover {
   transform: translateY(-5px);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
   border-color: var(--cs-primary);
 }
 
-.newsCard img {
+.playerImage {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 4px solid var(--cs-primary);
+  transition: all 0.3s ease;
+  background: var(--cs-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 2;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.playerImage img {
   width: 100%;
-  height: 180px;
+  height: 100%;
   object-fit: cover;
-  border-bottom: 1px solid var(--cs-border);
+  transition: transform 0.3s ease;
 }
 
-.newsContent {
-  padding: 1.5rem;
+.playerImage.noImage {
+  background: linear-gradient(135deg, var(--cs-secondary) 0%, var(--cs-dark) 100%);
 }
 
-.newsContent h3 {
-  font-size: 1.25rem;
-  margin-bottom: 0.75rem;
-  color: var(--cs-light);
-  line-height: 1.4;
-}
-
-.newsContent p {
-  color: var(--cs-gray);
-  margin-bottom: 1rem;
-  font-size: 0.95rem;
-  line-height: 1.5;
-}
-
-.newsDate {
-  display: block;
-  font-size: 0.85rem;
+.playerImage.noImage svg {
   color: var(--cs-primary);
-  margin-top: 1rem;
+  opacity: 0.7;
+  transition: all 0.3s ease;
 }
 
-.newsCard::before {
+.playerSpotlight:hover .playerImage.noImage svg {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+.playerSpotlight:hover .playerImage img {
+  transform: scale(1.1);
+}
+
+.playerInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  z-index: 1;
+}
+
+.playerInfo h3 {
+  font-size: 2.5rem;
+  margin: 0 0 0.5rem 0;
+  color: var(--cs-light);
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  line-height: 1;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.playerTeam {
+  font-size: 1.2rem;
+  color: var(--cs-primary);
+  margin-bottom: 0.75rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  line-height: 1;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.playerRole {
+  font-size: 0.75rem;
+  color: var(--cs-primary);
+  margin-bottom: 2rem;
+  padding: 0.35rem 1rem;
+  background: rgba(255, 70, 85, 0.1);
+  border-radius: 20px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  border: 1px solid var(--cs-primary);
+  line-height: 1.2;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 600;
+  backdrop-filter: blur(4px);
+  position: relative;
+  overflow: hidden;
+  width: fit-content;
+  max-width: 100%;
+  white-space: nowrap;
+}
+
+.playerRole::before {
   content: '';
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, rgba(255, 70, 85, 0.03), transparent);
-  z-index: 0;
+  background: linear-gradient(45deg, transparent, rgba(255, 70, 85, 0.1), transparent);
+  transform: translateX(-100%);
+  transition: transform 0.6s ease;
+  pointer-events: none;
 }
 
-/* Статистика */
-.statsGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1.5rem;
-  margin-bottom: 2rem;
+.playerRole:hover::before {
+  transform: translateX(100%);
 }
 
-.statCard {
-  background: var(--cs-dark);
-  border-radius: 1rem;
-  padding: 1.5rem;
-  display: flex;
-  align-items: center;
-  gap: 1.25rem;
-  transition: all 0.3s ease;
-  border: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.statCard:hover {
-  transform: translateY(-0.25rem);
-  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.2);
-  border-color: var(--cs-primary);
-}
-
-.statIcon {
-  font-size: 2rem;
-  color: var(--cs-primary);
-  background: rgba(255, 70, 85, 0.1);
-  padding: 1rem;
-  border-radius: 1rem;
-  transition: all 0.3s ease;
-}
-
-.statCard:hover .statIcon {
-  transform: scale(1.1);
+.playerRole::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0.5rem;
+  width: 4px;
+  height: 4px;
   background: var(--cs-primary);
-  color: var(--cs-light);
+  border-radius: 50%;
+  transform: translateY(-50%);
+  box-shadow: 0 0 8px var(--cs-primary);
+  pointer-events: none;
 }
 
-.statContent {
-  flex: 1;
+.playerStats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-top: auto;
+  position: relative;
+  z-index: 1;
 }
 
-.statContent h3 {
-  font-size: 0.9rem;
-  color: var(--cs-gray);
-  margin-bottom: 0.5rem;
-  font-weight: 500;
+.stat {
+  text-align: center;
+  padding: 0.75rem;
+  background: rgba(255, 70, 85, 0.05);
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  border: 1px solid var(--cs-border);
+  position: relative;
+  z-index: 1;
+  backdrop-filter: blur(4px);
 }
 
-.statContent p {
+.stat:hover {
+  background: rgba(255, 70, 85, 0.1);
+  transform: translateY(-2px);
+  border-color: var(--cs-primary);
+  box-shadow: 0 4px 12px rgba(255, 70, 85, 0.1);
+}
+
+.statValue {
   font-size: 1.5rem;
   font-weight: 700;
   color: var(--cs-light);
-  margin: 0;
+  margin-bottom: 0.25rem;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  line-height: 1;
 }
 
-/* Адаптивность */
-@media (max-width: 1024px) {
-  .container {
-    padding: 0 1.5rem;
-    margin-top: 4.5rem;
-  }
-  
-  .headerContent {
-    padding: 0 2rem;
-  }
-  
-  .title {
-    font-size: 2.2rem;
-  }
-  
-  .banner {
-    height: 24rem;
+.statLabel {
+  font-size: 0.85rem;
+  color: var(--cs-gray);
+  font-weight: 500;
+  line-height: 1;
+}
+
+.editButton {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: rgba(255, 70, 85, 0.1);
+  border: 1px solid var(--cs-border);
+  border-radius: 4px;
+  padding: 0.5rem;
+  color: var(--cs-primary);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(4px);
+  z-index: 3;
+}
+
+.editButton:hover {
+  background: rgba(255, 70, 85, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 70, 85, 0.1);
+}
+
+/* Новости */
+.sectionActions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.addNewsButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: var(--cs-primary);
+  color: white;
+  border: none;
+  border-radius: 0.75rem;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.addNewsButton:hover {
+  background: var(--cs-primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 70, 85, 0.2);
+}
+
+.addNewsButton svg {
+  font-size: 1.2rem;
+}
+
+.deleteNewsButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  background: rgba(255, 70, 85, 0.1);
+  border: 1px solid rgba(255, 70, 85, 0.2);
+  color: var(--cs-primary);
+  border-radius: 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.deleteNewsButton:hover {
+  background: rgba(255, 70, 85, 0.2);
+  transform: translateY(-2px);
+}
+
+.deleteNewsButton svg {
+  font-size: 1.1rem;
+}
+
+.viewAll {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: var(--cs-secondary);
+  color: var(--cs-accent);
+  border: 1px solid var(--cs-border);
+  border-radius: 0.75rem;
+  font-size: 1rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.viewAll:hover {
+  background: var(--cs-primary);
+  color: white;
+  border-color: var(--cs-primary);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 70, 85, 0.2);
+}
+
+.viewAll svg {
+  transition: transform 0.3s ease;
+}
+
+.viewAll:hover svg {
+  transform: translateX(4px);
+}
+
+/* Новости */
+.newsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 2.5rem;
+  margin-top: 2.5rem;
+}
+
+.newsCard {
+  background: var(--cs-secondary);
+  border-radius: 16px;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  border: 1px solid var(--cs-border);
+}
+
+.newsCard:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+  border-color: var(--cs-primary);
+}
+
+.newsImageContainer {
+  position: relative;
+  width: 100%;
+  height: 220px;
+  overflow: hidden;
+}
+
+.newsImageContainer::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 100px;
+  background: linear-gradient(to top, var(--cs-secondary), transparent);
+  z-index: 1;
+}
+
+.newsImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.newsCard:hover .newsImage {
+  transform: scale(1.1);
+}
+
+.newsContent {
+  padding: 1.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  flex-grow: 1;
+  background: var(--cs-secondary);
+  position: relative;
+  z-index: 2;
+}
+
+.newsTitle {
+  color: var(--cs-accent);
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin: 0;
+  line-height: 1.4;
+  transition: color 0.3s ease;
+}
+
+.newsCard:hover .newsTitle {
+  color: var(--cs-primary);
+}
+
+.newsDescription {
+  color: var(--cs-gray);
+  font-size: 1rem;
+  line-height: 1.6;
+  margin: 0;
+  flex-grow: 1;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.newsMeta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+  padding-top: 1rem;
+  border-top: 1px solid var(--cs-border);
+}
+
+.newsMetaLeft {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.newsGameTag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 6px;
+  background: rgba(255, 70, 85, 0.1);
+  border: 1px solid rgba(255, 70, 85, 0.2);
+  border-radius: 4px;
+  font-size: 12px;
+  color: var(--cs-primary);
+  margin-left: 8px;
+  transition: all 0.3s ease;
+}
+
+.newsGameTag:hover {
+  background: rgba(255, 70, 85, 0.2);
+  transform: translateY(-1px);
+}
+
+.newsGameTag svg {
+  width: 12px;
+  height: 12px;
+  color: var(--cs-primary);
+}
+
+.newsDate {
+  color: var(--cs-primary);
+  font-size: 0.9rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.newsAuthor {
+  color: var(--cs-gray);
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Для новостей без изображения */
+.newsCard:not(:has(.newsImageContainer)) .newsContent {
+  padding: 2rem;
+  align-items: flex-start;
+}
+
+.newsCard:not(:has(.newsImageContainer)) {
+  background: linear-gradient(145deg, var(--cs-secondary), var(--cs-dark));
+}
+
+.newsImageContainer:empty {
+  display: none;
+}
+
+/* Адаптивность для новостей */
+@media (max-width: 1200px) {
+  .newsGrid {
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 2rem;
+    padding: 0 1rem;
   }
 }
 
 @media (max-width: 768px) {
-  .container {
-    padding: 0 1.5rem;
-    margin-top: 4rem;
-  }
-  
-  .headerContent {
-    padding: 0 1.5rem;
-    flex-direction: row;
-    gap: 1rem;
-  }
-  
-  .backButton {
-    padding: 0.6rem 1.2rem;
-    margin-left: 0;
-  }
-  
-  .title {
-    font-size: 1.8rem;
-    padding: 0.3rem 0;
-  }
-  
-  .titleContainer {
-    padding: 0 0.5rem;
-  }
-  
-  .banner {
-    height: 20rem;
-    margin: 2rem 0;
-  }
-  
-  .bannerContent {
-    padding: 2rem;
-  }
-  
-  .gameInfo h2 {
-    font-size: 2rem;
-  }
-  
-  .tournaments {
+  .newsGrid {
     grid-template-columns: 1fr;
+    gap: 1.5rem;
+    max-width: 600px;
+    margin: 0 auto;
   }
   
-  .tournamentCard {
-    min-height: auto;
+  .newsCard {
+    max-width: 100%;
+  }
+  
+  .newsImageContainer {
+    height: 200px;
+  }
+  
+  .newsContent {
     padding: 1.5rem;
   }
   
-  .tournamentCard h3 {
-    padding-right: 4rem;
-    min-height: auto;
+  .newsTitle {
+    font-size: 1.3rem;
   }
   
-  .status {
-    top: 1rem;
-    right: 1rem;
+  .newsDescription {
+    font-size: 0.95rem;
   }
   
-  .tableHeader,
-  .teamRow {
-    grid-template-columns: 3.5rem 1fr 5rem;
-    padding: 1rem;
+  .newsMeta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
   }
   
+  .newsMetaLeft {
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  .deleteNewsButton {
+    width: 100%;
+    justify-content: center;
+}
+
+  .newsCard:not(:has(.newsImage)) .newsTitle {
+    font-size: 1.4rem;
+  }
+
+  .newsCard:not(:has(.newsImage)) .newsDescription {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
   .newsGrid {
-    grid-template-columns: 1fr;
+    gap: 1rem;
   }
   
-  .newsCard img {
-    height: 160px;
+  .newsImageContainer {
+    height: 180px;
   }
   
   .newsContent {
     padding: 1.25rem;
   }
   
-  .newsContent h3 {
-    font-size: 1.1rem;
+  .newsTitle {
+    font-size: 1.2rem;
   }
   
-  .newsContent p {
+  .newsDescription {
     font-size: 0.9rem;
   }
   
+  .newsMeta {
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+  }
+  
+  .newsDate, .newsAuthor {
+    font-size: 0.85rem;
+  }
+
+  .newsCard:not(:has(.newsImage)) .newsTitle {
+    font-size: 1.3rem;
+}
+
+  .newsCard:not(:has(.newsImage)) .newsDescription {
+    font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 1024px) {
+  .container {
+    padding: 0 1.5rem;
+  }
+
+  .banner {
+    height: 28rem;
+  }
+
+  .gameInfo h1 {
+    font-size: 3rem;
+  }
+
+  .playerSpotlight {
+    grid-template-columns: 1fr;
+  }
+
+  .playerImage {
+    min-height: 300px;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 0 1rem;
+  }
+
+  .banner {
+    height: 24rem;
+  }
+
+  .bannerContent {
+    padding: 2rem;
+  }
+
+  .gameInfo h1 {
+    font-size: 2.5rem;
+  }
+
+  .metaInfo {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .bannerActions {
+    flex-direction: column;
+  }
+
+  .tabs {
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+  }
+
+  .tab {
+    white-space: nowrap;
+  }
+
   .statsGrid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  }
+
+  .playerStats {
+    grid-template-columns: 1fr;
+  }
+
+  .sectionActions {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .newsGrid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
   }
   
-  .statCard {
-    padding: 1.25rem;
+  .newsCard {
+    max-width: 100%;
   }
   
-  .statIcon {
-    font-size: 1.5rem;
-    padding: 0.75rem;
+  .newsImageContainer {
+    height: 200px;
   }
   
-  .statContent p {
-    font-size: 1.25rem;
+  .newsContent {
+    padding: 1.5rem;
+  }
+  
+  .newsTitle {
+    font-size: 1.3rem;
+  }
+  
+  .newsDescription {
+    font-size: 0.95rem;
+  }
+  
+  .newsMeta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+  
+  .newsMetaLeft {
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  .deleteNewsButton {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .newsCard:not(:has(.newsImage)) .newsTitle {
+    font-size: 1.4rem;
+  }
+
+  .newsCard:not(:has(.newsImage)) .newsDescription {
+    font-size: 1rem;
   }
 }
 
 @media (max-width: 480px) {
-  .container {
-    padding: 0 1rem;
-    margin-top: 3.5rem;
+  .banner {
+    height: 20rem;
   }
-  
-  .headerContent {
-    padding: 0 1rem;
+
+  .gameInfo h1 {
+    font-size: 2rem;
   }
-  
-  .title {
-    font-size: 1.5rem;
-  }
-  
-  .backButton {
-    padding: 0.5rem 1rem;
-    font-size: 0.9rem;
-  }
-  
-  .backIcon {
+
+  .gameInfo p {
     font-size: 1rem;
   }
-  
-  .banner {
-    height: 18rem;
-    margin: 1.5rem 0;
+
+  .sectionTitle {
+    font-size: 1.5rem;
+  }
+
+  .teamsContainer {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .vs {
+    margin: 0.5rem 0;
+  }
+
+  .newsGrid {
+    gap: 1rem;
+}
+
+  .newsImageContainer {
+    height: 180px;
   }
   
-  .bannerContent {
+  .newsContent {
+    padding: 1.25rem;
+  }
+  
+  .newsTitle {
+    font-size: 1.2rem;
+  }
+  
+  .newsDescription {
+    font-size: 0.95rem;
+  }
+  
+  .newsMeta {
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+  }
+  
+  .newsDate, .newsAuthor {
+    font-size: 0.85rem;
+  }
+
+  .newsCard:not(:has(.newsImage)) .newsTitle {
+    font-size: 1.3rem;
+  }
+
+  .newsCard:not(:has(.newsImage)) .newsDescription {
+    font-size: 0.95rem;
+  }
+}
+
+/* Стили для модального окна редактирования */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(15, 25, 35, 0.9);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal {
+  background: var(--cs-dark);
+  border-radius: 12px;
+  padding: 2.5rem;
+  width: 90%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  border: 1px solid var(--cs-border);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  position: relative;
+  animation: slideUp 0.4s ease; /* Анимация появления */
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between; /* Сохраняем space-between для заголовка и крестика */
+  align-items: flex-start; /* Выравниваем элементы по верху */
+  margin-bottom: 1.5rem;
+  padding-bottom: 0; /* Убираем padding снизу */
+  border-bottom: none; /* Убираем рамку снизу */
+}
+
+.modalHeader h2 {
+  margin: 0; /* Убираем все margin */
+  color: var(--cs-light);
+  font-size: 1.8rem;
+  font-weight: 700;
+  text-align: center; /* Центрируем текст заголовка */
+  flex-grow: 1;
+  margin-right: 1rem;
+  position: relative; /* Делаем заголовок относительным для позиционирования полосы */
+  padding-bottom: 0.75rem; /* Отступ для полосы */
+}
+
+.modalHeader h2::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%; /* Центрируем полосу по горизонтали */
+  transform: translateX(-50%);
+  width: 80px; /* Ширина полосы */
+  height: 3px; /* Толщина полосы */
+  background: var(--cs-primary); /* Цвет полосы */
+  border-radius: 3px;
+}
+
+.closeButton {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: var(--cs-gray);
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0.75rem;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  z-index: 10;
+}
+
+.closeButton:hover {
+  background: rgba(255, 70, 85, 0.2);
+  color: var(--cs-primary);
+  transform: rotate(90deg);
+}
+
+.errorMessage {
+  background-color: rgba(255, 70, 85, 0.1);
+  color: var(--cs-primary);
+  border: 1px solid rgba(255, 70, 85, 0.3);
+  border-radius: 4px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  font-size: 0.9rem;
+}
+
+.playerForm {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.formGroup label {
+  color: var(--cs-light);
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.formGroup input[type="text"],
+.formGroup input[type="number"],
+.formGroup textarea,
+.formGroup select {
+  padding: 0.9rem 1rem;
+  border: 1px solid rgba(255, 70, 85, 0.2);
+  border-radius: 8px;
+  background: var(--cs-secondary);
+  color: var(--cs-light);
+  font-size: 1rem;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.formGroup input[type="text"]::placeholder,
+.formGroup input[type="number"]::placeholder,
+.formGroup textarea::placeholder {
+  color: var(--cs-gray);
+}
+
+.formGroup input[type="text"]:focus,
+.formGroup input[type="number"]:focus,
+.formGroup textarea:focus,
+.formGroup select:focus {
+  outline: none;
+  border-color: var(--cs-primary);
+  box-shadow: 0 0 0 3px rgba(255, 70, 85, 0.1);
+}
+
+.formGroup textarea {
+  resize: vertical;
+}
+
+.formGroup select {
+  appearance: none;
+  background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2220%22%20height%3D%2220%22%20fill%3D%22%23ff4655%22%20viewBox%3D%220%200%2020%22%3E%3Cpath%20d%3D%22M5%206l5%205%205-5%202%202-7%207-7-7%202-2z%22%2F%3E%3C%2Fsvg%3E');
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  padding-right: 2.5rem;
+}
+
+/* Стили для загрузки изображения */
+.imageUploadGroup {
+  display: flex;
+  flex-direction: column; /* Сохраняем расположение элементов в столбец */
+  align-items: center; /* Центрируем элементы по горизонтали */
+  gap: 1rem; /* Отступ между кнопкой и предпросмотром */
+}
+
+.imageUploadLabel {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--cs-primary);
+  color: var(--cs-light);
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  width: fit-content;
+}
+
+.imageUploadLabel:hover {
+  background: var(--cs-primary-dark);
+  transform: translateY(-2px);
+}
+
+.imageUploadInput {
+  display: none;
+}
+
+.imagePreviewContainer {
+  margin-top: 0; /* Убираем верхний margin, так как gap теперь управляет отступом */
+  border: 1px dashed rgba(255, 70, 85, 0.4);
+  border-radius: 8px;
+  padding: 1rem;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.imagePreview {
+  max-width: 100%;
+  max-height: 200px;
+  border-radius: 4px;
+  object-fit: contain;
+}
+
+.removeImageButton {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  background: rgba(0, 0, 0, 0.6);
+  color: var(--cs-light);
+  border: none;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.3s ease;
+}
+
+.removeImageButton:hover {
+  background: rgba(0, 0, 0, 0.8);
+}
+
+/* Стили для сетки статистики внутри формы */
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+.formActions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.saveButton,
+.cancelButton {
+  padding: 0.9rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  flex: 1;
+  text-align: center;
+}
+
+.saveButton {
+  background: var(--cs-primary);
+  color: var(--cs-light);
+}
+
+.saveButton:hover:not(:disabled) {
+  background: var(--cs-primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 70, 85, 0.2);
+}
+
+.saveButton:disabled {
+  background: #555;
+  cursor: not-allowed;
+}
+
+.cancelButton {
+  background: var(--cs-secondary);
+  color: var(--cs-light);
+  border: 1px solid var(--cs-border);
+}
+
+.cancelButton:hover:not(:disabled) {
+  background: #3a3a3a;
+  transform: translateY(-2px);
+}
+
+/* Адаптивность для формы */
+@media (max-width: 480px) {
+  .modal {
     padding: 1.5rem;
   }
-  
-  .metaInfo {
-    flex-direction: column;
-    gap: 0.75rem;
+
+  .modalHeader h2 {
+    font-size: 1.5rem;
   }
-  
+
+  .closeButton {
+    top: 1rem;
+    right: 1rem;
+    font-size: 1.2rem;
+  }
+
+  .formGroup label {
+    font-size: 0.9rem;
+  }
+
+  .formGroup input[type="text"],
+  .formGroup input[type="number"],
+  .formGroup textarea,
+  .formGroup select {
+    padding: 0.75rem 1rem;
+    font-size: 0.9rem;
+  }
+
   .statsGrid {
     grid-template-columns: 1fr;
+  }
+
+  .formActions {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 768px) {
+  .playerSpotlight {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 1.5rem;
+    gap: 1.5rem;
+  }
+
+  .playerImage {
+    width: 150px;
+    height: 150px;
+    margin-bottom: 0.5rem;
+  }
+
+  .playerInfo h3 {
+    font-size: 2rem;
+  }
+
+  .playerTeam {
+    justify-content: center;
+  }
+
+  .playerRole {
+    margin: 0 auto 1.5rem;
+  }
+
+  .playerStats {
+    grid-template-columns: repeat(2, 1fr);
+    width: 100%;
+  }
+
+  .stat {
+    padding: 0.75rem;
+  }
+
+  .statValue {
+    font-size: 1.5rem;
   }
 }

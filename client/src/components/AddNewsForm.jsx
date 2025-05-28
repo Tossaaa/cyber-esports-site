@@ -2,12 +2,24 @@ import React, { useState, useEffect } from 'react';
 import { FaTimes } from 'react-icons/fa';
 import styles from '../styles/AddNewsForm.module.css';
 
+const gameTags = [
+  { id: 'cs2', name: 'CS2' },
+  { id: 'dota', name: 'Dota 2' },
+  { id: 'valorant', name: 'Valorant' },
+  { id: 'pubg', name: 'PUBG' },
+  { id: 'lol', name: 'League of Legends' },
+  { id: 'fortnite', name: 'Fortnite' },
+  { id: 'apex', name: 'Apex Legends' },
+  { id: 'overwatch', name: 'Overwatch 2' }
+];
+
 const AddNewsForm = ({ onClose, onAddNews, initialData, isEditing }) => {
   const [formData, setFormData] = useState({
     title: '',
     description: '',
     content: '',
-    image_url: ''
+    image_url: '',
+    game_tag: ''
   });
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -83,6 +95,7 @@ const AddNewsForm = ({ onClose, onAddNews, initialData, isEditing }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (isSubmitting) return; // Предотвращаем повторную отправку
     setError('');
     setIsSubmitting(true);
 
@@ -115,8 +128,10 @@ const AddNewsForm = ({ onClose, onAddNews, initialData, isEditing }) => {
       }
 
       const data = await response.json();
-      onAddNews(data);
+      
+      // Закрываем форму и вызываем колбэк только после успешного ответа
       onClose();
+      onAddNews(data);
     } catch (err) {
       console.error('Error:', err);
       setError(err.message || `Ошибка при ${isEditing ? 'обновлении' : 'добавлении'} новости. Проверьте подключение к серверу.`);
@@ -174,6 +189,25 @@ const AddNewsForm = ({ onClose, onAddNews, initialData, isEditing }) => {
               placeholder="Введите содержание новости"
               rows="6"
             />
+          </div>
+
+          <div className={styles.formGroup}>
+            <label htmlFor="game_tag">Игра</label>
+            <select
+              id="game_tag"
+              name="game_tag"
+              value={formData.game_tag}
+              onChange={handleChange}
+              required
+              className={styles.select}
+            >
+              <option value="">Выберите игру</option>
+              {gameTags.map(tag => (
+                <option key={tag.id} value={tag.id}>
+                  {tag.name}
+                </option>
+              ))}
+            </select>
           </div>
 
           <div className={styles.formGroup}>

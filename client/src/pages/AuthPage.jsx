@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FiUser, FiMail, FiLock } from 'react-icons/fi';
 import styles from '../styles/Auth.module.css';
+import { useAuth } from '../contexts/AuthContext';
 
 const AuthPage = () => {
     const [isLogin, setIsLogin] = useState(true);
@@ -13,6 +14,7 @@ const AuthPage = () => {
     });
     const [error, setError] = useState('');
     const navigate = useNavigate();
+    const { login, register } = useAuth();
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -27,24 +29,13 @@ const AuthPage = () => {
         setError('');
 
         try {
-            const endpoint = isLogin ? '/api/auth/login' : '/api/auth/register';
-            const response = await fetch(`http://localhost:5001${endpoint}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(formData)
-            });
-
-            const data = await response.json();
-
-            if (!response.ok) {
-                throw new Error(data.message || 'Произошла ошибка');
+            if (isLogin) {
+                const data = await login(formData.email, formData.password);
+                navigate('/');
+            } else {
+                const data = await register(formData);
+                navigate('/');
             }
-
-            localStorage.setItem('token', data.token);
-            localStorage.setItem('user', JSON.stringify(data.user));
-            navigate('/');
         } catch (err) {
             setError(err.message);
         }

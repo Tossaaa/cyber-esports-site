@@ -2,8 +2,6 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import styles from '../styles/PUBGPage.module.css';
 import { FiCalendar, FiAward, FiUsers } from 'react-icons/fi';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
 
 const PubgPage = () => {
   // Данные турниров
@@ -52,8 +50,6 @@ const PubgPage = () => {
 
   return (
     <div className={styles.wrapper}>
-      <Header />
-      
       {/* Основной контент */}
       <div className={styles.container}>
         {/* Баннер дисциплины */}
@@ -136,8 +132,6 @@ const PubgPage = () => {
           </div>
         </section>
       </div>
-
-      <Footer />
     </div>
   );
 };

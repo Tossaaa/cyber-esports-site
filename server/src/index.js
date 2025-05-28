@@ -6,7 +6,9 @@ const path = require('path');
 const authRoutes = require('./routes/auth');
 const newsRoutes = require('./routes/news');
 const uploadRoutes = require('./routes/upload');
+const playerOfMonthRoutes = require('./routes/playerOfMonth');
 const db = require('./database/db');
+require('./database/init'); // Инициализация базы данных
 
 const app = express();
 
@@ -43,6 +45,7 @@ app.use(session({
 app.use('/api/auth', authRoutes);
 app.use('/api/news', newsRoutes);
 app.use('/api/upload', uploadRoutes);
+app.use('/api/player-of-month', playerOfMonthRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {

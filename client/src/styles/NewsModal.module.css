@@ -1,50 +1,32 @@
 .overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(15, 25, 35, 0.95);
-  backdrop-filter: blur(10px);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-  padding: 20px;
-  animation: fadeIn 0.3s ease;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  background: rgba(15, 25, 35, 0.95) !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  z-index: 1000 !important;
+  backdrop-filter: blur(8px) !important;
+  padding: 1rem !important;
 }
 
 .modal {
-  background: var(--main-secondary);
-  border-radius: 12px;
-  max-width: 900px;
-  width: 100%;
-  max-height: 90vh;
-  overflow-y: auto;
-  position: relative;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-  border: 1px solid var(--main-border);
-  animation: slideUp 0.3s ease;
-}
-
-@keyframes slideUp {
-  from {
-    transform: translateY(20px);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
+  background: var(--main-dark) !important;
+  padding: 2.5rem !important;
+  border-radius: 1.5rem !important;
+  width: 100% !important;
+  max-width: 1200px !important;
+  height: auto !important;
+  max-height: 80vh !important;
+  overflow-y: auto !important;
+  position: relative !important;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5) !important;
+  border: 1px solid rgba(255, 70, 85, 0.1) !important;
+  scrollbar-width: thin !important;
+  scrollbar-color: var(--main-primary) rgba(255, 255, 255, 0.05) !important;
 }
 
 .closeButton {
@@ -64,7 +46,7 @@
   border-radius: 50% !important;
   width: 40px !important;
   height: 40px !important;
-  z-index: 2 !important;
+  z-index: 10 !important;
   backdrop-filter: blur(4px) !important;
 }
 
@@ -169,27 +151,42 @@
 
 /* Стилизация скроллбара */
 .modal::-webkit-scrollbar {
-  width: 8px;
+  width: 10px !important;
 }
 
 .modal::-webkit-scrollbar-track {
-  background: var(--main-dark);
-  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.05) !important;
+  border-radius: 8px !important;
+  margin: 4px !important;
 }
 
 .modal::-webkit-scrollbar-thumb {
-  background: var(--main-primary);
-  border-radius: 4px;
+  background: var(--main-primary) !important;
+  border-radius: 8px !important;
+  border: 2px solid var(--main-dark) !important;
+  transition: all 0.3s ease !important;
 }
 
 .modal::-webkit-scrollbar-thumb:hover {
-  background: var(--main-primary-dark);
+  background: var(--main-primary-dark) !important;
+  border: 1px solid var(--main-dark) !important;
+}
+
+/* Firefox */
+.modal {
+  scrollbar-width: thin !important;
+  scrollbar-color: var(--main-primary) rgba(255, 255, 255, 0.05) !important;
 }
 
 /* Адаптивность */
 @media (max-width: 768px) {
+  .overlay {
+    padding: 1rem !important;
+  }
+  
   .modal {
-    max-height: 95vh;
+    padding: 1.5rem !important;
+    max-height: 85vh !important;
   }
 
   .closeButton {
@@ -246,6 +243,11 @@
 }
 
 @media (max-width: 480px) {
+  .modal {
+    padding: 1.25rem !important;
+    max-height: 90vh !important;
+  }
+
   .imageContainer {
     height: 200px;
   }
@@ -300,4 +302,29 @@
 
 .editButton svg {
   font-size: 1.1rem;
+}
+
+.gameTag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 8px;
+  background: rgba(255, 70, 85, 0.1);
+  border: 1px solid rgba(255, 70, 85, 0.2);
+  border-radius: 4px;
+  font-size: 14px;
+  color: var(--main-primary);
+  margin-left: 10px;
+  transition: all 0.3s ease;
+}
+
+.gameTag:hover {
+  background: rgba(255, 70, 85, 0.2);
+  transform: translateY(-1px);
+}
+
+.gameTag svg {
+  width: 14px;
+  height: 14px;
+  color: var(--main-primary);
 } 

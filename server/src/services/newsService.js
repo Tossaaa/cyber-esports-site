@@ -40,11 +40,11 @@ class NewsService {
     // Создание новой новости
     createNews(newsData) {
         return new Promise((resolve, reject) => {
-            const { title, description, content, image_url, author_id } = newsData;
+            const { title, description, content, image_url, author_id, game_tag } = newsData;
             db.run(`
-                INSERT INTO news (title, description, content, image_url, author_id)
-                VALUES (?, ?, ?, ?, ?)
-            `, [title, description, content, image_url, author_id], function(err) {
+                INSERT INTO news (title, description, content, image_url, author_id, game_tag)
+                VALUES (?, ?, ?, ?, ?, ?)
+            `, [title, description, content, image_url, author_id, game_tag], function(err) {
                 if (err) {
                     reject(err);
                     return;
@@ -57,12 +57,12 @@ class NewsService {
     // Обновление новости
     updateNews(id, newsData) {
         return new Promise((resolve, reject) => {
-            const { title, description, content, image_url } = newsData;
+            const { title, description, content, image_url, game_tag } = newsData;
             db.run(`
                 UPDATE news 
-                SET title = ?, description = ?, content = ?, image_url = ?, updated_at = CURRENT_TIMESTAMP
+                SET title = ?, description = ?, content = ?, image_url = ?, game_tag = ?, updated_at = CURRENT_TIMESTAMP
                 WHERE id = ?
-            `, [title, description, content, image_url, id], function(err) {
+            `, [title, description, content, image_url, game_tag, id], function(err) {
                 if (err) {
                     reject(err);
                     return;
@@ -81,6 +81,25 @@ class NewsService {
                     return;
                 }
                 resolve({ id });
+            });
+        });
+    }
+
+    // Получение новостей по тегу
+    getNewsByTag(tag) {
+        return new Promise((resolve, reject) => {
+            db.all(`
+                SELECT n.*, u.username as author_name 
+                FROM news n 
+                LEFT JOIN users u ON n.author_id = u.id 
+                WHERE n.game_tag = ?
+                ORDER BY n.created_at DESC
+            `, [tag], (err, rows) => {
+                if (err) {
+                    reject(err);
+                    return;
+                }
+                resolve(rows);
             });
         });
     }

@@ -1,20 +1,33 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { FiPlus, FiTrash2, FiCalendar, FiUser } from "react-icons/fi";
+import { FiPlus, FiTrash2, FiCalendar, FiUser, FiTag, FiFilter } from "react-icons/fi";
 import styles from "../styles/NewsPage.module.css";
-import Header from "../components/Header";
-import Footer from "../components/Footer";
 import AddNewsForm from "../components/AddNewsForm";
 import NewsModal from "../components/NewsModal";
 import LoginForm from '../components/LoginForm';
 import RegisterForm from '../components/RegisterForm';
 
+const gameTags = {
+  all: 'Все новости',
+  cs2: 'CS2',
+  dota: 'Dota 2',
+  valorant: 'Valorant',
+  pubg: 'PUBG',
+  lol: 'League of Legends',
+  fortnite: 'Fortnite',
+  apex: 'Apex Legends',
+  overwatch: 'Overwatch 2'
+};
+
 const NewsPage = () => {
   const [news, setNews] = useState([]);
+  const [filteredNews, setFilteredNews] = useState([]);
+  const [selectedTag, setSelectedTag] = useState('all');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showAddNewsForm, setShowAddNewsForm] = useState(false);
   const [selectedNews, setSelectedNews] = useState(null);
+  const [editingNews, setEditingNews] = useState(null);
   const [user, setUser] = useState(null);
   const [showLoginForm, setShowLoginForm] = useState(false);
   const [showRegisterForm, setShowRegisterForm] = useState(false);
@@ -47,23 +60,8 @@ const NewsPage = () => {
 
   const handleAddNews = async (newNews) => {
     try {
-      const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:5001/api/news', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify(newNews),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Ошибка при добавлении новости');
-      }
-
-      const addedNews = await response.json();
-      setNews(prevNews => [addedNews, ...prevNews]);
+      // Обновляем список новостей с полученными данными
+      setNews(prev => [newNews, ...prev]);
       setShowAddNewsForm(false);
       setError(null);
     } catch (err) {
@@ -78,15 +76,22 @@ const NewsPage = () => {
     }
 
     try {
+      const token = localStorage.getItem('token');
       const response = await fetch(`http://localhost:5001/api/news/${newsId}`, {
         method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
       });
 
       if (!response.ok) {
         throw new Error('Ошибка при удалении новости');
       }
 
-      await fetchNews();
+      setNews(prev => prev.filter(item => item.id !== newsId));
+      if (selectedNews && selectedNews.id === newsId) {
+        setSelectedNews(null);
+      }
     } catch (err) {
       setError(err.message);
     }
@@ -100,6 +105,40 @@ const NewsPage = () => {
     setSelectedNews(null);
   };
 
+  const handleEditNews = (news) => {
+    setEditingNews(news);
+    setSelectedNews(null);
+  };
+
+  const handleUpdateNews = async (updatedNews) => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`http://localhost:5001/api/news/${updatedNews.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(updatedNews)
+      });
+
+      if (!response.ok) {
+        throw new Error('Ошибка при обновлении новости');
+      }
+
+      // Обновляем список новостей после успешного редактирования
+      const newsResponse = await fetch('http://localhost:5001/api/news');
+      if (!newsResponse.ok) {
+        throw new Error('Ошибка при загрузке новостей');
+      }
+      const newsData = await newsResponse.json();
+      setNews(newsData);
+      setEditingNews(null);
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
   const formatDate = (dateString) => {
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
     return new Date(dateString).toLocaleDateString('ru-RU', options);
@@ -109,7 +148,6 @@ const NewsPage = () => {
     setUser(userData);
     localStorage.setItem('user', JSON.stringify(userData));
     localStorage.setItem('token', token);
-    // Обновляем состояние пользователя в Header
     const header = document.querySelector('header');
     if (header) {
       const event = new CustomEvent('userLoggedIn', { detail: userData });
@@ -127,14 +165,24 @@ const NewsPage = () => {
     setShowLoginForm(true);
   };
 
+  useEffect(() => {
+    if (selectedTag === 'all') {
+      setFilteredNews(news);
+    } else {
+      setFilteredNews(news.filter(item => item.game_tag === selectedTag));
+    }
+  }, [selectedTag, news]);
+
+  const handleTagChange = (e) => {
+    setSelectedTag(e.target.value);
+  };
+
   if (loading) {
     return (
       <div className={styles.wrapper}>
-        <Header />
         <div className={styles.container}>
           <div className={styles.loading}>Загрузка новостей...</div>
         </div>
-        <Footer />
       </div>
     );
   }
@@ -142,24 +190,33 @@ const NewsPage = () => {
   if (error) {
     return (
       <div className={styles.wrapper}>
-        <Header />
         <div className={styles.container}>
           <div className={styles.error}>{error}</div>
         </div>
-        <Footer />
       </div>
     );
   }
 
   return (
     <div className={styles.wrapper}>
-      <Header 
-        onLoginClick={() => setShowLoginForm(true)}
-        onRegisterClick={() => setShowRegisterForm(true)}
-      />
       <div className={styles.container}>
         <div className={styles.pageHeader}>
           <h1 className={styles.pageTitle}>Новости</h1>
+          <div className={styles.headerActions}>
+            <div className={styles.filterContainer}>
+              <FiFilter className={styles.filterIcon} />
+              <select 
+                className={`${styles.tagFilter} ${selectedTag === 'all' ? styles.tagFilterDefault : ''}`}
+                value={selectedTag}
+                onChange={handleTagChange}
+              >
+                {Object.entries(gameTags).map(([key, value]) => (
+                  <option key={key} value={key}>
+                    {value}
+                  </option>
+                ))}
+              </select>
+            </div>
           {user?.role === 'admin' && (
             <button 
               className={styles.addNewsButton}
@@ -169,10 +226,11 @@ const NewsPage = () => {
               Добавить новость
             </button>
           )}
+          </div>
         </div>
 
         <div className={styles.newsGrid}>
-          {news.map((item) => (
+          {filteredNews.map((item) => (
             <div 
               key={item.id} 
               className={styles.newsCard}
@@ -197,18 +255,18 @@ const NewsPage = () => {
                 <div className={styles.newsMeta}>
                   <div className={styles.newsMetaLeft}>
                     <span className={styles.newsDate}>
-                      {new Date(item.created_at).toLocaleDateString('ru-RU')}
+                      <FiCalendar /> {new Date(item.created_at).toLocaleDateString('ru-RU')}
                     </span>
                     {item.author_name && (
                       <span className={styles.newsAuthor}>
-                        Автор: {item.author_name}
+                        <FiUser /> {item.author_name}
                       </span>
                     )}
                   </div>
                   {user && user.role === 'admin' && (
                     <button 
                       className={styles.deleteNewsButton}
-                      onClick={(e) => { e.stopPropagation(); handleDeleteNews(item.id); }}
+                      onClick={(e) => handleDeleteNews(item.id, e)}
                     >
                       <FiTrash2 /> Удалить
                     </button>
@@ -219,7 +277,6 @@ const NewsPage = () => {
           ))}
         </div>
       </div>
-      <Footer />
 
       {showAddNewsForm && (
         <AddNewsForm
@@ -232,10 +289,21 @@ const NewsPage = () => {
         <NewsModal
           news={selectedNews}
           onClose={handleCloseNewsModal}
+          onDelete={handleDeleteNews}
+          onEdit={handleEditNews}
+          isAdmin={user?.role === 'admin'}
         />
       )}
 
-      {/* Модальное окно входа */}
+      {editingNews && (
+        <AddNewsForm
+          initialData={editingNews}
+          onClose={() => setEditingNews(null)}
+          onAddNews={handleUpdateNews}
+          isEditing={true}
+        />
+      )}
+
       {showLoginForm && (
         <LoginForm 
           onClose={() => setShowLoginForm(false)}
@@ -244,7 +312,6 @@ const NewsPage = () => {
         />
       )}
 
-      {/* Модальное окно регистрации */}
       {showRegisterForm && (
         <RegisterForm 
           onClose={() => setShowRegisterForm(false)}

@@ -1,6 +1,17 @@
 import React from 'react';
 import styles from '../styles/NewsModal.module.css';
-import { FiX, FiCalendar, FiUser, FiTrash2, FiEdit2 } from 'react-icons/fi';
+import { FiX, FiCalendar, FiUser, FiTrash2, FiEdit2, FiTag } from 'react-icons/fi';
+
+const gameTags = {
+  cs2: 'CS2',
+  dota: 'Dota 2',
+  valorant: 'Valorant',
+  pubg: 'PUBG',
+  lol: 'League of Legends',
+  fortnite: 'Fortnite',
+  apex: 'Apex Legends',
+  overwatch: 'Overwatch 2'
+};
 
 const NewsModal = ({ news, onClose, onDelete, onEdit, isAdmin }) => {
   const formatDate = (dateString) => {
@@ -65,6 +76,11 @@ const NewsModal = ({ news, onClose, onDelete, onEdit, isAdmin }) => {
               {news.author_name && (
                 <span className={styles.author}>
                   <FiUser /> {news.author_name}
+                </span>
+              )}
+              {news.game_tag && (
+                <span className={styles.gameTag}>
+                  <FiTag /> {gameTags[news.game_tag] || news.game_tag}
                 </span>
               )}
             </div>

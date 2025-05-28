@@ -1,16 +1,16 @@
 .modalOverlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(15, 25, 35, 0.95);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-  backdrop-filter: blur(8px);
-  animation: fadeIn 0.3s ease;
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  background: rgba(15, 25, 35, 0.95) !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  z-index: 1000 !important;
+  backdrop-filter: blur(8px) !important;
+  padding: 1rem !important;
 }
 
 @keyframes fadeIn {
@@ -23,14 +23,17 @@
 }
 
 .modal {
-  background: var(--main-dark);
-  padding: 2.5rem;
-  border-radius: 1.5rem;
-  width: 100%;
-  max-width: 500px;
-  position: relative;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-  border: 1px solid rgba(255, 70, 85, 0.1);
+  background: var(--main-dark) !important;
+  padding: 2.5rem !important;
+  border-radius: 1.5rem !important;
+  width: 100% !important;
+  max-width: 1200px !important;
+  height: auto !important;
+  max-height: 80vh !important;
+  overflow-y: auto !important;
+  position: relative !important;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5) !important;
+  border: 1px solid rgba(255, 70, 85, 0.1) !important;
   animation: slideUp 0.4s ease;
 }
 
@@ -196,15 +199,34 @@
   transform: none;
 }
 
+/* Стилизация скроллбара */
+.modal::-webkit-scrollbar {
+  width: 8px !important;
+}
+
+.modal::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border-radius: 4px !important;
+}
+
+.modal::-webkit-scrollbar-thumb {
+  background: var(--main-primary) !important;
+  border-radius: 4px !important;
+}
+
+.modal::-webkit-scrollbar-thumb:hover {
+  background: var(--main-primary-dark) !important;
+}
+
 /* Адаптивность */
 @media (max-width: 768px) {
   .modalOverlay {
-    padding: 1rem;
+    padding: 1rem !important;
   }
   
   .modal {
-    padding: 1.5rem;
-    border-radius: 1rem;
+    padding: 1.5rem !important;
+    max-height: 85vh !important;
   }
   
   .modal h2 {
@@ -224,7 +246,8 @@
 
 @media (max-width: 480px) {
   .modal {
-    padding: 1.25rem;
+    padding: 1.25rem !important;
+    max-height: 90vh !important;
   }
   
   .modal h2 {
@@ -294,4 +317,39 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+.select {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.5rem;
+  color: var(--main-light);
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 1em;
+}
+
+.select:focus {
+  outline: none;
+  border-color: var(--main-primary);
+  background-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0 0 3px rgba(255, 70, 85, 0.1);
+}
+
+.select option {
+  background-color: var(--main-secondary);
+  color: var(--main-light);
+  padding: 0.75rem;
+  font-size: 0.95rem;
+}
+
+.select option:hover {
+  background-color: var(--main-primary);
 } 

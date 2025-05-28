@@ -36,10 +36,21 @@ router.get('/:id', async (req, res) => {
     }
 });
 
+// Получение новостей по тегу
+router.get('/tag/:tag', async (req, res) => {
+    try {
+        const news = await newsService.getNewsByTag(req.params.tag);
+        res.json(news);
+    } catch (error) {
+        console.error('Error getting news by tag:', error);
+        res.status(500).json({ message: 'Ошибка при получении новостей' });
+    }
+});
+
 // Создание новой новости (только для админов)
 router.post('/', auth, checkAdmin, async (req, res) => {
     try {
-        const { title, description, content, image_url } = req.body;
+        const { title, description, content, image_url, game_tag } = req.body;
         if (!title || !description) {
             return res.status(400).json({ message: 'Заголовок и описание обязательны' });
         }
@@ -48,6 +59,7 @@ router.post('/', auth, checkAdmin, async (req, res) => {
             description,
             content,
             image_url,
+            game_tag,
             author_id: req.user.id
         });
         res.status(201).json(news);
@@ -60,7 +72,7 @@ router.post('/', auth, checkAdmin, async (req, res) => {
 // Обновление новости (только для админов)
 router.put('/:id', auth, checkAdmin, async (req, res) => {
     try {
-        const { title, description, content, image_url } = req.body;
+        const { title, description, content, image_url, game_tag } = req.body;
         if (!title || !description) {
             return res.status(400).json({ message: 'Заголовок и описание обязательны' });
         }
@@ -68,7 +80,8 @@ router.put('/:id', auth, checkAdmin, async (req, res) => {
             title,
             description,
             content,
-            image_url
+            image_url,
+            game_tag
         });
         res.json(news);
     } catch (error) {
