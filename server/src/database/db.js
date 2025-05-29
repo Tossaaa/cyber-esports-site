@@ -64,9 +64,14 @@ const db = new sqlite3.Database(dbPath, (err) => {
         CREATE TABLE IF NOT EXISTS teams (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT NOT NULL,
+            logo TEXT,
+            points INTEGER DEFAULT 0,
+            game TEXT NOT NULL,
+            country TEXT,
+            founded TEXT,
             description TEXT,
-            logo_url TEXT,
-            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
         )
     `, (err) => {
         if (err) {

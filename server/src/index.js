@@ -7,8 +7,8 @@ const authRoutes = require('./routes/auth');
 const newsRoutes = require('./routes/news');
 const uploadRoutes = require('./routes/upload');
 const playerOfMonthRoutes = require('./routes/playerOfMonth');
-const db = require('./database/db');
-require('./database/init'); // Инициализация базы данных
+const teamRoutes = require('./routes/team');
+const { initDatabase } = require('./database/init');
 
 const app = express();
 
@@ -46,6 +46,10 @@ app.use('/api/auth', authRoutes);
 app.use('/api/news', newsRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/player-of-month', playerOfMonthRoutes);
+app.use('/api/teams', teamRoutes);
+
+// Initialize database
+initDatabase();
 
 // Error handling middleware
 app.use((err, req, res, next) => {
@@ -59,5 +63,4 @@ app.use((err, req, res, next) => {
 const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
-    console.log(`Connected to SQLite database at ${db.databasePath}`);
 }); 

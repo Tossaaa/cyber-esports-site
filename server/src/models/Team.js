@@ -1,54 +1,19 @@
-const mongoose = require('mongoose');
+const db = require('../database/db');
 
-const teamSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true,
-    unique: true,
-    trim: true
-  },
-  game: {
-    type: String,
-    required: true,
-    enum: ['CS2', 'Dota 2', 'Valorant', 'PUBG']
-  },
-  logo: {
-    type: String,
-    required: true
-  },
-  players: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Player'
-  }],
-  coach: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Player'
-  },
-  achievements: [{
-    tournament: String,
-    placement: Number,
-    year: Number
-  }],
-  socialMedia: {
-    twitter: String,
-    instagram: String,
-    facebook: String,
-    youtube: String
-  },
-  country: {
-    type: String,
-    required: true
-  },
-  founded: {
-    type: Date
-  },
-  description: {
-    type: String
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now
-  }
-});
+// Создание таблицы команд
+db.run(`
+  CREATE TABLE IF NOT EXISTS teams (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    logo TEXT,
+    points INTEGER DEFAULT 0,
+    game TEXT NOT NULL,
+    country TEXT,
+    founded TEXT,
+    description TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+  )
+`);
 
-module.exports = mongoose.model('Team', teamSchema); 
+module.exports = db; 

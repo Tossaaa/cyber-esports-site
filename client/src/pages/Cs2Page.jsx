@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import styles from '../styles/CS2Page.module.css';
-import { FiStar, FiTarget, FiMap, FiUsers, FiAward, FiClock, FiCalendar, FiPlus, FiArrowRight, FiUser, FiTrash2, FiEdit2 } from 'react-icons/fi';
-import { FaUsers, FaTrophy, FaCrosshairs, FaMap, FaClock } from 'react-icons/fa';
+import { FiStar, FiTarget, FiMap, FiUsers, FiAward, FiClock, FiCalendar, FiPlus, FiArrowRight, FiUser, FiTrash2, FiEdit2, FiAlertCircle } from 'react-icons/fi';
+import { FaUsers, FaTrophy, FaCrosshairs, FaMap, FaClock, FaCalendarAlt, FaUser, FaGamepad, FaTrash } from 'react-icons/fa';
 import AddNewsForm from '../components/AddNewsForm';
 import NewsModal from '../components/NewsModal';
 import PlayerOfMonthForm from '../components/PlayerOfMonthForm';
+import TeamForm from '../components/TeamForm';
 
 const Cs2Page = () => {
   const [activeTab, setActiveTab] = useState('overview');
@@ -23,6 +24,10 @@ const Cs2Page = () => {
   const [showPlayerForm, setShowPlayerForm] = useState(false);
   const [loadingPlayer, setLoadingPlayer] = useState(true);
   const [playerError, setPlayerError] = useState(null);
+  const [showTeamForm, setShowTeamForm] = useState(false);
+  const [editingTeam, setEditingTeam] = useState(null);
+  const [loadingTeams, setLoadingTeams] = useState(true);
+  const [teamError, setTeamError] = useState(null);
 
   useEffect(() => {
     // Загружаем данные пользователя при монтировании компонента
@@ -39,14 +44,17 @@ const Cs2Page = () => {
         setError(null);
         
         // Загружаем новости
+        console.log('Fetching news...');
         const newsResponse = await fetch('http://localhost:5001/api/news/tag/cs2');
         if (!newsResponse.ok) {
           throw new Error('Ошибка при загрузке новостей');
         }
         const newsData = await newsResponse.json();
+        console.log('News data:', newsData);
         setNews(newsData);
 
         // Загружаем данные игрока месяца
+        console.log('Fetching player of month...');
         setLoadingPlayer(true);
         setPlayerError(null);
         const playerResponse = await fetch('http://localhost:5001/api/player-of-month/cs2');
@@ -54,18 +62,37 @@ const Cs2Page = () => {
           throw new Error('Ошибка при загрузке данных игрока');
         }
         const playerData = await playerResponse.json();
-        // Убедимся, что URL изображения полный
+        console.log('Player data:', playerData);
         if (playerData.image && !playerData.image.startsWith('http')) {
           playerData.image = `http://localhost:5001${playerData.image}`;
         }
         setPlayerOfMonth(playerData);
+
+        // Загружаем команды
+        console.log('Fetching teams...');
+        setLoadingTeams(true);
+        setTeamError(null);
+        const teamsResponse = await fetch('http://localhost:5001/api/teams/cs2');
+        if (!teamsResponse.ok) {
+          throw new Error('Ошибка при загрузке команд');
+        }
+        const teamsData = await teamsResponse.json();
+        console.log('Teams data:', teamsData);
+        // Убедимся, что URL логотипов полные
+        const teamsWithFullUrls = teamsData.map(team => ({
+          ...team,
+          logo: team.logo && !team.logo.startsWith('http') ? `http://localhost:5001${team.logo}` : team.logo
+        }));
+        setTeams(teamsWithFullUrls);
       } catch (err) {
         console.error('Error fetching data:', err);
         setError(err.message);
         setPlayerError(err.message);
+        setTeamError(err.message);
       } finally {
         setLoading(false);
         setLoadingPlayer(false);
+        setLoadingTeams(false);
       }
     };
 
@@ -184,6 +211,7 @@ const Cs2Page = () => {
       if (data.image && !data.image.startsWith('http')) {
         data.image = `http://localhost:5001${data.image}`;
       }
+      // Сразу обновляем состояние с новыми данными
       setPlayerOfMonth(data);
       setShowPlayerForm(false);
     } catch (err) {
@@ -216,6 +244,89 @@ const Cs2Page = () => {
         break;
       default:
         break;
+    }
+  };
+
+  const handleSaveTeam = async (teamData) => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        throw new Error('Необходимо авторизоваться');
+      }
+
+      const url = editingTeam 
+        ? `http://localhost:5001/api/teams/${editingTeam.id}`
+        : 'http://localhost:5001/api/teams';
+      
+      const method = editingTeam ? 'PUT' : 'POST';
+
+      console.log('Saving team data:', teamData);
+      console.log('Editing team:', editingTeam);
+      console.log('Request URL:', url);
+      console.log('Request method:', method);
+
+      const response = await fetch(url, {
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          ...teamData,
+          game: 'cs2'
+        })
+      });
+
+      const data = await response.json();
+      console.log('Server response:', data);
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Ошибка при сохранении команды');
+      }
+
+      // Убедимся, что URL логотипа полный
+      if (data.logo && !data.logo.startsWith('http')) {
+        data.logo = `http://localhost:5001${data.logo}`;
+      }
+
+      if (editingTeam) {
+        setTeams(prev => prev.map(team => 
+          team.id === editingTeam.id ? data : team
+        ));
+      } else {
+        setTeams(prev => [...prev, data]);
+      }
+
+      setShowTeamForm(false);
+      setEditingTeam(null);
+    } catch (err) {
+      console.error('Error saving team:', err);
+      throw err; // Пробрасываем ошибку дальше в TeamForm
+    }
+  };
+
+  const handleDeleteTeam = async (id) => {
+    if (!window.confirm('Вы уверены, что хотите удалить эту команду?')) {
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`http://localhost:5001/api/teams/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error('Ошибка при удалении команды');
+      }
+
+      setTeams(prev => prev.filter(team => team.id !== id));
+    } catch (err) {
+      console.error('Error deleting team:', err);
+      setError(err.message);
     }
   };
 
@@ -432,54 +543,110 @@ const Cs2Page = () => {
 
         {/* Топ команд */}
         <section id="teams-section" className={styles.section}>
-          <h2 className={styles.sectionTitle}>Топ команд</h2>
-          <div className={styles.teamsTable}>
-            <div className={styles.tableHeader}>
-              <span>#</span>
-              <span>Команда</span>
-              <span>Очки</span>
-            </div>
-            <div className={styles.teamRow}>
-              <span className={styles.rank}>1</span>
-              <div className={styles.teamInfo}>
-                <img src="/images/teams/spirit.png" alt="Team Spirit" className={styles.teamLogo} />
-                <span className={styles.teamName}>Team Spirit</span>
-              </div>
-              <span className={styles.points}>1200</span>
-            </div>
-            <div className={styles.teamRow}>
-              <span className={styles.rank}>2</span>
-              <div className={styles.teamInfo}>
-                <img src="/images/teams/navi.png" alt="Natus Vincere" className={styles.teamLogo} />
-                <span className={styles.teamName}>Natus Vincere</span>
-              </div>
-              <span className={styles.points}>1100</span>
-            </div>
-            <div className={styles.teamRow}>
-              <span className={styles.rank}>3</span>
-              <div className={styles.teamInfo}>
-                <img src="/images/teams/vp.png" alt="Virtus.pro" className={styles.teamLogo} />
-                <span className={styles.teamName}>Virtus.pro</span>
-              </div>
-              <span className={styles.points}>1050</span>
-            </div>
-            <div className={styles.teamRow}>
-              <span className={styles.rank}>4</span>
-              <div className={styles.teamInfo}>
-                <img src="/images/teams/faze.png" alt="FaZe Clan" className={styles.teamLogo} />
-                <span className={styles.teamName}>FaZe Clan</span>
-              </div>
-              <span className={styles.points}>1000</span>
-            </div>
-            <div className={styles.teamRow}>
-              <span className={styles.rank}>5</span>
-              <div className={styles.teamInfo}>
-                <img src="/images/teams/g2.png" alt="G2 Esports" className={styles.teamLogo} />
-                <span className={styles.teamName}>G2 Esports</span>
-              </div>
-              <span className={styles.points}>950</span>
-            </div>
+          <div className={styles.sectionHeader}>
+            <h2 className={styles.sectionTitle}>Топ команд</h2>
+            {user && user.role === 'admin' && (
+              <button 
+                className={styles.addButton}
+                onClick={() => setShowTeamForm(true)}
+              >
+                <FiPlus className={styles.addIcon} />
+                Добавить команду
+              </button>
+            )}
           </div>
+          {loadingTeams ? (
+            <div className={styles.loadingState}>
+              <FiUsers size={32} />
+              <p>Загрузка команд...</p>
+            </div>
+          ) : teamError ? (
+            <div className={styles.errorState}>
+              <FiAlertCircle size={32} />
+              <p>Ошибка при загрузке команд: {teamError}</p>
+            </div>
+          ) : teams.length === 0 ? (
+            <div className={styles.emptyState}>
+              <FiUsers size={32} />
+              <p>Команд пока нет</p>
+            </div>
+          ) : (
+            <div className={styles.teamsTable}>
+              <div className={styles.tableHeader}>
+                <div className={styles.headerCell}>Позиция</div>
+                <div className={styles.headerCell}>Команда</div>
+                <div className={styles.headerCell}>Очки</div>
+                <div className={styles.headerCell}>Страна</div>
+                <div className={styles.headerCell}>Основана</div>
+                {user && user.role === 'admin' && (
+                  <div className={styles.headerCell}>Действия</div>
+                )}
+              </div>
+              <div className={styles.teamsTableContent}>
+                {[...teams]
+                  .sort((a, b) => b.points - a.points)
+                  .map((team, index) => (
+                    <div key={team.id} className={styles.teamRow}>
+                      <div className={styles.tableCell}>
+                        <span className={styles.rank}>#{index + 1}</span>
+                      </div>
+                      <div className={styles.tableCell}>
+                        <div className={styles.teamInfo}>
+                          {team.logo ? (
+                            <img 
+                              src={team.logo} 
+                              alt={team.name} 
+                              className={styles.teamLogo}
+                            />
+                          ) : (
+                            <div className={styles.defaultIcon}>
+                              <FiUsers />
+                            </div>
+                          )}
+                          <span className={styles.teamName}>{team.name}</span>
+                        </div>
+                      </div>
+                      <div className={styles.tableCell}>
+                        <span className={styles.points}>{team.points}</span>
+                      </div>
+                      <div className={styles.tableCell}>
+                        <span className={styles.teamCountry}>
+                          <FiMap /> {team.country || 'Не указана'}
+                        </span>
+                      </div>
+                      <div className={styles.tableCell}>
+                        <span className={styles.teamFounded}>
+                          {team.founded || 'Не указан'}
+                        </span>
+                      </div>
+                      {user && user.role === 'admin' && (
+                        <div className={styles.tableCell}>
+                          <div className={styles.teamActions}>
+                            <button 
+                              className={styles.editButton}
+                              onClick={() => {
+                                setEditingTeam(team);
+                                setShowTeamForm(true);
+                              }}
+                              title="Редактировать команду"
+                            >
+                              <FiEdit2 />
+                            </button>
+                            <button 
+                              className={styles.deleteButton}
+                              onClick={() => handleDeleteTeam(team.id)}
+                              title="Удалить команду"
+                            >
+                              <FiTrash2 />
+                            </button>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+              </div>
+            </div>
+          )}
         </section>
 
         {/* Игрок месяца */}
@@ -495,7 +662,7 @@ const Cs2Page = () => {
             <div className={styles.playerSpotlight}>
               {user && user.role === 'admin' && (
                 <button 
-                  className={styles.editButton}
+                  className={styles.playerEditButton}
                   onClick={() => setShowPlayerForm(true)}
                 >
                   <FiEdit2 />
@@ -598,20 +765,23 @@ const Cs2Page = () => {
                     <div className={styles.newsMeta}>
                       <div className={styles.newsMetaLeft}>
                         <span className={styles.newsDate}>
-                          <FiCalendar /> {new Date(item.created_at).toLocaleDateString('ru-RU')}
+                          <FaCalendarAlt /> {new Date(item.created_at).toLocaleDateString('ru-RU')}
                         </span>
                         {item.author_name && (
                           <span className={styles.newsAuthor}>
-                            <FiUser /> {item.author_name}
+                            <FaUser /> {item.author_name}
                           </span>
                         )}
                       </div>
                       {user && user.role === 'admin' && (
                         <button 
                           className={styles.deleteNewsButton}
-                          onClick={(e) => handleDeleteNews(item.id, e)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDeleteNews(item.id, e);
+                          }}
                         >
-                          <FiTrash2 /> Удалить
+                          <FaTrash /> Удалить
                         </button>
                       )}
                     </div>
@@ -654,6 +824,17 @@ const Cs2Page = () => {
             onClose={() => setShowPlayerForm(false)}
             onSave={handleSavePlayer}
             initialData={playerOfMonth}
+          />
+        )}
+
+        {showTeamForm && (
+          <TeamForm
+            onClose={() => {
+              setShowTeamForm(false);
+              setEditingTeam(null);
+            }}
+            onSave={handleSaveTeam}
+            initialData={editingTeam}
           />
         )}
       </div>

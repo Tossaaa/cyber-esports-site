@@ -86,13 +86,14 @@ const PlayerOfMonthForm = ({ onClose, onSave, initialData }) => {
       const data = await response.json();
       console.log('Upload response data:', data);
       
+      const imageUrl = data.imageUrl.startsWith('http') ? data.imageUrl : `http://localhost:5001${data.imageUrl}`;
       setFormData(prev => ({
         ...prev,
-        image: data.imageUrl
+        image: imageUrl
       }));
 
-      console.log('Setting preview image URL:', data.imageUrl);
-      setPreviewImage(data.imageUrl);
+      console.log('Setting preview image URL:', imageUrl);
+      setPreviewImage(imageUrl);
 
     } catch (err) {
       console.error('Error uploading image:', err);

@@ -1,65 +1,6 @@
-const db = require('./db');
-
-// Создание таблицы пользователей
-db.run(`
-  CREATE TABLE IF NOT EXISTS users (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    username TEXT UNIQUE NOT NULL,
-    password TEXT NOT NULL,
-    role TEXT DEFAULT 'user',
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-  )
-`, (err) => {
-  if (err) {
-    console.error('Error creating users table:', err);
-  } else {
-    console.log('Users table created or already exists');
-  }
-});
-
-// Создание таблицы турниров
-db.run(`
-  CREATE TABLE IF NOT EXISTS tournaments (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT NOT NULL,
-    game TEXT NOT NULL,
-    start_date TEXT NOT NULL,
-    end_date TEXT NOT NULL,
-    prize_pool TEXT NOT NULL,
-    location TEXT NOT NULL,
-    organizer TEXT NOT NULL,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-  )
-`, (err) => {
-  if (err) {
-    console.error('Error creating tournaments table:', err);
-  } else {
-    console.log('Tournaments table created or already exists');
-  }
-});
-
-// Создание таблицы новостей
-db.run(`
-  CREATE TABLE IF NOT EXISTS news (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    title TEXT NOT NULL,
-    content TEXT NOT NULL,
-    image_url TEXT,
-    author_id INTEGER,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (author_id) REFERENCES users(id)
-  )
-`, (err) => {
-  if (err) {
-    console.error('Error creating news table:', err);
-  } else {
-    console.log('Таблица новостей создана или уже существует');
-  }
-});
-
+// Инициализация базы данных
 const initDatabase = () => {
-  console.log('Initializing database...');
-  
+  // Проверяем существование таблиц и создаем их, если они не существуют
   db.serialize(() => {
     // Создаем таблицу для игроков месяца
     db.run(`
@@ -77,36 +18,24 @@ const initDatabase = () => {
         created_at TEXT NOT NULL,
         updated_at TEXT NOT NULL
       )
-    `, (err) => {
-      if (err) {
-        console.error('Error creating player_of_month table:', err);
-      } else {
-        console.log('Player of month table created or already exists');
-      }
-    });
+    `);
 
     // Создаем таблицу для команд
     db.run(`
       CREATE TABLE IF NOT EXISTS teams (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT NOT NULL UNIQUE,
+        name TEXT NOT NULL,
         logo TEXT,
-        points INTEGER DEFAULT 0 CHECK (points <= 1000),
+        points INTEGER DEFAULT 0,
         country TEXT,
         founded TEXT,
         game TEXT NOT NULL,
         created_at TEXT NOT NULL,
         updated_at TEXT NOT NULL
       )
-    `, (err) => {
-      if (err) {
-        console.error('Error creating teams table:', err);
-      } else {
-        console.log('Teams table created or already exists');
-      }
-    });
+    `);
 
-    // Проверяем наличие тестовых данных
+    // Проверяем, есть ли уже данные в таблицах
     db.get('SELECT COUNT(*) as count FROM player_of_month', (err, row) => {
       if (err) {
         console.error('Error checking player_of_month table:', err);
@@ -139,12 +68,10 @@ const initDatabase = () => {
             console.log('Test player inserted successfully');
           }
         });
-      } else {
-        console.log('Test player already exists');
       }
     });
 
-    // Проверяем наличие тестовых команд
+    // Проверяем наличие команд
     db.get('SELECT COUNT(*) as count FROM teams', (err, row) => {
       if (err) {
         console.error('Error checking teams table:', err);
@@ -155,9 +82,9 @@ const initDatabase = () => {
       if (row.count === 0) {
         const now = new Date().toISOString();
         const testTeams = [
-          ['Natus Vincere', '/uploads/teams/navi.png', 950, 'Украина', '2009', 'cs2'],
-          ['FaZe Clan', '/uploads/teams/faze.png', 900, 'Европа', '2016', 'cs2'],
-          ['Team Spirit', '/uploads/teams/spirit.png', 850, 'Россия', '2015', 'cs2']
+          ['Natus Vincere', '/uploads/teams/navi.png', 1200, 'Украина', '2009', 'cs2'],
+          ['FaZe Clan', '/uploads/teams/faze.png', 1150, 'Европа', '2016', 'cs2'],
+          ['Team Spirit', '/uploads/teams/spirit.png', 1100, 'Россия', '2015', 'cs2']
         ];
 
         const stmt = db.prepare(`
@@ -176,8 +103,6 @@ const initDatabase = () => {
 
         stmt.finalize();
         console.log('Test teams inserted successfully');
-      } else {
-        console.log('Test teams already exist');
       }
     });
   });

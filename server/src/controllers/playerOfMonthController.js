@@ -4,6 +4,7 @@ const db = require('../database/db');
 exports.getPlayerOfMonth = async (req, res) => {
   try {
     const { game } = req.params;
+    console.log('Getting player of month for game:', game);
     
     db.get(
       'SELECT * FROM player_of_month WHERE game = ? ORDER BY created_at DESC LIMIT 1',
@@ -18,6 +19,7 @@ exports.getPlayerOfMonth = async (req, res) => {
           return res.status(404).json({ message: 'Игрок месяца не найден' });
         }
 
+        console.log('Found player:', player);
         res.json(player);
       }
     );
@@ -74,8 +76,9 @@ exports.updatePlayerOfMonth = async (req, res) => {
 
     db.run(
       `UPDATE player_of_month SET 
-        name = ?, team = ?, role = ?, image = ?, kills = ?, 
-        headshots = ?, rating = ?, mvp = ?, game = ?, updated_at = ?
+        name = ?, team = ?, role = ?, image = ?, 
+        kills = ?, headshots = ?, rating = ?, mvp = ?, 
+        game = ?, updated_at = ?
       WHERE id = ?`,
       [name, team, role, image, kills, headshots, rating, mvp, game, now, id],
       function(err) {
