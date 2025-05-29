@@ -8,6 +8,7 @@ const newsRoutes = require('./routes/news');
 const uploadRoutes = require('./routes/upload');
 const playerOfMonthRoutes = require('./routes/playerOfMonth');
 const teamRoutes = require('./routes/team');
+const tournamentRoutes = require('./routes/tournament');
 const { initDatabase } = require('./database/init');
 
 const app = express();
@@ -47,6 +48,7 @@ app.use('/api/news', newsRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/player-of-month', playerOfMonthRoutes);
 app.use('/api/teams', teamRoutes);
+app.use('/api/tournaments', tournamentRoutes);
 
 // Initialize database
 initDatabase();

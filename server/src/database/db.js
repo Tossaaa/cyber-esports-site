@@ -85,19 +85,17 @@ const db = new sqlite3.Database(dbPath, (err) => {
     db.run(`
         CREATE TABLE IF NOT EXISTS tournaments (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            title TEXT NOT NULL,
+            name TEXT NOT NULL,
             description TEXT,
-            start_date DATETIME,
-            end_date DATETIME,
-            prize_pool TEXT,
-            status TEXT DEFAULT 'upcoming',
-            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+            start_date TEXT,
+            end_date TEXT,
+            created_at TEXT NOT NULL
         )
     `, (err) => {
         if (err) {
-            console.error('Error creating tournaments table:', err);
+            console.error('Ошибка при создании таблицы tournaments:', err);
         } else {
-            console.log('Tournaments table created or already exists');
+            console.log('Таблица tournaments создана или уже существует');
         }
     });
 
@@ -141,6 +139,21 @@ const db = new sqlite3.Database(dbPath, (err) => {
             console.error('Error creating player_of_month table:', err);
         } else {
             console.log('Player of month table created or already exists');
+        }
+    });
+
+    // Создание связующей таблицы турниров и команд
+    db.run(`CREATE TABLE IF NOT EXISTS tournament_teams (
+        tournament_id INTEGER NOT NULL,
+        team_id INTEGER NOT NULL,
+        PRIMARY KEY (tournament_id, team_id),
+        FOREIGN KEY (tournament_id) REFERENCES tournaments(id) ON DELETE CASCADE,
+        FOREIGN KEY (team_id) REFERENCES teams(id) ON DELETE CASCADE
+    )`, (err) => {
+        if (err) {
+            console.error('Ошибка при создании таблицы tournament_teams:', err);
+        } else {
+            console.log('Таблица tournament_teams создана или уже существует');
         }
     });
 });

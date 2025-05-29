@@ -114,14 +114,14 @@ const TeamForm = ({ onClose, onSave, initialData }) => {
     }
 
     try {
-      console.log("Saving team data:", formData);
+    console.log("Saving team data:", formData);
       await onSave(formData);
-      onClose();
+    onClose();
     } catch (err) {
       console.error('Error saving team:', err);
       setError(err.message || 'Ошибка при сохранении команды');
     } finally {
-      setIsSubmitting(false);
+    setIsSubmitting(false);
     }
   };
 

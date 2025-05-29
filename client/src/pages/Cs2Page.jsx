@@ -7,6 +7,7 @@ import AddNewsForm from '../components/AddNewsForm';
 import NewsModal from '../components/NewsModal';
 import PlayerOfMonthForm from '../components/PlayerOfMonthForm';
 import TeamForm from '../components/TeamForm';
+import TournamentForm from '../components/TournamentForm';
 
 const Cs2Page = () => {
   const [activeTab, setActiveTab] = useState('overview');
@@ -28,6 +29,7 @@ const Cs2Page = () => {
   const [editingTeam, setEditingTeam] = useState(null);
   const [loadingTeams, setLoadingTeams] = useState(true);
   const [teamError, setTeamError] = useState(null);
+  const [showTournamentForm, setShowTournamentForm] = useState(false);
 
   useEffect(() => {
     // Загружаем данные пользователя при монтировании компонента
@@ -330,6 +332,37 @@ const Cs2Page = () => {
     }
   };
 
+  const fetchTournaments = async () => {
+    try {
+      const response = await fetch('http://localhost:5001/api/tournaments');
+      if (!response.ok) {
+        throw new Error('Ошибка при загрузке турниров');
+      }
+      const data = await response.json();
+      setTournaments(data);
+    } catch (err) {
+      console.error('Error fetching tournaments:', err);
+      setError('Ошибка при загрузке турниров');
+    }
+  };
+
+  useEffect(() => {
+    fetchTournaments();
+  }, []);
+
+  const handleSaveTournament = async (newTournament) => {
+    try {
+      // Обновляем список турниров
+      const response = await fetch('http://localhost:5001/api/tournaments');
+      const tournaments = await response.json();
+      setTournaments(tournaments);
+      setShowTournamentForm(false);
+    } catch (err) {
+      console.error('Error saving tournament:', err);
+      setError(err.message);
+    }
+  };
+
   return (
     <div className={styles.wrapper}>
       <div className={styles.container}>
@@ -488,56 +521,28 @@ const Cs2Page = () => {
         <section id="tournaments-section" className={styles.section}>
           <div className={styles.sectionHeader}>
             <h2 className={styles.sectionTitle}>Турниры</h2>
-            <button className={styles.addButton}>
+            <button className={styles.addButton} onClick={() => setShowTournamentForm(true)}>
               <FiPlus className={styles.addIcon} />
               Добавить турнир
             </button>
           </div>
           <div className={styles.tournamentsGrid}>
-            <div className={styles.tournamentCard}>
-              <div className={styles.tournamentHeader}>
-                <img src="/images/organizers/pgl.png" alt="PGL" className={styles.organizerLogo} />
-                <span className={styles.tournamentStatus}>Завершен</span>
+            {tournaments.map(tournament => (
+              <div key={tournament.id} className={styles.tournamentCard}>
+                <h3>{tournament.name}</h3>
+                <p>{tournament.description}</p>
+                <p>Дата начала: {new Date(tournament.start_date).toLocaleDateString()}</p>
+                <p>Дата окончания: {new Date(tournament.end_date).toLocaleDateString()}</p>
+                <div className={styles.tournamentTeams}>
+                  <h4>Участники:</h4>
+                  <ul>
+                    {tournament.teams.map(team => (
+                      <li key={team.id}>{team.name}</li>
+                    ))}
+                  </ul>
               </div>
-              <h3>PGL Major Copenhagen 2024</h3>
-              <div className={styles.tournamentMeta}>
-                <span><FiCalendar /> 21 марта - 3 апреля 2024</span>
-                <span><FiAward /> $1,250,000</span>
-                <span><FiUsers /> 24 команд</span>
-                <span><FiMap /> Копенгаген, Дания</span>
               </div>
-              <a href="#" className={styles.detailsLink}>Подробнее</a>
-            </div>
-
-            <div className={styles.tournamentCard}>
-              <div className={styles.tournamentHeader}>
-                <img src="/images/organizers/esl.png" alt="ESL" className={styles.organizerLogo} />
-                <span className={styles.tournamentStatus}>Завершен</span>
-              </div>
-              <h3>IEM Katowice 2024</h3>
-              <div className={styles.tournamentMeta}>
-                <span><FiCalendar /> 31 января - 12 февраля 2024</span>
-                <span><FiAward /> $1,000,000</span>
-                <span><FiUsers /> 24 команд</span>
-                <span><FiMap /> Катовице, Польша</span>
-              </div>
-              <a href="#" className={styles.detailsLink}>Подробнее</a>
-            </div>
-
-            <div className={styles.tournamentCard}>
-              <div className={styles.tournamentHeader}>
-                <img src="/images/organizers/blast.png" alt="BLAST" className={styles.organizerLogo} />
-                <span className={styles.tournamentStatus}>Предстоящий</span>
-              </div>
-              <h3>BLAST Premier World Final 2024</h3>
-              <div className={styles.tournamentMeta}>
-                <span><FiCalendar /> 12-17 декабря 2024</span>
-                <span><FiAward /> $1,000,000</span>
-                <span><FiUsers /> 8 команд</span>
-                <span><FiMap /> Абу-Даби, ОАЭ</span>
-              </div>
-              <a href="#" className={styles.detailsLink}>Подробнее</a>
-            </div>
+            ))}
           </div>
         </section>
 
@@ -586,64 +591,64 @@ const Cs2Page = () => {
                 {[...teams]
                   .sort((a, b) => b.points - a.points)
                   .map((team, index) => (
-                    <div key={team.id} className={styles.teamRow}>
+                <div key={team.id} className={styles.teamRow}>
                       <div className={styles.tableCell}>
-                        <span className={styles.rank}>#{index + 1}</span>
+                  <span className={styles.rank}>#{index + 1}</span>
                       </div>
                       <div className={styles.tableCell}>
-                        <div className={styles.teamInfo}>
-                          {team.logo ? (
-                            <img 
-                              src={team.logo} 
-                              alt={team.name} 
-                              className={styles.teamLogo}
-                            />
-                          ) : (
-                            <div className={styles.defaultIcon}>
-                              <FiUsers />
-                            </div>
-                          )}
-                          <span className={styles.teamName}>{team.name}</span>
-                        </div>
+                  <div className={styles.teamInfo}>
+                    {team.logo ? (
+                      <img 
+                        src={team.logo} 
+                        alt={team.name} 
+                        className={styles.teamLogo}
+                      />
+                    ) : (
+                      <div className={styles.defaultIcon}>
+                        <FiUsers />
+                      </div>
+                    )}
+                    <span className={styles.teamName}>{team.name}</span>
+                  </div>
                       </div>
                       <div className={styles.tableCell}>
-                        <span className={styles.points}>{team.points}</span>
+                  <span className={styles.points}>{team.points}</span>
                       </div>
                       <div className={styles.tableCell}>
-                        <span className={styles.teamCountry}>
-                          <FiMap /> {team.country || 'Не указана'}
-                        </span>
+                  <span className={styles.teamCountry}>
+                    <FiMap /> {team.country || 'Не указана'}
+                  </span>
                       </div>
                       <div className={styles.tableCell}>
-                        <span className={styles.teamFounded}>
-                          {team.founded || 'Не указан'}
-                        </span>
+                  <span className={styles.teamFounded}>
+                    {team.founded || 'Не указан'}
+                  </span>
                       </div>
                       {user && user.role === 'admin' && (
                         <div className={styles.tableCell}>
-                          <div className={styles.teamActions}>
-                            <button 
-                              className={styles.editButton}
-                              onClick={() => {
-                                setEditingTeam(team);
-                                setShowTeamForm(true);
-                              }}
-                              title="Редактировать команду"
-                            >
-                              <FiEdit2 />
-                            </button>
-                            <button 
-                              className={styles.deleteButton}
-                              onClick={() => handleDeleteTeam(team.id)}
-                              title="Удалить команду"
-                            >
-                              <FiTrash2 />
-                            </button>
-                          </div>
+                  <div className={styles.teamActions}>
+                    <button 
+                      className={styles.editButton}
+                      onClick={() => {
+                        setEditingTeam(team);
+                        setShowTeamForm(true);
+                      }}
+                      title="Редактировать команду"
+                    >
+                      <FiEdit2 />
+                    </button>
+                    <button 
+                      className={styles.deleteButton}
+                      onClick={() => handleDeleteTeam(team.id)}
+                      title="Удалить команду"
+                    >
+                      <FiTrash2 />
+                    </button>
+                  </div>
                         </div>
                       )}
-                    </div>
-                  ))}
+                </div>
+              ))}
               </div>
             </div>
           )}
@@ -835,6 +840,13 @@ const Cs2Page = () => {
             }}
             onSave={handleSaveTeam}
             initialData={editingTeam}
+          />
+        )}
+
+        {showTournamentForm && (
+          <TournamentForm
+            onClose={() => setShowTournamentForm(false)}
+            onSave={handleSaveTournament}
           />
         )}
       </div>

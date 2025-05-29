@@ -354,82 +354,270 @@
 
 .tournamentsGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 2rem;
+  grid-template-columns: repeat(auto-fill, minmax(480px, 1fr));
+  gap: 2.5rem;
+  margin-top: 2rem;
 }
 
 .tournamentCard {
   background: var(--cs-dark);
-  border-radius: 12px;
-  padding: 1.5rem;
-  transition: all 0.3s ease;
+  border-radius: 24px;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-  border: 1px solid var(--cs-border);
+  min-height: 460px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.tournamentCard::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 70, 85, 0.05) 0%,
+    rgba(255, 255, 255, 0.03) 100%
+  );
+  z-index: 1;
 }
 
 .tournamentCard:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-  border-color: var(--cs-primary);
-}
-
-.tournamentHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.organizerLogo {
-  width: 40px;
-  height: 40px;
-  object-fit: contain;
-}
-
-.tournamentStatus {
-  padding: 0.5rem 1rem;
-  border-radius: 20px;
-  font-size: 0.9rem;
-  font-weight: 500;
-  background: var(--cs-dark);
-  color: var(--cs-gray);
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 20px 40px rgba(255, 70, 85, 0.1);
+  border-color: rgba(255, 70, 85, 0.2);
 }
 
 .tournamentCard h3 {
-  font-size: 1.2rem;
-  font-weight: 600;
   color: var(--cs-light);
+  font-size: 1.85rem;
   margin: 0;
+  font-weight: 800;
+  line-height: 1.2;
+  padding: 2rem 2rem 1rem;
+  position: relative;
+  z-index: 2;
+  letter-spacing: -0.5px;
 }
 
-.tournamentMeta {
+.tournamentCard h3::after {
+  content: '';
+  position: absolute;
+  bottom: 0.5rem;
+  left: 2rem;
+  width: 3rem;
+  height: 3px;
+  background: var(--cs-primary);
+  border-radius: 2px;
+  opacity: 0.8;
+}
+
+.tournamentCard p {
+  color: var(--cs-accent);
+  margin: 0;
+  line-height: 1.6;
+  font-size: 1.05rem;
+  opacity: 0.85;
+  padding: 0 2rem 1.5rem;
+  position: relative;
+  z-index: 2;
+}
+
+.tournamentCard .tournamentInfo {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.25rem;
+  margin: 0 2rem;
+  padding: 1.75rem;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 16px;
+  position: relative;
+  z-index: 2;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.tournamentCard .tournamentInfo span {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  color: var(--cs-accent);
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.tournamentCard .tournamentInfo svg {
+  color: var(--cs-primary);
+  font-size: 1.25rem;
+  opacity: 0.8;
+}
+
+.tournamentCard .tournamentTeams {
+  margin: 2rem;
+  padding: 1.75rem;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 16px;
+  flex-grow: 1;
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  position: relative;
+  z-index: 2;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.tournamentMeta span {
+.tournamentCard .tournamentTeams h4 {
+  color: var(--cs-light);
+  font-size: 1.2rem;
+  margin: 0 0 1.25rem 0;
+  font-weight: 700;
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  color: var(--cs-gray);
+  letter-spacing: -0.5px;
+}
+
+.tournamentCard .tournamentTeams h4::before {
+  content: '';
+  display: block;
+  width: 4px;
+  height: 20px;
+  background: var(--cs-primary);
+  border-radius: 2px;
+  opacity: 0.8;
+}
+
+.tournamentCard .tournamentTeams ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 1rem;
+  flex-grow: 1;
+}
+
+.tournamentCard .tournamentTeams li {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--cs-accent);
+  padding: 0.875rem 1rem;
+  border-radius: 12px;
   font-size: 0.95rem;
-}
-
-.detailsLink {
-  color: var(--cs-primary);
-  text-decoration: none;
-  font-weight: 600;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
+  font-weight: 500;
   transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.detailsLink:hover {
-  color: var(--cs-primary-dark);
-  gap: 0.75rem;
+.tournamentCard .tournamentTeams li::before {
+  content: '';
+  display: block;
+  width: 8px;
+  height: 8px;
+  background: var(--cs-primary);
+  border-radius: 50%;
+  opacity: 0.8;
+}
+
+.tournamentCard .tournamentTeams li:hover {
+  background: rgba(255, 70, 85, 0.08);
+  transform: translateY(-3px);
+  border-color: rgba(255, 70, 85, 0.2);
+}
+
+.tournamentCard .tournamentStatus {
+  position: absolute;
+  top: 2rem;
+  right: 2rem;
+  padding: 0.5rem 1rem;
+  border-radius: 30px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  z-index: 2;
+  backdrop-filter: blur(10px);
+}
+
+.tournamentCard .tournamentStatus.upcoming {
+  background: rgba(255, 70, 85, 0.1);
+  color: var(--cs-primary);
+  border: 1px solid rgba(255, 70, 85, 0.2);
+}
+
+.tournamentCard .tournamentStatus.upcoming::before {
+  background: var(--cs-primary);
+  box-shadow: 0 0 12px var(--cs-primary);
+}
+
+.tournamentCard .tournamentStatus.ongoing {
+  background: rgba(0, 255, 0, 0.1);
+  color: #00ff00;
+  border: 1px solid rgba(0, 255, 0, 0.2);
+}
+
+.tournamentCard .tournamentStatus.ongoing::before {
+  background: #00ff00;
+  box-shadow: 0 0 12px #00ff00;
+}
+
+.tournamentCard .tournamentStatus.completed {
+  background: rgba(128, 128, 128, 0.1);
+  color: #808080;
+  border: 1px solid rgba(128, 128, 128, 0.2);
+}
+
+.tournamentCard .tournamentStatus.completed::before {
+  background: #808080;
+  box-shadow: 0 0 12px #808080;
+}
+
+@media (max-width: 1200px) {
+  .tournamentsGrid {
+    grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .tournamentsGrid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  
+  .tournamentCard {
+    min-height: auto;
+  }
+  
+  .tournamentCard h3 {
+    font-size: 1.5rem;
+    padding: 1.5rem 1.5rem 0.75rem;
+  }
+  
+  .tournamentCard p {
+    padding: 0 1.5rem 1.25rem;
+  }
+  
+  .tournamentCard .tournamentInfo,
+  .tournamentCard .tournamentTeams {
+    margin: 0 1.5rem;
+    padding: 1.5rem;
+  }
+  
+  .tournamentCard .tournamentTeams ul {
+    grid-template-columns: 1fr;
+  }
+  
+  .tournamentCard .tournamentStatus {
+    top: 1.5rem;
+    right: 1.5rem;
+  }
 }
 
 /* Топ команд */
@@ -1473,35 +1661,219 @@
 
 .modalHeader {
   display: flex;
-  justify-content: space-between; /* Сохраняем space-between для заголовка и крестика */
-  align-items: flex-start; /* Выравниваем элементы по верху */
+  justify-content: space-between;
+  align-items: flex-start;
   margin-bottom: 1.5rem;
-  padding-bottom: 0; /* Убираем padding снизу */
-  border-bottom: none; /* Убираем рамку снизу */
+  padding-bottom: 0;
+  border-bottom: none;
 }
 
 .modalHeader h2 {
-  margin: 0; /* Убираем все margin */
+  margin: 0;
   color: var(--cs-light);
   font-size: 1.8rem;
   font-weight: 700;
-  text-align: center; /* Центрируем текст заголовка */
+  text-align: center;
   flex-grow: 1;
   margin-right: 1rem;
-  position: relative; /* Делаем заголовок относительным для позиционирования полосы */
-  padding-bottom: 0.75rem; /* Отступ для полосы */
+  position: relative;
+  padding-bottom: 0.75rem;
 }
 
 .modalHeader h2::after {
   content: '';
   position: absolute;
   bottom: 0;
-  left: 50%; /* Центрируем полосу по горизонтали */
+  left: 50%;
   transform: translateX(-50%);
-  width: 80px; /* Ширина полосы */
-  height: 3px; /* Толщина полосы */
-  background: var(--cs-primary); /* Цвет полосы */
+  width: 80px;
+  height: 3px;
+  background: var(--cs-primary);
   border-radius: 3px;
+}
+
+.closeButton {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: var(--cs-gray);
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0.75rem;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  z-index: 10;
+}
+
+.closeButton:hover {
+  background: rgba(255, 70, 85, 0.2);
+  color: var(--cs-primary);
+  transform: rotate(90deg);
+}
+
+.closeButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.teamSelect {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid var(--cs-border);
+  border-radius: 8px;
+  background: var(--cs-secondary);
+  color: var(--cs-accent);
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.teamSelect:hover {
+  border-color: var(--cs-primary);
+}
+
+.teamSelect:focus {
+  outline: none;
+  border-color: var(--cs-primary);
+}
+
+.teamSelect option {
+  padding: 0.75rem;
+  background: var(--cs-secondary);
+  color: var(--cs-accent);
+  cursor: pointer;
+}
+
+.teamSelect option:checked {
+  background: rgba(255, 70, 85, 0.1);
+  color: var(--cs-primary);
+}
+
+.selectedTeams {
+  margin-top: 0.75rem;
+  padding: 0.5rem 1rem;
+  background: var(--cs-secondary);
+  border: 1px solid var(--cs-border);
+  border-radius: 8px;
+  color: var(--cs-accent);
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.loadingTeams {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: var(--cs-secondary);
+  border: 1px solid var(--cs-border);
+  border-radius: 8px;
+  color: var(--cs-accent);
+  font-size: 0.9rem;
+}
+
+.loadingTeams .spinner {
+  animation: spin 1s linear infinite;
+  color: var(--cs-primary);
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Стилизация скроллбара для select */
+.teamSelect::-webkit-scrollbar {
+  width: 6px;
+}
+
+.teamSelect::-webkit-scrollbar-track {
+  background: var(--cs-secondary);
+}
+
+.teamSelect::-webkit-scrollbar-thumb {
+  background: var(--cs-border);
+  border-radius: 3px;
+}
+
+.teamSelect::-webkit-scrollbar-thumb:hover {
+  background: var(--cs-primary);
+}
+
+/* Стили для множественного выбора */
+.teamSelect[multiple] {
+  padding: 0;
+}
+
+.teamSelect[multiple] option {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--cs-border);
+}
+
+.teamSelect[multiple] option:last-child {
+  border-bottom: none;
+}
+
+.teamSelect[multiple] option:checked {
+  background: rgba(255, 70, 85, 0.1);
+  color: var(--cs-primary);
+}
+
+.teamSelect[multiple] option:hover:not(:checked) {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* Стили для модального окна */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(15, 25, 35, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal {
+  background: var(--cs-dark);
+  border-radius: 12px;
+  width: 90%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  border: 1px solid var(--cs-border);
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  border-bottom: none;
+}
+
+.modalHeader h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: var(--cs-accent);
 }
 
 .closeButton {
@@ -1547,162 +1919,234 @@
 }
 
 .formGroup {
+  margin-bottom: 1.5rem;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
 }
 
 .formGroup label {
-  color: var(--cs-light);
-  font-size: 1rem;
-  font-weight: 500;
+  color: var(--cs-accent);
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
-.formGroup input[type="text"],
-.formGroup input[type="number"],
-.formGroup textarea,
-.formGroup select {
-  padding: 0.9rem 1rem;
-  border: 1px solid rgba(255, 70, 85, 0.2);
+.formGroup input,
+.formGroup select,
+.formGroup textarea {
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--cs-border);
   border-radius: 8px;
   background: var(--cs-secondary);
-  color: var(--cs-light);
+  color: var(--cs-accent);
   font-size: 1rem;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  transition: all 0.3s ease;
 }
 
-.formGroup input[type="text"]::placeholder,
-.formGroup input[type="number"]::placeholder,
-.formGroup textarea::placeholder {
-  color: var(--cs-gray);
+.formGroup input:hover,
+.formGroup select:hover,
+.formGroup textarea:hover {
+  border-color: var(--cs-primary);
+  background: rgba(255, 255, 255, 0.05);
 }
 
-.formGroup input[type="text"]:focus,
-.formGroup input[type="number"]:focus,
-.formGroup textarea:focus,
-.formGroup select:focus {
+.formGroup input:focus,
+.formGroup select:focus,
+.formGroup textarea:focus {
   outline: none;
   border-color: var(--cs-primary);
-  box-shadow: 0 0 0 3px rgba(255, 70, 85, 0.1);
+  box-shadow: 0 0 0 2px rgba(255, 70, 85, 0.1);
+  background: rgba(255, 255, 255, 0.07);
 }
 
 .formGroup textarea {
   resize: vertical;
+  min-height: 100px;
 }
 
 .formGroup select {
   appearance: none;
-  background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2220%22%20height%3D%2220%22%20fill%3D%22%23ff4655%22%20viewBox%3D%220%200%2020%22%3E%3Cpath%20d%3D%22M5%206l5%205%205-5%202%202-7%207-7-7%202-2z%22%2F%3E%3C%2Fsvg%3E');
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23ff4655' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 1rem center;
+  background-size: 1rem;
   padding-right: 2.5rem;
-}
-
-/* Стили для загрузки изображения */
-.imageUploadGroup {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1.5rem;
-  margin: 2rem 0;
+  cursor: pointer;
   width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--cs-border);
+  border-radius: 8px;
+  background-color: var(--cs-secondary);
+  color: var(--cs-accent);
+  font-size: 1rem;
+  transition: all 0.3s ease;
 }
 
-.imageUploadLabel {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
+.formGroup select:hover {
+  border-color: var(--cs-primary);
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.formGroup select:focus {
+  outline: none;
+  border-color: var(--cs-primary);
+  box-shadow: 0 0 0 2px rgba(255, 70, 85, 0.1);
+}
+
+.formGroup select option {
+  padding: 0.75rem;
+  background: var(--cs-secondary);
+  color: var(--cs-accent);
+  cursor: pointer;
+}
+
+.formGroup select option:checked {
+  background: rgba(255, 70, 85, 0.1);
+  color: var(--cs-primary);
+}
+
+.formGroup select option:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* Стилизация скроллбара для select */
+.formGroup select::-webkit-scrollbar {
+  width: 6px;
+}
+
+.formGroup select::-webkit-scrollbar-track {
+  background: var(--cs-secondary);
+}
+
+.formGroup select::-webkit-scrollbar-thumb {
+  background: var(--cs-border);
+  border-radius: 3px;
+}
+
+.formGroup select::-webkit-scrollbar-thumb:hover {
   background: var(--cs-primary);
-  color: var(--cs-light);
-  padding: 0.75rem 1.5rem;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 600;
-  transition: background-color 0.3s ease, transform 0.3s ease;
-  width: fit-content;
 }
 
-.imageUploadLabel:hover {
-  background: var(--cs-primary-dark);
-  transform: translateY(-2px);
+/* Стили для множественного выбора */
+.formGroup select[multiple] {
+  padding: 0;
 }
 
-.imageUploadInput {
-  display: none;
+.formGroup select[multiple] option {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--cs-border);
 }
 
-.imagePreviewContainer {
-  width: 100%;
-  max-width: 300px;
-  min-height: 150px;
-  border: 1px dashed rgba(255, 70, 85, 0.4);
-  border-radius: 8px;
-  padding: 1rem;
+.formGroup select[multiple] option:last-child {
+  border-bottom: none;
+}
+
+.formGroup select[multiple] option:checked {
+  background: rgba(255, 70, 85, 0.1);
+  color: var(--cs-primary);
+}
+
+.formGroup select[multiple] option:hover:not(:checked) {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.formGroup input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+.formGroup input[type="number"]::-webkit-outer-spin-button,
+.formGroup input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.formGroup small {
+  color: var(--cs-accent);
+  opacity: 0.7;
+  font-size: 0.8rem;
+}
+
+.formGroup .required {
+  color: var(--cs-primary);
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+.formGroup.prizePool {
   position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: var(--cs-dark);
 }
 
-.imagePreview {
-  max-width: 100%;
-  max-height: 200px;
-  border-radius: 4px;
-  object-fit: contain;
+.formGroup.prizePool input {
+  padding-left: 2rem;
 }
 
-.removeImageButton {
+.formGroup.prizePool::before {
+  content: '$';
   position: absolute;
-  top: 0.5rem;
-  right: 0.5rem;
-  background: rgba(0, 0, 0, 0.6);
-  color: var(--cs-light);
-  border: none;
-  border-radius: 50%;
-  width: 24px;
-  height: 24px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--cs-accent);
+  font-size: 1rem;
+  pointer-events: none;
+}
+
+.formGroup.status select {
+  background-color: var(--cs-secondary);
+  color: var(--cs-accent);
+  border: 1px solid var(--cs-border);
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
   cursor: pointer;
-  font-size: 0.9rem;
-  transition: background-color 0.3s ease;
+  transition: all 0.3s ease;
 }
 
-.removeImageButton:hover {
-  background: rgba(0, 0, 0, 0.8);
+.formGroup.status select:hover {
+  border-color: var(--cs-primary);
+  background: rgba(255, 255, 255, 0.05);
 }
 
-/* Стили для сетки статистики внутри формы */
-.statsGrid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1rem;
+.formGroup.status select:focus {
+  outline: none;
+  border-color: var(--cs-primary);
+  box-shadow: 0 0 0 2px rgba(255, 70, 85, 0.1);
+}
+
+.formGroup.rules textarea {
+  min-height: 150px;
+  line-height: 1.6;
+}
+
+.formGroup.maxTeams input {
+  width: 100px;
 }
 
 .formActions {
   display: flex;
-  gap: 1rem;
+  gap: 1.5rem;
   margin-top: 2rem;
 }
 
 .saveButton,
 .cancelButton {
-  padding: 0.9rem 1.5rem;
+  padding: 1rem 2rem;
   border: none;
   border-radius: 8px;
+  font-size: 1.1rem;
   cursor: pointer;
-  font-weight: 600;
-  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
   transition: all 0.3s ease;
   flex: 1;
-  text-align: center;
 }
 
 .saveButton {
   background: var(--cs-primary);
-  color: var(--cs-light);
+  color: var(--cs-accent);
 }
 
 .saveButton:hover:not(:disabled) {
@@ -1711,96 +2155,687 @@
   box-shadow: 0 4px 12px rgba(255, 70, 85, 0.2);
 }
 
-.saveButton:disabled {
-  background: #555;
-  cursor: not-allowed;
-}
-
 .cancelButton {
   background: var(--cs-secondary);
-  color: var(--cs-light);
+  color: var(--cs-accent);
   border: 1px solid var(--cs-border);
 }
 
 .cancelButton:hover:not(:disabled) {
-  background: #3a3a3a;
+  background: rgba(255, 70, 85, 0.1);
   transform: translateY(-2px);
 }
 
-/* Адаптивность для формы */
-@media (max-width: 480px) {
-  .modal {
-    padding: 1.5rem;
-  }
+.saveButton:disabled,
+.cancelButton:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
 
-  .modalHeader h2 {
-    font-size: 1.5rem;
-  }
+/* Стили для загрузки изображения */
+.imageUploadContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+  padding: 2rem;
+  background: var(--cs-secondary);
+  border-radius: 16px;
+  border: 1px solid var(--cs-border);
+}
 
-  .closeButton {
-    top: 1rem;
-    right: 1rem;
-    font-size: 1.2rem;
-  }
+.imagePreview {
+  width: 200px;
+  height: 200px;
+  border-radius: 12px;
+  overflow: hidden;
+  position: relative;
+  background: var(--cs-dark);
+  border: 2px dashed var(--cs-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
 
-  .formGroup label {
-    font-size: 0.9rem;
-  }
+.imagePreview:hover {
+  border-color: var(--cs-primary);
+  background: rgba(255, 70, 85, 0.05);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 70, 85, 0.1);
+}
 
-  .formGroup input[type="text"],
-  .formGroup input[type="number"],
-  .formGroup textarea,
-  .formGroup select {
-    padding: 0.75rem 1rem;
-    font-size: 0.9rem;
-  }
+.imagePreview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
 
-  .statsGrid {
-    grid-template-columns: 1fr;
-  }
+.imagePreview .placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  color: var(--cs-gray);
+  text-align: center;
+  padding: 2rem;
+}
 
-  .formActions {
-    flex-direction: column;
+.imagePreview .placeholder svg {
+  font-size: 3rem;
+  color: var(--cs-primary);
+  opacity: 0.5;
+  transition: all 0.3s ease;
+}
+
+.imagePreview:hover .placeholder svg {
+  opacity: 0.8;
+  transform: scale(1.1);
+}
+
+.imagePreview .removeImage {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  background: rgba(15, 25, 35, 0.8);
+  border: none;
+  color: var(--cs-accent);
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  opacity: 0;
+  transform: scale(0.8);
+  backdrop-filter: blur(4px);
+}
+
+.imagePreview:hover .removeImage {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.imagePreview .removeImage:hover {
+  background: var(--cs-primary);
+  transform: scale(1.1);
+}
+
+.uploadButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 1rem 2rem;
+  background: var(--cs-primary);
+  color: var(--cs-accent);
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: auto;
+  min-width: 200px;
+  box-shadow: 0 4px 12px rgba(255, 70, 85, 0.2);
+}
+
+.uploadButton:hover {
+  background: var(--cs-primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(255, 70, 85, 0.3);
+}
+
+.uploadButton:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(255, 70, 85, 0.2);
+}
+
+.uploadButton svg {
+  font-size: 1.25rem;
+  color: var(--cs-accent);
+  transition: transform 0.3s ease;
+}
+
+.uploadButton:hover svg {
+  transform: translateY(-1px);
+}
+
+.uploadButton input[type="file"] {
+  display: none;
+}
+
+.uploadInfo {
+  color: var(--cs-gray);
+  font-size: 0.9rem;
+  text-align: center;
+  margin-top: 0.5rem;
+  max-width: 300px;
+}
+
+.uploadInfo span {
+  color: var(--cs-primary);
+  font-weight: 500;
+}
+
+/* Анимация загрузки */
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
   }
 }
 
-@media (max-width: 768px) {
-  .playerSpotlight {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    padding: 1.5rem;
-    gap: 1.5rem;
-  }
+.uploading .imagePreview {
+  animation: pulse 1.5s infinite;
+}
 
-  .playerImage {
+.uploading .uploadButton {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+  .imagePreview {
     width: 150px;
     height: 150px;
-    margin-bottom: 0.5rem;
   }
+  
+  .uploadButton {
+    width: 100%;
+    max-width: 300px;
+  }
+  
+  .imagePreview .placeholder svg {
+    font-size: 2.5rem;
+  }
+}
 
-  .playerInfo h3 {
+@media (max-width: 480px) {
+  .imagePreview {
+    width: 120px;
+    height: 120px;
+  }
+  
+  .imagePreview .placeholder {
+    padding: 1rem;
+  }
+  
+  .imagePreview .placeholder svg {
     font-size: 2rem;
   }
 
-  .playerTeam {
-    justify-content: center;
+  .uploadButton {
+    padding: 0.875rem 1.5rem;
+    font-size: 0.95rem;
+  }
+}
+
+.teamLogoUpload {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+  padding: 2rem;
+  background: var(--cs-secondary);
+  border-radius: 16px;
+  border: 1px solid var(--cs-border);
+}
+
+.teamLogoPreview {
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  overflow: hidden;
+  position: relative;
+  background: var(--cs-dark);
+  border: 2px dashed var(--cs-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.teamLogoPreview:hover {
+  border-color: var(--cs-primary);
+  background: rgba(255, 70, 85, 0.05);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 70, 85, 0.1);
+}
+
+.teamLogoPreview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.teamLogoPreview .placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  color: var(--cs-gray);
+  text-align: center;
+  padding: 2rem;
+}
+
+.teamLogoPreview .placeholder svg {
+  font-size: 3rem;
+  color: var(--cs-primary);
+  opacity: 0.5;
+  transition: all 0.3s ease;
+}
+
+.teamLogoPreview:hover .placeholder svg {
+  opacity: 0.8;
+  transform: scale(1.1);
+}
+
+.teamLogoPreview .removeLogo {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  background: rgba(15, 25, 35, 0.8);
+  border: none;
+  color: var(--cs-accent);
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  opacity: 0;
+  transform: scale(0.8);
+  backdrop-filter: blur(4px);
+}
+
+.teamLogoPreview:hover .removeLogo {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.teamLogoPreview .removeLogo:hover {
+  background: var(--cs-primary);
+  transform: scale(1.1);
+}
+
+.teamLogoButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 1rem 2rem;
+  background: var(--cs-primary);
+  color: var(--cs-accent);
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: auto;
+  min-width: 200px;
+  box-shadow: 0 4px 12px rgba(255, 70, 85, 0.2);
+}
+
+.teamLogoButton:hover {
+  background: var(--cs-primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(255, 70, 85, 0.3);
+}
+
+.teamLogoButton:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(255, 70, 85, 0.2);
+}
+
+.teamLogoButton svg {
+  font-size: 1.25rem;
+  color: var(--cs-accent);
+  transition: transform 0.3s ease;
+}
+
+.teamLogoButton:hover svg {
+  transform: translateY(-1px);
+}
+
+.teamLogoButton input[type="file"] {
+  display: none;
+}
+
+.teamLogoInfo {
+  color: var(--cs-gray);
+  font-size: 0.9rem;
+  text-align: center;
+  margin-top: 0.5rem;
+  max-width: 300px;
+}
+
+.teamLogoInfo span {
+  color: var(--cs-primary);
+  font-weight: 500;
+}
+
+/* Анимация загрузки */
+.uploading .teamLogoPreview {
+  animation: pulse 1.5s infinite;
+}
+
+.uploading .teamLogoButton {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+  .teamLogoUpload {
+    padding: 1.5rem;
   }
 
-  .playerRole {
-    margin: 0 auto 1.5rem;
+  .teamLogoPreview {
+    width: 150px;
+    height: 150px;
   }
-
-  .playerStats {
-    grid-template-columns: repeat(2, 1fr);
+  
+  .teamLogoButton {
     width: 100%;
+    max-width: 300px;
+  }
+  
+  .teamLogoPreview .placeholder svg {
+    font-size: 2.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .teamLogoUpload {
+    padding: 1rem;
   }
 
-  .stat {
-    padding: 0.75rem;
+  .teamLogoPreview {
+    width: 120px;
+    height: 120px;
+  }
+  
+  .teamLogoPreview .placeholder {
+    padding: 1rem;
+  }
+  
+  .teamLogoPreview .placeholder svg {
+    font-size: 2rem;
   }
 
-  .statValue {
-    font-size: 1.5rem;
+  .teamLogoButton {
+    padding: 0.875rem 1.5rem;
+    font-size: 0.95rem;
+  }
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 0.875rem 1.75rem;
+  background: var(--cs-primary);
+  color: var(--cs-accent);
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  box-shadow: 0 4px 12px rgba(255, 70, 85, 0.2);
+}
+
+.button:hover {
+  background: var(--cs-primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(255, 70, 85, 0.3);
+}
+
+.button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(255, 70, 85, 0.2);
+}
+
+.button svg {
+  font-size: 1.25rem;
+  color: var(--cs-accent);
+  transition: transform 0.3s ease;
+}
+
+.button:hover svg {
+  transform: translateY(-1px);
+}
+
+.button:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.button.secondary {
+  background: var(--cs-secondary);
+  color: var(--cs-accent);
+  border: 1px solid var(--cs-border);
+  box-shadow: none;
+}
+
+.button.secondary:hover {
+  background: rgba(255, 70, 85, 0.1);
+  border-color: var(--cs-primary);
+  box-shadow: 0 4px 12px rgba(255, 70, 85, 0.1);
+}
+
+.button.outline {
+  background: transparent;
+  color: var(--cs-primary);
+  border: 2px solid var(--cs-primary);
+  box-shadow: none;
+}
+
+.button.outline:hover {
+  background: rgba(255, 70, 85, 0.1);
+  box-shadow: 0 4px 12px rgba(255, 70, 85, 0.1);
+}
+
+.button.small {
+  padding: 0.625rem 1.25rem;
+  font-size: 0.9rem;
+}
+
+.button.large {
+  padding: 1rem 2rem;
+  font-size: 1.1rem;
+}
+
+.button.fullWidth {
+  width: 100%;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+  .button {
+    padding: 0.75rem 1.5rem;
+  }
+  
+  .button.large {
+    padding: 0.875rem 1.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .button {
+    padding: 0.625rem 1.25rem;
+    font-size: 0.95rem;
+  }
+  
+  .button.large {
+    padding: 0.75rem 1.5rem;
+  }
+}
+
+.formGroup.imageUploadGroup {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  margin-top: 1rem;
+  padding: 2rem;
+  background: var(--cs-secondary);
+  border-radius: 16px;
+  border: 1px solid var(--cs-border);
+}
+
+.imageUploadLabel {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 1rem 2rem;
+  background: var(--cs-primary);
+  color: var(--cs-accent);
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: auto;
+  min-width: 200px;
+  box-shadow: 0 4px 12px rgba(255, 70, 85, 0.2);
+}
+
+.imageUploadLabel:hover {
+  background: var(--cs-primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(255, 70, 85, 0.3);
+}
+
+.imageUploadLabel:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(255, 70, 85, 0.2);
+}
+
+.imageUploadLabel svg {
+  font-size: 1.25rem;
+  color: var(--cs-accent);
+  transition: transform 0.3s ease;
+}
+
+.imageUploadLabel:hover svg {
+  transform: translateY(-1px);
+}
+
+.imageUploadInput {
+  display: none;
+}
+
+.imagePreviewContainer {
+  position: relative;
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: var(--cs-dark);
+  border: 2px dashed var(--cs-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.imagePreviewContainer:hover {
+  border-color: var(--cs-primary);
+  background: rgba(255, 70, 85, 0.05);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 70, 85, 0.1);
+}
+
+.imagePreview {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.removeImageButton {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  background: rgba(15, 25, 35, 0.8);
+  border: none;
+  color: var(--cs-accent);
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  opacity: 0;
+  transform: scale(0.8);
+  backdrop-filter: blur(4px);
+}
+
+.imagePreviewContainer:hover .removeImageButton {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.removeImageButton:hover {
+  background: var(--cs-primary);
+  transform: scale(1.1);
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+  .formGroup.imageUploadGroup {
+    padding: 1.5rem;
+  }
+
+  .imagePreviewContainer {
+    width: 150px;
+    height: 150px;
+  }
+  
+  .imageUploadLabel {
+    width: 100%;
+    max-width: 300px;
+  }
+}
+
+@media (max-width: 480px) {
+  .formGroup.imageUploadGroup {
+    padding: 1rem;
+  }
+
+  .imagePreviewContainer {
+    width: 120px;
+    height: 120px;
+  }
+  
+  .imageUploadLabel {
+    padding: 0.875rem 1.5rem;
+    font-size: 0.95rem;
   }
 }

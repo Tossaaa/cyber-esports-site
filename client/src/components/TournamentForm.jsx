@@ -1,170 +1,185 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { FiCalendar, FiUpload } from 'react-icons/fi';
-import { FaTimes } from 'react-icons/fa';
-import styles from '../styles/TournamentForm.module.css';
+import { FiX, FiLoader } from 'react-icons/fi';
+import styles from '../styles/CS2Page.module.css';
 
-const TournamentForm = () => {
-  const navigate = useNavigate();
+const TournamentForm = ({ onClose, onSave }) => {
   const [formData, setFormData] = useState({
     name: '',
-    startDate: '',
-    endDate: '',
-    prize: '',
-    teams: '',
-    location: '',
+    description: '',
+    start_date: '',
+    end_date: '',
+    teamIds: [],
+    prize_pool: '',
     organizer: '',
-    logo: null,
-    status: 'upcoming'
+    location: '',
+    format: 'BO1',
+    rules: '',
+    logo: ''
   });
-  const [preview, setPreview] = useState(null);
+  const [teams, setTeams] = useState([]);
   const [error, setError] = useState('');
-  const [isEditing, setIsEditing] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLoadingTeams, setIsLoadingTeams] = useState(true);
 
-  // Установка минимальной даты как сегодняшней
   useEffect(() => {
-    const today = new Date().toISOString().split('T')[0];
-    setFormData(prev => ({
-      ...prev,
-      startDate: today,
-      endDate: today
-    }));
+    const fetchTeams = async () => {
+      setIsLoadingTeams(true);
+      try {
+        const response = await fetch('http://localhost:5001/api/teams/cs2');
+        if (!response.ok) {
+          throw new Error('Ошибка при загрузке команд');
+        }
+        const data = await response.json();
+        setTeams(data);
+      } catch (err) {
+        console.error('Error fetching teams:', err);
+        setError('Ошибка при загрузке команд');
+      } finally {
+        setIsLoadingTeams(false);
+      }
+    };
+
+    fetchTeams();
   }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    
-    // Валидация дат
-    if (name === 'startDate' && value > formData.endDate) {
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+
+    // Если изменилась дата начала, проверяем дату окончания
+    if (name === 'start_date' && formData.end_date && new Date(value) >= new Date(formData.end_date)) {
       setFormData(prev => ({
         ...prev,
-        [name]: value,
-        endDate: value
-      }));
-    } else if (name === 'endDate' && value < formData.startDate) {
-      setError('Дата окончания не может быть раньше даты начала');
-      return;
-    } else {
-      setFormData(prev => ({
-        ...prev,
-        [name]: value
+        end_date: ''
       }));
     }
-    
-    setError('');
   };
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      // Проверка размера файла (максимум 5MB)
-      if (file.size > 5 * 1024 * 1024) {
-        setError('Размер изображения не должен превышать 5MB');
-        return;
-      }
-
-      // Проверка типа файла
-      if (!file.type.startsWith('image/')) {
-        setError('Пожалуйста, загрузите изображение');
-        return;
-      }
-
-      setFormData(prev => ({
-        ...prev,
-        logo: file
-      }));
-
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPreview(reader.result);
-      };
-      reader.readAsDataURL(file);
-      setError('');
-    }
+  const handleTeamSelect = (e) => {
+    const selectedOptions = Array.from(e.target.selectedOptions, option => parseInt(option.value));
+    setFormData(prev => ({
+      ...prev,
+      teamIds: selectedOptions
+    }));
   };
 
   const validateForm = () => {
     if (!formData.name.trim()) {
-      setError('Введите название турнира');
-      return false;
+      throw new Error('Название турнира обязательно');
     }
-    if (!formData.organizer.trim()) {
-      setError('Введите название организатора');
-      return false;
+
+    if (!formData.start_date) {
+      throw new Error('Дата начала обязательна');
     }
-    if (!formData.prize) {
-      setError('Введите призовой фонд');
-      return false;
+
+    if (!formData.end_date) {
+      throw new Error('Дата окончания обязательна');
     }
-    if (!formData.teams || formData.teams < 2) {
-      setError('Минимальное количество команд - 2');
-      return false;
+
+    const startDate = new Date(formData.start_date);
+    const endDate = new Date(formData.end_date);
+    const now = new Date();
+    now.setHours(0, 0, 0, 0);
+
+    if (startDate < now) {
+      throw new Error('Дата начала не может быть в прошлом');
     }
-    if (!formData.location.trim()) {
-      setError('Введите место проведения');
-      return false;
+
+    if (endDate <= startDate) {
+      throw new Error('Дата окончания должна быть позже даты начала');
     }
-    if (!formData.logo) {
-      setError('Загрузите логотип турнира');
-      return false;
+
+    if (formData.teamIds.length === 0) {
+      throw new Error('Выберите хотя бы одну команду');
     }
-    return true;
+
+    if (formData.teamIds.length < 2) {
+      throw new Error('Для турнира необходимо минимум 2 команды');
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
+    if (isSubmitting) return;
     
-    if (!validateForm()) {
-      return;
-    }
-
+    setError('');
     setIsSubmitting(true);
 
     try {
-      const formDataToSend = new FormData();
-      Object.keys(formData).forEach(key => {
-        formDataToSend.append(key, formData[key]);
-      });
+      const token = localStorage.getItem('token');
+      if (!token) {
+        throw new Error('Необходимо авторизоваться');
+      }
+
+      validateForm();
+
+      // Преобразуем данные для отправки
+      const tournamentData = {
+        ...formData,
+        teams: formData.teamIds, // Переименовываем teamIds в teams
+        startDate: formData.start_date, // Переименовываем start_date в startDate
+        endDate: formData.end_date, // Переименовываем end_date в endDate
+        prizePool: formData.prize_pool, // Переименовываем prize_pool в prizePool
+      };
+
+      // Удаляем старые поля
+      delete tournamentData.teamIds;
+      delete tournamentData.start_date;
+      delete tournamentData.end_date;
+      delete tournamentData.prize_pool;
+
+      console.log('Отправка данных турнира:', tournamentData);
 
       const response = await fetch('http://localhost:5001/api/tournaments', {
         method: 'POST',
-        body: formDataToSend
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(tournamentData)
       });
 
       const data = await response.json();
-
+      console.log('Ответ сервера:', data);
+      
       if (!response.ok) {
         throw new Error(data.message || 'Ошибка при создании турнира');
       }
 
-      navigate('/discipline/cs2');
+      onSave(data);
+      onClose();
     } catch (err) {
+      console.error('Error creating tournament:', err);
       setError(err.message);
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const onClose = () => {
-    navigate('/discipline/cs2');
-  };
-
   return (
     <div className={styles.modalOverlay}>
       <div className={styles.modal}>
-        <button className={styles.closeButton} onClick={onClose} aria-label="Закрыть">
-          <FaTimes />
-        </button>
-        
-        <h2>{isEditing ? 'Редактировать турнир' : 'Добавить турнир'}</h2>
-        
-        {error && <div className={styles.errorMessage}>{error}</div>}
-        
-        <form onSubmit={handleSubmit} className={styles.form}>
+        <div className={styles.modalHeader}>
+          <h2>Создать турнир</h2>
+          <button className={styles.closeButton} onClick={onClose} disabled={isSubmitting}>
+            <FiX />
+          </button>
+        </div>
+
+        {error && (
+          <div className={styles.errorMessage}>
+            <p>{error}</p>
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} className={styles.teamForm}>
           <div className={styles.formGroup}>
-            <label htmlFor="name">Название турнира</label>
+            <label htmlFor="name">
+              Название турнира
+            </label>
             <input
               type="text"
               id="name"
@@ -172,8 +187,36 @@ const TournamentForm = () => {
               value={formData.name}
               onChange={handleChange}
               required
+              disabled={isSubmitting}
               placeholder="Введите название турнира"
               maxLength={100}
+            />
+          </div>
+
+          <div className={styles.formGroup}>
+            <label htmlFor="description">Описание</label>
+            <textarea
+              id="description"
+              name="description"
+              value={formData.description}
+              onChange={handleChange}
+              rows="4"
+              disabled={isSubmitting}
+              placeholder="Введите описание турнира"
+              maxLength={500}
+            />
+          </div>
+
+          <div className={styles.formGroup}>
+            <label htmlFor="prize_pool">Призовой фонд</label>
+            <input
+              type="text"
+              id="prize_pool"
+              name="prize_pool"
+              value={formData.prize_pool}
+              onChange={handleChange}
+              disabled={isSubmitting}
+              placeholder="Например: $100,000"
             />
           </div>
 
@@ -185,153 +228,143 @@ const TournamentForm = () => {
               name="organizer"
               value={formData.organizer}
               onChange={handleChange}
-              required
-              placeholder="Введите название организатора"
-              maxLength={50}
+              disabled={isSubmitting}
+              placeholder="Название организатора"
             />
           </div>
 
-          <div className={`${styles.formGroup} ${styles.prizePool}`}>
-            <div className={styles.prizeInput}>
-              <label htmlFor="prize">Призовой фонд</label>
-              <input
-                type="number"
-                id="prize"
-                name="prize"
-                value={formData.prize}
-                onChange={handleChange}
-                required
-                placeholder="Введите сумму"
-                min="0"
-                step="1000"
-              />
-              <span>$</span>
-            </div>
-            <div className={styles.prizeInput}>
-              <label htmlFor="teams">Количество команд</label>
-              <input
-                type="number"
-                id="teams"
-                name="teams"
-                value={formData.teams}
-                onChange={handleChange}
-                required
-                placeholder="Введите количество"
-                min="2"
-                max="32"
-              />
-              <span>команд</span>
-            </div>
-          </div>
-
-          <div className={`${styles.formGroup} ${styles.dates}`}>
-            <div className={styles.dateInput}>
-              <label htmlFor="startDate">
-                <FiCalendar /> Дата начала
-              </label>
-              <input
-                type="date"
-                id="startDate"
-                name="startDate"
-                value={formData.startDate}
-                onChange={handleChange}
-                required
-                min={new Date().toISOString().split('T')[0]}
-              />
-            </div>
-            <div className={styles.dateInput}>
-              <label htmlFor="endDate">
-                <FiCalendar /> Дата окончания
-              </label>
-              <input
-                type="date"
-                id="endDate"
-                name="endDate"
-                value={formData.endDate}
-                onChange={handleChange}
-                required
-                min={formData.startDate}
-              />
-            </div>
-          </div>
-
-          <div className={`${styles.formGroup} ${styles.fullWidth}`}>
-            <label htmlFor="location">Место проведения</label>
+          <div className={styles.formGroup}>
+            <label htmlFor="location">Локация</label>
             <input
               type="text"
               id="location"
               name="location"
               value={formData.location}
               onChange={handleChange}
-              required
-              placeholder="Введите место проведения"
-              maxLength={100}
+              disabled={isSubmitting}
+              placeholder="Место проведения турнира"
             />
           </div>
 
-          <div className={`${styles.formGroup} ${styles.status}`}>
-            <label htmlFor="status">Статус турнира</label>
+          <div className={styles.formGroup}>
+            <label htmlFor="format">Формат матчей</label>
             <select
-              id="status"
-              name="status"
-              value={formData.status}
+              id="format"
+              name="format"
+              value={formData.format}
               onChange={handleChange}
-              required
+              disabled={isSubmitting}
             >
-              <option value="upcoming">Предстоящий</option>
-              <option value="ongoing">Текущий</option>
-              <option value="completed">Завершенный</option>
+              <option value="BO1">BO1 (Best of 1)</option>
+              <option value="BO2">BO2 (Best of 2)</option>
+              <option value="BO3">BO3 (Best of 3)</option>
             </select>
           </div>
 
-          <div className={`${styles.formGroup} ${styles.imageUpload}`}>
-            <label>Логотип турнира</label>
-            <div 
-              className={styles.uploadPreview} 
-              onClick={() => document.getElementById('logo').click()}
-              role="button"
-              tabIndex={0}
-              onKeyPress={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  document.getElementById('logo').click();
-                }
-              }}
-            >
-              {preview ? (
-                <img src={preview} alt="Предпросмотр логотипа" />
-              ) : (
-                <div className={styles.uploadPlaceholder}>
-                  <FiUpload />
-                  <p>Нажмите для загрузки изображения</p>
-                  <span className={styles.uploadHint}>PNG, JPG до 5MB</span>
-                </div>
-              )}
-            </div>
-            <input
-              type="file"
-              id="logo"
-              name="logo"
-              accept="image/png,image/jpeg"
-              onChange={handleImageChange}
-              className={styles.fileInput}
+          <div className={styles.formGroup}>
+            <label htmlFor="rules">Правила турнира</label>
+            <textarea
+              id="rules"
+              name="rules"
+              value={formData.rules}
+              onChange={handleChange}
+              rows="4"
+              disabled={isSubmitting}
+              placeholder="Введите правила турнира"
             />
           </div>
 
+          <div className={styles.formGroup}>
+            <label htmlFor="start_date">
+              Дата начала
+            </label>
+            <input
+              type="date"
+              id="start_date"
+              name="start_date"
+              value={formData.start_date}
+              onChange={handleChange}
+              required
+              disabled={isSubmitting}
+              min={new Date().toISOString().split('T')[0]}
+            />
+          </div>
+
+          <div className={styles.formGroup}>
+            <label htmlFor="end_date">
+              Дата окончания
+            </label>
+            <input
+              type="date"
+              id="end_date"
+              name="end_date"
+              value={formData.end_date}
+              onChange={handleChange}
+              required
+              disabled={isSubmitting}
+              min={formData.start_date || new Date().toISOString().split('T')[0]}
+            />
+          </div>
+
+          <div className={styles.formGroup}>
+            <label htmlFor="teams">
+              Выберите команды
+            </label>
+            {isLoadingTeams ? (
+              <div className={styles.loadingTeams}>
+                <FiLoader className={styles.spinner} />
+                <span>Загрузка команд...</span>
+              </div>
+            ) : (
+              <>
+                <select
+                  id="teams"
+                  name="teams"
+                  multiple
+                  value={formData.teamIds}
+                  onChange={handleTeamSelect}
+                  disabled={isSubmitting}
+                  className={styles.teamSelect}
+                  required
+                  size={5}
+                >
+                  {teams.map(team => (
+                    <option key={team.id} value={team.id}>
+                      {team.name}
+                    </option>
+                  ))}
+                </select>
+                {formData.teamIds.length > 0 && (
+                  <div className={styles.selectedTeams}>
+                    Выбрано команд: {formData.teamIds.length}
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+
           <div className={styles.formActions}>
-            <button
-              type="button"
-              className={styles.cancelButton}
-              onClick={onClose}
+            <button 
+              type="submit" 
+              className={styles.saveButton} 
+              disabled={isSubmitting || isLoadingTeams}
+            >
+              {isSubmitting ? (
+                <>
+                  <FiLoader className={styles.spinner} />
+                  Создание...
+                </>
+              ) : (
+                'Создать турнир'
+              )}
+            </button>
+            <button 
+              type="button" 
+              className={styles.cancelButton} 
+              onClick={onClose} 
               disabled={isSubmitting}
             >
               Отмена
-            </button>
-            <button
-              type="submit"
-              className={styles.submitButton}
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? (isEditing ? 'Сохранение...' : 'Добавление...') : (isEditing ? 'Сохранить' : 'Добавить турнир')}
             </button>
           </div>
         </form>
