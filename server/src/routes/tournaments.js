@@ -241,62 +241,118 @@ router.post('/', auth, async (req, res) => {
 // Обновление турнира
 router.put('/:id', auth, async (req, res) => {
   try {
-        console.log('PUT /api/tournaments/:id - ID:', req.params.id, 'Body:', req.body);
-        
-        const { 
-            name, 
-            description, 
-            game, 
-            start_date, 
-            end_date, 
-            prize_pool, 
-            location, 
-            organizer, 
-            format
-        } = req.body;
-        
-        const query = `
-            UPDATE tournaments 
-            SET name = ?, description = ?, game = ?, start_date = ?, end_date = ?, 
-                prize_pool = ?, location = ?, organizer = ?, format = ?
-            WHERE id = ?
-        `;
-        
-        const params = [
-            name, 
-            description, 
-            game, 
-            start_date, 
-            end_date, 
-            prize_pool, 
-            location, 
-            organizer, 
-            format, 
-            req.params.id
-        ];
-        
-        console.log('Executing query:', query, 'with params:', params);
-        
-        db.run(query, params, function(err) {
-            if (err) {
-                console.error('Database error:', err);
-                return res.status(500).json({ 
-                    message: 'Ошибка при обновлении турнира',
-                    error: err.message 
-                });
-            }
-            if (this.changes === 0) {
-                return res.status(404).json({ message: 'Турнир не найден' });
-            }
-            console.log('Tournament updated, changes:', this.changes);
-            res.json({ message: 'Турнир успешно обновлен' });
+    console.log('PUT /api/tournaments/:id - ID:', req.params.id, 'Body:', req.body);
+    
+    const { 
+      name, 
+      description, 
+      game, 
+      start_date, 
+      end_date, 
+      prize_pool, 
+      location, 
+      organizer, 
+      format,
+      teams
+    } = req.body;
+    
+    // Начинаем транзакцию
+    db.serialize(() => {
+      db.run('BEGIN TRANSACTION');
+
+      // Обновляем основную информацию о турнире
+      const updateQuery = `
+        UPDATE tournaments 
+        SET name = ?, description = ?, game = ?, start_date = ?, end_date = ?, 
+            prize_pool = ?, location = ?, organizer = ?, format = ?
+        WHERE id = ?
+      `;
+      
+      const params = [
+        name, 
+        description, 
+        game, 
+        start_date, 
+        end_date, 
+        prize_pool, 
+        location, 
+        organizer, 
+        format, 
+        req.params.id
+      ];
+      
+      db.run(updateQuery, params, function(err) {
+        if (err) {
+          console.error('Database error:', err);
+          db.run('ROLLBACK');
+          return res.status(500).json({ 
+            message: 'Ошибка при обновлении турнира',
+            error: err.message 
+          });
+        }
+
+        if (this.changes === 0) {
+          db.run('ROLLBACK');
+          return res.status(404).json({ message: 'Турнир не найден' });
+        }
+
+        // Удаляем старые связи с командами
+        db.run('DELETE FROM tournament_teams WHERE tournament_id = ?', [req.params.id], function(err) {
+          if (err) {
+            console.error('Error deleting old team associations:', err);
+            db.run('ROLLBACK');
+            return res.status(500).json({ 
+              message: 'Ошибка при обновлении команд турнира',
+              error: err.message 
+            });
+          }
+
+          // Добавляем новые связи с командами
+          if (teams && teams.length > 0) {
+            const insertTeamQuery = 'INSERT INTO tournament_teams (tournament_id, team_id) VALUES (?, ?)';
+            let completed = 0;
+            let hasError = false;
+
+            teams.forEach(teamId => {
+              db.run(insertTeamQuery, [req.params.id, teamId], function(err) {
+                if (err) {
+                  console.error('Error inserting team association:', err);
+                  hasError = true;
+                }
+                completed++;
+
+                if (completed === teams.length) {
+                  if (hasError) {
+                    db.run('ROLLBACK');
+                    return res.status(500).json({ 
+                      message: 'Ошибка при обновлении команд турнира',
+                      error: 'Не удалось добавить все команды'
+                    });
+                  }
+                  db.run('COMMIT');
+                  res.json({ 
+                    message: 'Турнир успешно обновлен',
+                    id: req.params.id
+                  });
+                }
+              });
+            });
+          } else {
+            db.run('COMMIT');
+            res.json({ 
+              message: 'Турнир успешно обновлен',
+              id: req.params.id
+            });
+          }
         });
+      });
+    });
   } catch (error) {
-        console.error('Server error in PUT /tournaments/:id:', error);
-        res.status(500).json({ 
-            message: 'Ошибка сервера при обновлении турнира',
-            error: error.message 
-        });
+    console.error('Server error in PUT /tournaments/:id:', error);
+    res.status(500).json({ 
+      message: 'Ошибка сервера при обновлении турнира',
+      error: error.message 
+    });
   }
 });
 

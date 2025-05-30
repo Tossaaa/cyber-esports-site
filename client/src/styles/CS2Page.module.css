@@ -140,11 +140,16 @@
 
 /* Навигация по разделам */
 .tabs {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--bg-primary);
+  padding: 1rem 0;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid var(--border-color);
   display: flex;
+  justify-content: center;
   gap: 1rem;
-  margin-bottom: 3rem;
-  border-bottom: 1px solid var(--cs-border);
-  padding-bottom: 1rem;
 }
 
 .tab {
@@ -171,15 +176,18 @@
 
 /* Секции */
 .section {
-  margin-bottom: 4rem;
+  padding: 2rem 0;
+  margin-top: 4rem; /* Добавляем отступ сверху */
+  scroll-margin-top: 5rem; /* Добавляем отступ для скролла */
 }
 
 .sectionTitle {
-  font-size: 2rem;
-  margin-bottom: 2rem;
-  color: var(--cs-light);
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  color: var(--text-primary);
   position: relative;
-  padding-bottom: 0.75rem;
+  padding-bottom: 0.5rem;
 }
 
 .sectionTitle::after {
@@ -187,10 +195,10 @@
   position: absolute;
   bottom: 0;
   left: 0;
-  width: 4rem;
-  height: 0.25rem;
-  background: var(--cs-primary);
-  border-radius: 0.25rem;
+  width: 60px;
+  height: 3px;
+  background: var(--accent-color);
+  border-radius: 2px;
 }
 
 /* Статистика */
@@ -366,77 +374,49 @@
 }
 
 .tournamentCard {
-  background: linear-gradient(145deg, #1a1f2b, #0f1923);
-  border-radius: 20px;
-  padding: 28px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
-  transition: all 0.3s ease;
+  background: linear-gradient(135deg, #1a1f2b 0%, #0f1923 100%);
+  border-radius: 16px;
+  padding: 1.5rem;
   border: 1px solid rgba(255, 70, 85, 0.1);
+  transition: all 0.3s ease;
   position: relative;
-  overflow: hidden;
   display: flex;
   flex-direction: column;
-  min-height: 400px;
-}
-
-.tournamentCard::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(135deg, rgba(255, 70, 85, 0.05) 0%, transparent 100%);
-  z-index: 1;
+  gap: 1.25rem;
 }
 
 .tournamentCard:hover {
   transform: translateY(-5px);
-  box-shadow: 0 12px 32px rgba(255, 70, 85, 0.15);
   border-color: rgba(255, 70, 85, 0.3);
-  background: linear-gradient(145deg, #1e2432, #131a25);
-}
-
-.tournamentCard.upcoming {
-  border-left: 4px solid #4CAF50;
-}
-
-.tournamentCard.ongoing {
-  border-left: 4px solid #2196F3;
-}
-
-.tournamentCard.completed {
-  border-left: 4px solid #9E9E9E;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
 }
 
 .tournamentHeader {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 24px;
-  position: relative;
-  z-index: 2;
-  gap: 16px;
+  gap: 1rem;
+  padding-right: 3rem; /* Добавляем отступ справа для кнопки удаления */
 }
 
 .tournamentHeader h3 {
   margin: 0;
-  font-size: 1.6rem;
+  font-size: 1.4rem;
   color: #ece8e1;
-  font-weight: 700;
-  letter-spacing: -0.5px;
-  line-height: 1.3;
-  flex: 1;
+  font-weight: 600;
+  line-height: 1.2;
+  flex: 1; /* Добавляем flex: 1 чтобы заголовок занимал доступное пространство */
 }
 
 .tournamentStatus {
-  padding: 8px 16px;
+  padding: 0.5rem 1rem;
   border-radius: 20px;
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   font-weight: 600;
   letter-spacing: 0.5px;
   text-transform: uppercase;
   white-space: nowrap;
+  flex-shrink: 0; /* Предотвращаем сжатие статуса */
 }
 
 .tournamentStatus.upcoming {
@@ -457,88 +437,71 @@
   border: 1px solid rgba(158, 158, 158, 0.2);
 }
 
-.tournamentInfo {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-  position: relative;
-  z-index: 2;
-  flex: 1;
-}
-
 .tournamentDates {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 0.75rem;
   background: rgba(255, 70, 85, 0.03);
-  padding: 20px;
-  border-radius: 16px;
+  padding: 1rem;
+  border-radius: 8px;
   border: 1px solid rgba(255, 70, 85, 0.1);
 }
 
 .dateItem {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 0.75rem;
   color: #ece8e1;
-  font-size: 1rem;
 }
 
 .dateIcon {
   color: #ff4655;
   font-size: 1.2rem;
-  flex-shrink: 0;
 }
 
 .tournamentDetails {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
   background: rgba(255, 70, 85, 0.03);
-  padding: 20px;
-  border-radius: 16px;
+  padding: 1rem;
+  border-radius: 8px;
   border: 1px solid rgba(255, 70, 85, 0.1);
 }
 
 .detailItem {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 0.75rem;
   color: #ece8e1;
-  font-size: 1rem;
 }
 
 .detailIcon {
   color: #ff4655;
   font-size: 1.2rem;
-  flex-shrink: 0;
 }
 
 .tournamentTeams {
-  margin-top: auto;
   background: rgba(255, 70, 85, 0.03);
-  padding: 20px;
-  border-radius: 16px;
+  padding: 1rem;
+  border-radius: 8px;
   border: 1px solid rgba(255, 70, 85, 0.1);
 }
 
 .tournamentTeams h4 {
-  margin: 0 0 16px 0;
+  margin: 0 0 0.75rem 0;
   color: #ece8e1;
-  font-size: 1.2rem;
-  font-weight: 600;
+  font-size: 1.1rem;
+  font-weight: 500;
   display: flex;
   align-items: center;
-  gap: 10px;
+  justify-content: space-between;
 }
 
-.tournamentTeams h4::before {
-  content: '';
-  display: block;
-  width: 4px;
-  height: 20px;
-  background: #ff4655;
-  border-radius: 2px;
+.tournamentTeams h4 span {
+  font-size: 0.85rem;
+  color: #768079;
+  font-weight: normal;
 }
 
 .tournamentTeams ul {
@@ -546,25 +509,106 @@
   padding: 0;
   margin: 0;
   display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
 .tournamentTeams li {
-  background: rgba(255, 70, 85, 0.05);
-  padding: 8px 16px;
-  border-radius: 20px;
-  font-size: 0.95rem;
   color: #ece8e1;
+  font-size: 0.95rem;
+  padding: 0.5rem 0.75rem;
+  background: rgba(255, 70, 85, 0.05);
+  border-radius: 6px;
   border: 1px solid rgba(255, 70, 85, 0.1);
-  transition: all 0.3s ease;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.tournamentTeams li:hover {
+.tournamentTeams .remainingTeams {
+  color: #768079;
+  font-size: 0.9rem;
+  text-align: center;
+  padding: 0.5rem;
+  background: rgba(255, 70, 85, 0.03);
+  border-radius: 6px;
+  border: 1px dashed rgba(255, 70, 85, 0.2);
+  margin-top: 0.25rem;
+}
+
+@media (max-width: 768px) {
+  .tournamentTeams {
+    padding: 0.875rem;
+  }
+  
+  .tournamentTeams h4 {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .tournamentTeams li {
+    font-size: 0.9rem;
+    padding: 0.4rem 0.6rem;
+  }
+}
+
+.tournamentActions {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.deleteButton {
   background: rgba(255, 70, 85, 0.1);
-  transform: translateY(-2px);
-  border-color: rgba(255, 70, 85, 0.3);
+  border: 1px solid rgba(255, 70, 85, 0.2);
   color: #ff4655;
+  padding: 0.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+}
+
+.deleteButton:hover {
+  background: rgba(255, 70, 85, 0.2);
+  transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+  .tournamentCard {
+    padding: 1.25rem;
+  }
+
+  .tournamentHeader h3 {
+    font-size: 1.2rem;
+  }
+
+  .tournamentDetails {
+    grid-template-columns: 1fr;
+  }
+
+  .tournamentActions {
+    top: 1.25rem;
+    right: 1.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .tournamentHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .tournamentStatus {
+    align-self: flex-start;
+  }
 }
 
 @media (max-width: 1400px) {
@@ -1180,22 +1224,21 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.75rem 1.5rem;
-  background: var(--cs-secondary);
-  color: var(--cs-accent);
-  border: 1px solid var(--cs-border);
-  border-radius: 0.75rem;
+  background: transparent;
+  color: var(--main-light);
+  border: 2px solid var(--main-primary);
+  border-radius: 0.5rem;
   font-size: 1rem;
   font-weight: 500;
   text-decoration: none;
   transition: all 0.3s ease;
+  height: 42px;
+  box-sizing: border-box;
 }
 
 .viewAll:hover {
-  background: var(--cs-primary);
-  color: white;
-  border-color: var(--cs-primary);
+  background: rgba(255, 70, 85, 0.1);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(255, 70, 85, 0.2);
 }
 
 .viewAll svg {
@@ -2902,5 +2945,39 @@
   .imageUploadLabel {
     padding: 0.875rem 1.5rem;
     font-size: 0.95rem;
+  }
+}
+
+.deleteTournamentButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: rgba(255, 70, 85, 0.1);
+  border: 1px solid rgba(255, 70, 85, 0.2);
+  color: var(--main-primary);
+  border-radius: 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 1rem;
+  width: 100%;
+  justify-content: center;
+}
+
+.deleteTournamentButton:hover {
+  background: rgba(255, 70, 85, 0.2);
+  transform: translateY(-2px);
+}
+
+.deleteTournamentButton svg {
+  font-size: 1.1rem;
+}
+
+@media (max-width: 768px) {
+  .deleteTournamentButton {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.85rem;
   }
 }

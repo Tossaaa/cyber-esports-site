@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import styles from '../styles/CS2Page.module.css';
-import { FiStar, FiTarget, FiMap, FiUsers, FiAward, FiClock, FiCalendar, FiPlus, FiArrowRight, FiUser, FiTrash2, FiEdit2, FiAlertCircle } from 'react-icons/fi';
+import { FiStar, FiTarget, FiMap, FiUsers, FiAward, FiClock, FiCalendar, FiPlus, FiArrowRight, FiUser, FiTrash2, FiEdit2, FiAlertCircle, FiDollarSign, FiMapPin } from 'react-icons/fi';
 import { FaUsers, FaTrophy, FaCrosshairs, FaMap, FaClock, FaCalendarAlt, FaUser, FaGamepad, FaTrash } from 'react-icons/fa';
 import AddNewsForm from '../components/AddNewsForm';
 import NewsModal from '../components/NewsModal';
 import PlayerOfMonthForm from '../components/PlayerOfMonthForm';
 import TeamForm from '../components/TeamForm';
 import TournamentForm from '../components/TournamentForm';
+import TournamentModal from '../components/TournamentModal';
+import InDevelopmentModal from '../components/InDevelopmentModal';
 
 const Cs2Page = () => {
-  const [activeTab, setActiveTab] = useState('overview');
+  const [activeTab, setActiveTab] = useState('tournaments');
   const [matches, setMatches] = useState([]);
   const [tournaments, setTournaments] = useState([]);
   const [teams, setTeams] = useState([]);
@@ -30,6 +32,9 @@ const Cs2Page = () => {
   const [loadingTeams, setLoadingTeams] = useState(true);
   const [teamError, setTeamError] = useState(null);
   const [showTournamentForm, setShowTournamentForm] = useState(false);
+  const [selectedTournament, setSelectedTournament] = useState(null);
+  const [editingTournament, setEditingTournament] = useState(null);
+  const [showInDevelopmentModal, setShowInDevelopmentModal] = useState(false);
 
   useEffect(() => {
     // Загружаем данные пользователя при монтировании компонента
@@ -242,9 +247,6 @@ const Cs2Page = () => {
   const handleTabClick = (tab) => {
     setActiveTab(tab);
     switch (tab) {
-      case 'overview':
-        scrollToSection('overview-section');
-        break;
       case 'tournaments':
         scrollToSection('tournaments-section');
         break;
@@ -360,17 +362,84 @@ const Cs2Page = () => {
     fetchTournaments();
   }, []);
 
-  const handleSaveTournament = async (newTournament) => {
+  const handleSaveTournament = async (tournamentData) => {
     try {
       // Обновляем список турниров
-      const response = await fetch('http://localhost:5001/api/tournaments');
+      const response = await fetch('http://localhost:5001/api/tournaments?game=cs2');
+      if (!response.ok) {
+        throw new Error('Ошибка при загрузке турниров');
+      }
       const tournaments = await response.json();
       setTournaments(tournaments);
       setShowTournamentForm(false);
+      setEditingTournament(null);
     } catch (err) {
       console.error('Error saving tournament:', err);
       setError(err.message);
     }
+  };
+
+  const handleTournamentClick = (tournament) => {
+    setSelectedTournament(tournament);
+  };
+
+  const handleCloseModal = () => {
+    setSelectedTournament(null);
+  };
+
+  const handleEditTournament = (tournament) => {
+    setSelectedTournament(null);
+    setShowTournamentForm(true);
+    setEditingTournament(tournament);
+  };
+
+  const handleDeleteTournament = async (tournament) => {
+    if (window.confirm('Вы уверены, что хотите удалить этот турнир?')) {
+      try {
+        await fetch(`http://localhost:5001/api/tournaments/${tournament.id}`, {
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          }
+        });
+        setTournaments(tournaments.filter(t => t.id !== tournament.id));
+        setSelectedTournament(null);
+      } catch (error) {
+        console.error('Error deleting tournament:', error);
+        alert('Ошибка при удалении турнира');
+      }
+    }
+  };
+
+  const getStatus = (tournament) => {
+    const now = new Date();
+    const startDate = new Date(tournament.start_date);
+    const endDate = new Date(tournament.end_date);
+    if (now > endDate) {
+      return 'completed';
+    } else if (now >= startDate && now <= endDate) {
+      return 'ongoing';
+    } else {
+      return 'upcoming';
+    }
+  };
+
+  const getStatusText = (status) => {
+    switch (status) {
+      case 'completed':
+        return 'Завершен';
+      case 'ongoing':
+        return 'Идет сейчас';
+      case 'upcoming':
+        return 'Предстоящий';
+      default:
+        return 'Неизвестный статус';
+    }
+  };
+
+  const formatDate = (dateStr) => {
+    const date = new Date(dateStr);
+    return date.toLocaleDateString('ru-RU');
   };
 
   return (
@@ -389,10 +458,19 @@ const Cs2Page = () => {
                 <span><FiMap /> Платформы: Windows, Linux</span>
               </div>
               <div className={styles.bannerActions}>
-                <button className={styles.primaryButton}>
+                <button 
+                  className={styles.primaryButton}
+                  onClick={() => {
+                    document.getElementById('tournaments-section').scrollIntoView({ behavior: 'smooth' });
+                    setActiveTab('tournaments');
+                  }}
+                >
                   Смотреть матчи
                 </button>
-                <button className={styles.secondaryButton}>
+                <button 
+                  className={styles.secondaryButton}
+                  onClick={() => setShowInDevelopmentModal(true)}
+                >
                   Добавить в избранное
                 </button>
               </div>
@@ -402,12 +480,6 @@ const Cs2Page = () => {
 
         {/* Навигация по разделам */}
         <div className={styles.tabs}>
-          <button 
-            className={`${styles.tab} ${activeTab === 'overview' ? styles.active : ''}`}
-            onClick={() => handleTabClick('overview')}
-          >
-            Обзор
-          </button>
           <button 
             className={`${styles.tab} ${activeTab === 'tournaments' ? styles.active : ''}`}
             onClick={() => handleTabClick('tournaments')}
@@ -428,105 +500,6 @@ const Cs2Page = () => {
           </button>
         </div>
 
-        {/* Статистика */}
-        <section id="overview-section" className={styles.section}>
-          <h2 className={styles.sectionTitle}>Статистика CS2</h2>
-          <div className={styles.statsGrid}>
-            <div className={styles.statCard}>
-              <FaUsers className={styles.statIcon} />
-              <div className={styles.statContent}>
-                <h3>Активных игроков</h3>
-                <p>1.2M</p>
-              </div>
-            </div>
-            <div className={styles.statCard}>
-              <FaTrophy className={styles.statIcon} />
-              <div className={styles.statContent}>
-                <h3>Турниров в 2024</h3>
-                <p>156</p>
-              </div>
-            </div>
-            <div className={styles.statCard}>
-              <FiAward className={styles.statIcon} />
-              <div className={styles.statContent}>
-                <h3>Призовой фонд</h3>
-                <p>$12.5M</p>
-              </div>
-            </div>
-            <div className={styles.statCard}>
-              <FaCrosshairs className={styles.statIcon} />
-              <div className={styles.statContent}>
-                <h3>Популярное оружие</h3>
-                <p>AK-47</p>
-              </div>
-            </div>
-            <div className={styles.statCard}>
-              <FaMap className={styles.statIcon} />
-              <div className={styles.statContent}>
-                <h3>Лучшая карта</h3>
-                <p>Dust II</p>
-              </div>
-            </div>
-            <div className={styles.statCard}>
-              <FaClock className={styles.statIcon} />
-              <div className={styles.statContent}>
-                <h3>Среднее время матча</h3>
-                <p>35 мин</p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Предстоящие матчи */}
-        <section className={styles.section}>
-          <h2 className={styles.sectionTitle}>Предстоящие матчи</h2>
-          <div className={styles.matchesGrid}>
-            <div className={styles.matchCard}>
-              <div className={styles.matchHeader}>
-                <span className={styles.tournamentName}>ESL Pro League Season 19</span>
-                <span className={styles.matchStatus}>Предстоящий</span>
-              </div>
-              <div className={styles.teamsContainer}>
-                <div className={styles.team}>
-                  <img src="/images/teams/spirit.png" alt="Team Spirit" />
-                  <span>Team Spirit</span>
-                </div>
-                <span className={styles.vs}>VS</span>
-                <div className={styles.team}>
-                  <img src="/images/teams/navi.png" alt="Natus Vincere" />
-                  <span>Natus Vincere</span>
-                </div>
-              </div>
-              <div className={styles.matchFooter}>
-                <span className={styles.matchDate}>15 апреля 2024</span>
-                <span className={styles.matchTime}>19:00</span>
-              </div>
-            </div>
-
-            <div className={styles.matchCard}>
-              <div className={styles.matchHeader}>
-                <span className={styles.tournamentName}>BLAST Premier Spring Final</span>
-                <span className={styles.matchStatus}>Предстоящий</span>
-              </div>
-              <div className={styles.teamsContainer}>
-                <div className={styles.team}>
-                  <img src="/images/teams/faze.png" alt="FaZe Clan" />
-                  <span>FaZe Clan</span>
-                </div>
-                <span className={styles.vs}>VS</span>
-                <div className={styles.team}>
-                  <img src="/images/teams/g2.png" alt="G2 Esports" />
-                  <span>G2 Esports</span>
-                </div>
-              </div>
-              <div className={styles.matchFooter}>
-                <span className={styles.matchDate}>12 апреля 2024</span>
-                <span className={styles.matchTime}>20:30</span>
-              </div>
-            </div>
-          </div>
-        </section>
-
         {/* Турниры */}
         <section id="tournaments-section" className={styles.section}>
           <div className={styles.sectionHeader}>
@@ -537,78 +510,91 @@ const Cs2Page = () => {
             </button>
           </div>
           <div className={styles.tournamentsGrid}>
-            {tournaments.map(tournament => {
-              // Определяем статус турнира
-              const now = new Date();
-              const startDate = new Date(tournament.start_date);
-              const endDate = new Date(tournament.end_date);
-              let status = 'upcoming';
-              let statusText = 'Предстоящий';
-              
-              if (now > endDate) {
-                status = 'completed';
-                statusText = 'Завершен';
-              } else if (now >= startDate && now <= endDate) {
-                status = 'ongoing';
-                statusText = 'Идет сейчас';
-              }
-
-              return (
-                <div key={tournament.id} className={`${styles.tournamentCard} ${styles[status]}`}>
-              <div className={styles.tournamentHeader}>
-                    <h3>{tournament.name}</h3>
-                    <span className={`${styles.tournamentStatus} ${styles[status]}`}>
-                      {statusText}
-                    </span>
-              </div>
-                  
-                  <div className={styles.tournamentInfo}>
-                    <div className={styles.tournamentDates}>
-                      <div className={styles.dateItem}>
-                        <FiCalendar className={styles.dateIcon} />
-                        <span>Начало: {new Date(tournament.start_date).toLocaleDateString()}</span>
-              </div>
-                      <div className={styles.dateItem}>
-                        <FiCalendar className={styles.dateIcon} />
-                        <span>Окончание: {new Date(tournament.end_date).toLocaleDateString()}</span>
+            {tournaments.map(tournament => (
+              <div
+                key={tournament.id}
+                className={styles.tournamentCard}
+                onClick={() => handleTournamentClick(tournament)}
+                style={{ cursor: 'pointer' }}
+              >
+                {user && user.role === 'admin' && (
+                  <div className={styles.tournamentActions}>
+                    <button
+                      className={styles.deleteButton}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDeleteTournament(tournament);
+                      }}
+                      title="Удалить турнир"
+                    >
+                      <FiTrash2 />
+                    </button>
+                  </div>
+                )}
+                <div className={styles.tournamentHeader}>
+                  <h3>{tournament.name}</h3>
+                  <div className={`${styles.tournamentStatus} ${styles[getStatus(tournament)]}`}>
+                    {getStatusText(getStatus(tournament))}
+                  </div>
+                </div>
+                <div className={styles.tournamentDates}>
+                  <div className={styles.dateItem}>
+                    <FiCalendar className={styles.dateIcon} />
+                    <span>{formatDate(tournament.start_date)}</span>
+                  </div>
+                  <div className={styles.dateItem}>
+                    <FiCalendar className={styles.dateIcon} />
+                    <span>{formatDate(tournament.end_date)}</span>
+                  </div>
+                </div>
+                <div className={styles.tournamentDetails}>
+                  {tournament.prize_pool && (
+                    <div className={styles.detailItem}>
+                      <FiDollarSign className={styles.detailIcon} />
+                      <span>{tournament.prize_pool}</span>
+                    </div>
+                  )}
+                  {tournament.location && (
+                    <div className={styles.detailItem}>
+                      <FiMapPin className={styles.detailIcon} />
+                      <span>{tournament.location}</span>
+                    </div>
+                  )}
+                  {tournament.organizer && (
+                    <div className={styles.detailItem}>
+                      <FiUser className={styles.detailIcon} />
+                      <span>{tournament.organizer}</span>
+                    </div>
+                  )}
+                  {tournament.format && (
+                    <div className={styles.detailItem}>
+                      <FiUsers className={styles.detailIcon} />
+                      <span>{tournament.format}</span>
+                    </div>
+                  )}
+                </div>
+                {tournament.teams && tournament.teams.length > 0 && (
+                  <div className={styles.tournamentTeams}>
+                    <h4>
+                      Участники
+                      <span>{tournament.teams.length} команд</span>
+                    </h4>
+                    <ul>
+                      {tournament.teams.slice(0, 3).map((team, index) => (
+                        <li key={index}>
+                          {typeof team === 'object' ? team.name : team}
+                        </li>
+                      ))}
+                    </ul>
+                    {tournament.teams.length > 3 && (
+                      <div className={styles.remainingTeams}>
+                        +{tournament.teams.length - 3} команд
                       </div>
-            </div>
-
-                    <div className={styles.tournamentDetails}>
-                      <div className={styles.detailItem}>
-                        <FaTrophy className={styles.detailIcon} />
-                        <span>Призовой фонд: {tournament.prize_pool}</span>
+                    )}
+                  </div>
+                )}
               </div>
-                      <div className={styles.detailItem}>
-                        <FiMap className={styles.detailIcon} />
-                        <span>Локация: {tournament.location || 'Не указана'}</span>
-              </div>
-                      <div className={styles.detailItem}>
-                        <FiUsers className={styles.detailIcon} />
-                        <span>Организатор: {tournament.organizer || 'Не указан'}</span>
-                      </div>
-                      <div className={styles.detailItem}>
-                        <FiTarget className={styles.detailIcon} />
-                        <span>Формат: {tournament.format || 'BO1'}</span>
-                      </div>
-            </div>
-
-                    <div className={styles.tournamentTeams}>
-                      <h4>Участники</h4>
-                      <ul>
-                        {tournament.teams && tournament.teams.length > 0 ? (
-                          tournament.teams.map(team => (
-                            <li key={team.id}>{team.name}</li>
-                          ))
-                        ) : (
-                          <li>Нет участников</li>
-                        )}
-                      </ul>
-              </div>
-              </div>
-            </div>
-              );
-            })}
+            ))}
           </div>
         </section>
 
@@ -616,15 +602,20 @@ const Cs2Page = () => {
         <section id="teams-section" className={styles.section}>
           <div className={styles.sectionHeader}>
             <h2 className={styles.sectionTitle}>Топ команд</h2>
-            {user && user.role === 'admin' && (
-              <button 
-                className={styles.addButton}
-                onClick={() => setShowTeamForm(true)}
-              >
-                <FiPlus className={styles.addIcon} />
-                Добавить команду
-              </button>
-            )}
+            <div className={styles.sectionActions}>
+              {user && user.role === 'admin' && (
+                <button 
+                  className={styles.addButton}
+                  onClick={() => setShowTeamForm(true)}
+                >
+                  <FiPlus className={styles.addIcon} />
+                  Добавить команду
+                </button>
+              )}
+              <Link to="/teams" className={styles.viewAll}>
+                Все команды <FiArrowRight />
+              </Link>
+            </div>
           </div>
           {loadingTeams ? (
             <div className={styles.loadingState}>
@@ -911,8 +902,29 @@ const Cs2Page = () => {
 
         {showTournamentForm && (
           <TournamentForm
-            onClose={() => setShowTournamentForm(false)}
+            onClose={() => {
+              setShowTournamentForm(false);
+              setEditingTournament(null);
+            }}
             onSave={handleSaveTournament}
+            initialData={editingTournament}
+            isEditing={!!editingTournament}
+          />
+        )}
+
+        {selectedTournament && (
+          <TournamentModal
+            tournament={selectedTournament}
+            onClose={handleCloseModal}
+            onEdit={handleEditTournament}
+            onDelete={handleDeleteTournament}
+            isAdmin={user && user.role === 'admin'}
+          />
+        )}
+
+        {showInDevelopmentModal && (
+          <InDevelopmentModal
+            onClose={() => setShowInDevelopmentModal(false)}
           />
         )}
       </div>

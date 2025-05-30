@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { FiX, FiLoader } from 'react-icons/fi';
 import styles from '../styles/CS2Page.module.css';
 
-const TournamentForm = ({ onClose, onSave }) => {
+const TournamentForm = ({ onClose, onSave, initialData, isEditing = false }) => {
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -40,8 +40,46 @@ const TournamentForm = ({ onClose, onSave }) => {
     fetchTeams();
   }, []);
 
+  useEffect(() => {
+    if (initialData) {
+      // Преобразуем даты в формат YYYY-MM-DD для input type="date"
+      const formatDateForInput = (dateString) => {
+        return new Date(dateString).toISOString().split('T')[0];
+      };
+
+      // Убедимся, что teams преобразованы в массив ID
+      const teamIds = initialData.teams ? initialData.teams.map(team => 
+        typeof team === 'object' ? team.id : parseInt(team)
+      ) : [];
+
+      console.log('Initial team IDs:', teamIds); // Добавим логирование
+
+      setFormData({
+        ...initialData,
+        start_date: formatDateForInput(initialData.start_date),
+        end_date: formatDateForInput(initialData.end_date),
+        teamIds: teamIds
+      });
+    }
+  }, [initialData]);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
+    
+    // Специальная обработка для поля призового фонда
+    if (name === 'prize_pool') {
+      // Удаляем все символы кроме цифр и $
+      const cleanedValue = value.replace(/[^\d$]/g, '');
+      // Убеждаемся, что $ только в начале
+      const formattedValue = cleanedValue.replace(/\$+/g, '$').replace(/\$(?=.*\$)/g, '');
+      
+      setFormData(prev => ({
+        ...prev,
+        [name]: formattedValue
+      }));
+      return;
+    }
+
     setFormData(prev => ({
       ...prev,
       [name]: value
@@ -81,12 +119,17 @@ const TournamentForm = ({ onClose, onSave }) => {
       throw new Error('Призовой фонд обязателен');
     }
 
+    // Проверяем формат призового фонда
+    if (!/^\$\d+$/.test(formData.prize_pool)) {
+      throw new Error('Призовой фонд должен быть в формате $число (например: $100000)');
+    }
+
     const startDate = new Date(formData.start_date);
     const endDate = new Date(formData.end_date);
     const now = new Date();
     now.setHours(0, 0, 0, 0);
 
-    if (startDate < now) {
+    if (!isEditing && startDate < now) {
       throw new Error('Дата начала не может быть в прошлом');
     }
 
@@ -121,17 +164,22 @@ const TournamentForm = ({ onClose, onSave }) => {
       // Преобразуем данные для отправки
       const tournamentData = {
         ...formData,
-        game: 'cs2', // Добавляем игру по умолчанию
-        teams: formData.teamIds // Переименовываем teamIds в teams
+        game: 'cs2',
+        teams: formData.teamIds.map(id => parseInt(id)) // Убедимся, что ID команд преобразованы в числа
       };
 
-      // Удаляем teamIds, так как мы его переименовали
       delete tournamentData.teamIds;
 
-      console.log('Отправка данных турнира:', tournamentData);
+      const url = isEditing 
+        ? `http://localhost:5001/api/tournaments/${initialData.id}`
+        : 'http://localhost:5001/api/tournaments';
 
-      const response = await fetch('http://localhost:5001/api/tournaments', {
-        method: 'POST',
+      const method = isEditing ? 'PUT' : 'POST';
+
+      console.log('Sending tournament data:', tournamentData); // Добавим логирование
+
+      const response = await fetch(url, {
+        method,
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
@@ -140,16 +188,15 @@ const TournamentForm = ({ onClose, onSave }) => {
       });
 
       const data = await response.json();
-      console.log('Ответ сервера:', data);
       
       if (!response.ok) {
-        throw new Error(data.message || 'Ошибка при создании турнира');
+        throw new Error(data.message || `Ошибка при ${isEditing ? 'обновлении' : 'создании'} турнира`);
       }
 
       onSave(data);
       onClose();
     } catch (err) {
-      console.error('Error creating tournament:', err);
+      console.error(`Error ${isEditing ? 'updating' : 'creating'} tournament:`, err);
       setError(err.message);
     } finally {
       setIsSubmitting(false);
@@ -160,7 +207,7 @@ const TournamentForm = ({ onClose, onSave }) => {
     <div className={styles.modalOverlay}>
       <div className={styles.modal}>
         <div className={styles.modalHeader}>
-          <h2>Создать турнир</h2>
+          <h2>{isEditing ? 'Редактировать турнир' : 'Создать турнир'}</h2>
           <button className={styles.closeButton} onClick={onClose} disabled={isSubmitting}>
             <FiX />
           </button>
@@ -214,7 +261,9 @@ const TournamentForm = ({ onClose, onSave }) => {
               onChange={handleChange}
               required
               disabled={isSubmitting}
-              placeholder="Например: $100,000"
+              placeholder="Например: $100000"
+              pattern="^\$\d+$"
+              title="Введите сумму в формате $число (например: $100000)"
             />
           </div>
 
@@ -254,8 +303,8 @@ const TournamentForm = ({ onClose, onSave }) => {
               disabled={isSubmitting}
             >
               <option value="BO1">BO1 (Best of 1)</option>
-              <option value="BO2">BO2 (Best of 2)</option>
               <option value="BO3">BO3 (Best of 3)</option>
+              <option value="BO5">BO5 (Best of 5)</option>
             </select>
           </div>
 
@@ -337,10 +386,10 @@ const TournamentForm = ({ onClose, onSave }) => {
               {isSubmitting ? (
                 <>
                   <FiLoader className={styles.spinner} />
-                  Создание...
+                  {isEditing ? 'Сохранение...' : 'Создание...'}
                 </>
               ) : (
-                'Создать турнир'
+                isEditing ? 'Сохранить изменения' : 'Создать турнир'
               )}
             </button>
             <button 

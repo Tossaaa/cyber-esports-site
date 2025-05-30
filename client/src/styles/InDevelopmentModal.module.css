@@ -1,0 +1,156 @@
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(15, 25, 35, 0.9);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease;
+}
+
+.modal {
+  background: var(--cs-dark);
+  border-radius: 12px;
+  padding: 2.5rem;
+  width: 90%;
+  max-width: 400px;
+  position: relative;
+  border: 1px solid var(--cs-border);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  animation: slideUp 0.3s ease;
+}
+
+.modalContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 1.5rem;
+}
+
+.iconContainer {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: rgba(255, 70, 85, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.icon {
+  font-size: 2.5rem;
+  color: var(--cs-primary);
+}
+
+.modalContent h2 {
+  color: var(--cs-accent);
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.modalContent p {
+  color: var(--cs-gray);
+  font-size: 1rem;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.closeButton {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: var(--cs-gray);
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+}
+
+.closeButton:hover {
+  background: rgba(255, 70, 85, 0.2);
+  color: var(--cs-primary);
+  transform: rotate(90deg);
+}
+
+.okButton {
+  background: var(--cs-primary);
+  color: var(--cs-accent);
+  border: none;
+  border-radius: 8px;
+  padding: 0.75rem 2rem;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 1rem;
+}
+
+.okButton:hover {
+  background: var(--cs-primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 70, 85, 0.2);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Адаптивность */
+@media (max-width: 480px) {
+  .modal {
+    padding: 2rem;
+  }
+
+  .iconContainer {
+    width: 60px;
+    height: 60px;
+  }
+
+  .icon {
+    font-size: 2rem;
+  }
+
+  .modalContent h2 {
+    font-size: 1.3rem;
+  }
+
+  .modalContent p {
+    font-size: 0.95rem;
+  }
+
+  .okButton {
+    padding: 0.625rem 1.75rem;
+    font-size: 0.95rem;
+  }
+} 

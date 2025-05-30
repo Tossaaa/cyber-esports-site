@@ -426,10 +426,10 @@ input:-webkit-autofill:focus {
   align-items: center;
   gap: 0.5rem;
   padding: 0.75rem 1.5rem;
-  background: var(--main-secondary);
-  color: var(--main-accent);
-  border: 1px solid var(--main-border);
-  border-radius: 0.75rem;
+  background: transparent;
+  color: var(--main-light);
+  border: 2px solid var(--main-primary);
+  border-radius: 0.5rem;
   font-size: 1rem;
   font-weight: 500;
   text-decoration: none;
@@ -437,11 +437,8 @@ input:-webkit-autofill:focus {
 }
 
 .viewAll:hover {
-  background: var(--main-primary);
-  color: white;
-  border-color: var(--main-primary);
+  background: rgba(255, 70, 85, 0.1);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(255, 70, 85, 0.2);
 }
 
 .viewAll svg {
