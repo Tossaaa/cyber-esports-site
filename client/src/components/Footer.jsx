@@ -1,15 +1,24 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import styles from '../styles/Footer.module.css';
-import { FiFacebook, FiTwitter, FiInstagram, FiYoutube, FiArrowUp } from 'react-icons/fi';
+import { FiFacebook, FiTwitter, FiInstagram, FiYoutube, FiArrowUp, FiTool } from 'react-icons/fi';
+import InDevelopmentModal from './InDevelopmentModal';
 import logo from '../assets/logo.png';
 
 const Footer = () => {
+  const [showDevModal, setShowDevModal] = useState(false);
+  const [devSection, setDevSection] = useState('');
+
   const scrollToTop = () => {
     window.scrollTo({
       top: 0,
       behavior: 'smooth'
     });
+  };
+
+  const handleDevClick = (section) => {
+    setDevSection(section);
+    setShowDevModal(true);
   };
 
   return (
@@ -44,8 +53,8 @@ const Footer = () => {
             <h3 className={styles.linksTitle}>Разделы</h3>
             <ul className={styles.linksList}>
               <li><Link to="/tournaments" className={styles.footerLink}>Турниры</Link></li>
-              <li><Link to="/teams" className={styles.footerLink}>Команды</Link></li>
-              <li><Link to="/statistics" className={styles.footerLink}>Статистика</Link></li>
+              <li><button onClick={() => handleDevClick('Команды')} className={styles.footerLink}>Команды</button></li>
+              <li><button onClick={() => handleDevClick('Статистика')} className={styles.footerLink}>Статистика</button></li>
               <li><Link to="/news" className={styles.footerLink}>Новости</Link></li>
             </ul>
           </div>
@@ -53,17 +62,20 @@ const Footer = () => {
           <div className={styles.linksColumn}>
             <h3 className={styles.linksTitle}>Поддержка</h3>
             <ul className={styles.linksList}>
-              <li><Link to="/faq" className={styles.footerLink}>FAQ</Link></li>
-              <li><Link to="/contact" className={styles.footerLink}>Контакты</Link></li>
-              <li><Link to="/rules" className={styles.footerLink}>Правила</Link></li>
-              <li><Link to="/privacy" className={styles.footerLink}>Конфиденциальность</Link></li>
+              <li><button onClick={() => handleDevClick('FAQ')} className={styles.footerLink}>FAQ</button></li>
+              <li><button onClick={() => handleDevClick('Контакты')} className={styles.footerLink}>Контакты</button></li>
+              <li><button onClick={() => handleDevClick('Правила')} className={styles.footerLink}>Правила</button></li>
+              <li><button onClick={() => handleDevClick('Конфиденциальность')} className={styles.footerLink}>Конфиденциальность</button></li>
             </ul>
           </div>
 
           <div className={styles.linksColumn}>
             <h3 className={styles.linksTitle}>Подписка</h3>
             <p className={styles.subscribeText}>Будьте в курсе всех событий</p>
-            <form className={styles.subscribeForm}>
+            <form className={styles.subscribeForm} onSubmit={(e) => {
+              e.preventDefault();
+              handleDevClick('Подписка');
+            }}>
               <input 
                 type="email" 
                 placeholder="Ваш email" 
@@ -89,6 +101,12 @@ const Footer = () => {
           <FiArrowUp />
         </button>
       </div>
+
+      <InDevelopmentModal
+        isOpen={showDevModal}
+        onClose={() => setShowDevModal(false)}
+        section={devSection}
+      />
     </footer>
   );
 };

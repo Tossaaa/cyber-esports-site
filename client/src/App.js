@@ -10,6 +10,7 @@ import PUBGPage from "./pages/PubgPage";
 import ValorantPage from "./pages/ValorantPage";
 import AuthPage from "./pages/AuthPage.jsx";
 import NewsPage from "./pages/NewsPage";
+import TournamentsPage from "./pages/TournamentsPage";
 import TournamentForm from './components/TournamentForm';
 import { AuthProvider } from './contexts/AuthContext';
 import Layout from './components/Layout/Layout';
@@ -31,6 +32,7 @@ function App() {
             <Route path="/discipline/valorant" element={<ValorantPage />} />
             <Route path="/auth" element={<AuthPage />} />
             <Route path="/news" element={<NewsPage />} />
+            <Route path="/tournaments" element={<TournamentsPage />} />
             <Route path="/tournaments/add" element={<TournamentForm />} />
           </Routes>
         </Layout>

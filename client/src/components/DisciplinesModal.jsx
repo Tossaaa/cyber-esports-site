@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FiX } from 'react-icons/fi';
 import styles from '../styles/MainPage.module.css';
+import InDevelopmentModal from './InDevelopmentModal';
 
 const disciplines = [
   { 
@@ -9,62 +10,67 @@ const disciplines = [
     name: "CS2", 
     image: "/images/cs2.jpg", 
     bgColor: "#2a475e",
-    description: "Командный шутер от первого лица, где две команды сражаются за победу"
+    description: "Командный шутер от первого лица, где две команды сражаются за победу",
+    status: "active"
   },
   { 
     id: "dota", 
     name: "Dota 2", 
     image: "/images/dota2.jpg", 
     bgColor: "#1e3d6b",
-    description: "Многопользовательская командная игра в жанре MOBA"
+    description: "Многопользовательская командная игра в жанре MOBA",
+    status: "development"
   },
   { 
     id: "pubg", 
     name: "PUBG", 
     image: "/images/pubg.jpg", 
     bgColor: "#3a5a78",
-    description: "Королевская битва, где последний выживший побеждает"
+    description: "Королевская битва, где последний выживший побеждает",
+    status: "development"
   },
   { 
     id: "valorant", 
     name: "Valorant", 
     image: "/images/valorant.jpg", 
     bgColor: "#fa4454",
-    description: "Тактический шутер от первого лица с уникальными способностями"
+    description: "Тактический шутер от первого лица с уникальными способностями",
+    status: "development"
   },
   { 
     id: "lol", 
     name: "League of Legends", 
     image: "/images/lol.jpg", 
     bgColor: "#0bc6e3",
-    description: "Популярная MOBA игра с уникальными чемпионами"
+    description: "Популярная MOBA игра с уникальными чемпионами",
+    status: "development"
   },
   { 
     id: "overwatch", 
     name: "Overwatch 2", 
     image: "/images/overwatch.jpg", 
     bgColor: "#ff9c41",
-    description: "Командный шутер с уникальными героями и способностями"
-  },
-  { 
-    id: "rainbow", 
-    name: "Rainbow Six Siege", 
-    image: "/images/rainbow.jpg", 
-    bgColor: "#2a2a2a",
-    description: "Тактический шутер с акцентом на разрушаемость окружения"
+    description: "Командный шутер с уникальными героями и способностями",
+    status: "development"
   },
   { 
     id: "apex", 
     name: "Apex Legends", 
     image: "/images/apex.jpg", 
     bgColor: "#da2929",
-    description: "Королевская битва с уникальными персонажами и способностями"
+    description: "Королевская битва с уникальными персонажами и способностями",
+    status: "development"
   }
 ];
 
-const DisciplinesModal = ({ onClose, disciplines }) => {
-  const activeDisciplines = disciplines.filter(d => d.status === "active");
-  const developmentDisciplines = disciplines.filter(d => d.status === "development");
+const DisciplinesModal = ({ onClose }) => {
+  const [showDevModal, setShowDevModal] = useState(false);
+  const [devSection, setDevSection] = useState('');
+
+  const handleDevClick = (discipline) => {
+    setDevSection(discipline.name);
+    setShowDevModal(true);
+  };
 
   return (
     <div className={styles.modalOverlay} onClick={onClose}>
@@ -79,7 +85,7 @@ const DisciplinesModal = ({ onClose, disciplines }) => {
           <div className={styles.disciplinesSection}>
             <h3 className={styles.sectionSubtitle}>Активные дисциплины</h3>
             <div className={styles.modalDisciplinesGrid}>
-              {activeDisciplines.map((discipline) => (
+              {disciplines.filter(d => d.status === "active").map((discipline) => (
                 <Link
                   key={discipline.id}
                   to={`/discipline/${discipline.id}`}
@@ -102,11 +108,12 @@ const DisciplinesModal = ({ onClose, disciplines }) => {
           <div className={styles.disciplinesSection}>
             <h3 className={styles.sectionSubtitle}>В разработке</h3>
             <div className={styles.modalDisciplinesGrid}>
-              {developmentDisciplines.map((discipline) => (
+              {disciplines.filter(d => d.status === "development").map((discipline) => (
                 <div
                   key={discipline.id}
                   className={`${styles.modalDisciplineCard} ${styles.developmentCard}`}
                   style={{ '--card-bg': discipline.bgColor }}
+                  onClick={() => handleDevClick(discipline)}
                 >
                   <div className={styles.modalCardImageContainer}>
                     <img src={discipline.image} alt={discipline.name} />
@@ -124,6 +131,12 @@ const DisciplinesModal = ({ onClose, disciplines }) => {
           </div>
         </div>
       </div>
+
+      <InDevelopmentModal
+        isOpen={showDevModal}
+        onClose={() => setShowDevModal(false)}
+        section={devSection}
+      />
     </div>
   );
 };

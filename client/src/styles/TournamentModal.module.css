@@ -25,6 +25,26 @@
   animation: slideUp 0.4s ease;
 }
 
+/* Стилизация скроллбара */
+.modal::-webkit-scrollbar {
+  width: 8px;
+}
+
+.modal::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+}
+
+.modal::-webkit-scrollbar-thumb {
+  background: rgba(255, 70, 85, 0.5);
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+.modal::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 70, 85, 0.7);
+}
+
 @keyframes slideUp {
   from {
     opacity: 0;

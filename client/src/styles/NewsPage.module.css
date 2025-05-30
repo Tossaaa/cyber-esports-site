@@ -247,22 +247,90 @@
   border-top: 1px solid var(--main-border);
 }
 
-/* Состояния загрузки и ошибок */
-.loading {
+/* Состояния загрузки, ошибки и пустого результата */
+.loadingState,
+.errorState,
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  background: var(--main-dark);
+  border-radius: 1rem;
+  border: 1px solid var(--main-border);
   text-align: center;
-  padding: 2rem;
-  color: var(--main-gray);
-  font-size: 1.1rem;
+  margin: 2rem 0;
 }
 
-.error {
-  text-align: center;
-  padding: 2rem;
+.loadingState svg,
+.errorState svg,
+.emptyState svg {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
   color: var(--main-primary);
-  font-size: 1.1rem;
-  background: rgba(255, 70, 85, 0.1);
-  border: 1px solid rgba(255, 70, 85, 0.2);
-  border-radius: 0.5rem;
+  animation: pulse 2s infinite;
+}
+
+.errorState svg {
+  color: var(--main-primary);
+}
+
+.emptyState svg {
+  color: var(--main-gray);
+}
+
+.loadingState p,
+.errorState p,
+.emptyState p {
+  font-size: 1.2rem;
+  color: var(--main-light);
+  margin-bottom: 0.5rem;
+}
+
+.emptyState span {
+  color: var(--main-gray);
+  font-size: 0.95rem;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@media (max-width: 768px) {
+  .loadingState,
+  .errorState,
+  .emptyState {
+    padding: 2rem;
+    margin: 1.5rem 0;
+  }
+
+  .loadingState svg,
+  .errorState svg,
+  .emptyState svg {
+    font-size: 2rem;
+  }
+
+  .loadingState p,
+  .errorState p,
+  .emptyState p {
+    font-size: 1.1rem;
+  }
+
+  .emptyState span {
+    font-size: 0.9rem;
+  }
 }
 
 /* Адаптивность */
@@ -390,16 +458,88 @@
   color: var(--main-primary);
 }
 
-.headerActions {
+.filters {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 1.5rem;
+  background: var(--main-dark);
+  padding: 1.25rem;
+  border-radius: 1rem;
+  border: 1px solid var(--main-border);
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  backdrop-filter: blur(8px);
+  transition: all 0.3s ease;
+}
+
+.filters:hover {
+  border-color: var(--main-primary);
+  box-shadow: 0 8px 12px -1px rgba(0, 0, 0, 0.2), 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.searchBar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex: 0 1 auto;
+  max-width: 400px;
+  min-width: 300px;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 1rem;
+  color: var(--main-accent);
+  font-size: 1.1rem;
+  pointer-events: none;
+  transition: all 0.3s ease;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 0.875rem 1rem 0.875rem 2.75rem;
+  background: var(--main-secondary);
+  border: 1px solid var(--main-border);
+  border-radius: 0.75rem;
+  color: var(--main-light);
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+  font-family: 'Poppins', sans-serif;
+}
+
+.searchInput::placeholder {
+  color: var(--main-gray);
+  font-weight: 400;
+}
+
+.searchInput:hover {
+  border-color: var(--main-primary);
+  background: var(--main-dark);
+}
+
+.searchInput:focus {
+  outline: none;
+  border-color: var(--main-primary);
+  background: var(--main-dark);
+  box-shadow: 0 0 0 3px rgba(255, 70, 85, 0.15);
+}
+
+.searchBar:hover .searchIcon {
+  color: var(--main-primary);
+  transform: scale(1.1);
+}
+
+.searchInput:focus + .searchIcon {
+  color: var(--main-primary);
 }
 
 .filterContainer {
   position: relative;
   display: flex;
   align-items: center;
+  flex: 0 1 auto;
+  max-width: 300px;
+  min-width: 200px;
 }
 
 .filterIcon {
@@ -408,23 +548,24 @@
   color: var(--main-accent);
   font-size: 1.1rem;
   pointer-events: none;
-  transition: transform 0.3s ease, color 0.3s ease;
+  transition: all 0.3s ease;
 }
 
 .filterContainer:hover .filterIcon {
   color: var(--main-primary);
+  transform: scale(1.1);
 }
 
 .filterContainer:focus-within .filterIcon {
-  transform: rotate(180deg);
   color: var(--main-primary);
 }
 
 .tagFilter {
-  padding: 0.75rem 1rem 0.75rem 2.5rem;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 0.5rem;
+  width: 100%;
+  padding: 0.875rem 1rem 0.875rem 2.75rem;
+  background: var(--main-secondary);
+  border: 1px solid var(--main-border);
+  border-radius: 0.75rem;
   color: var(--main-light);
   font-size: 0.95rem;
   cursor: pointer;
@@ -434,44 +575,43 @@
   background-repeat: no-repeat;
   background-position: right 1rem center;
   background-size: 1em;
-  min-width: 200px;
-  transform-origin: top;
+  font-family: 'Poppins', sans-serif;
 }
 
 .tagFilterDefault {
-  border-color: rgba(255, 255, 255, 0.1);
-  background-color: rgba(255, 255, 255, 0.05);
+  border-color: var(--main-border);
+  background-color: var(--main-secondary);
 }
 
 .tagFilterDefault:hover {
-  border-color: rgba(255, 255, 255, 0.2);
-  background-color: rgba(255, 255, 255, 0.08);
+  border-color: var(--main-primary);
+  background-color: var(--main-dark);
 }
 
 .tagFilterDefault:focus {
   border-color: var(--main-primary);
-  background-color: rgba(255, 255, 255, 0.08);
-  box-shadow: 0 0 0 3px rgba(255, 70, 85, 0.1);
+  background-color: var(--main-dark);
+  box-shadow: 0 0 0 3px rgba(255, 70, 85, 0.15);
 }
 
 .tagFilter:not(.tagFilterDefault) {
   border-color: var(--main-primary);
-  background-color: rgba(255, 70, 85, 0.05);
+  background-color: var(--main-dark);
   color: var(--main-primary);
 }
 
 .tagFilter:not(.tagFilterDefault):hover {
-  background-color: rgba(255, 70, 85, 0.08);
+  background-color: var(--main-dark);
   border-color: var(--main-primary);
 }
 
 .tagFilter:not(.tagFilterDefault):focus {
-  background-color: rgba(255, 70, 85, 0.08);
+  background-color: var(--main-dark);
   box-shadow: 0 0 0 3px rgba(255, 70, 85, 0.15);
 }
 
 .tagFilter option {
-  background-color: var(--main-secondary);
+  background-color: var(--main-dark);
   color: var(--main-light);
   padding: 0.75rem;
   font-size: 0.95rem;
@@ -479,33 +619,29 @@
 }
 
 .tagFilter option:hover {
-  background-color: rgba(255, 70, 85, 0.1);
-  color: var(--main-primary);
-}
-
-/* Анимация для опций в выпадающем списке */
-.tagFilter option {
-  animation: fadeIn 0.2s ease;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+  background-color: var(--main-primary);
+  color: var(--main-light);
 }
 
 @media (max-width: 768px) {
-  .headerActions {
+  .filters {
     flex-direction: column;
     align-items: stretch;
-    gap: 0.75rem;
+    gap: 1rem;
+    padding: 1rem;
   }
 
+  .searchBar,
+  .filterContainer {
+    width: 100%;
+    max-width: none;
+    min-width: unset;
+  }
+
+  .searchInput,
   .tagFilter {
     width: 100%;
+    padding: 0.75rem 1rem 0.75rem 2.5rem;
   }
 }
 

@@ -199,21 +199,31 @@
 
 /* Стилизация скроллбара */
 .modal::-webkit-scrollbar {
-  width: 8px;
+  width: 10px !important;
 }
 
 .modal::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.05) !important;
+  border-radius: 8px !important;
+  margin: 4px !important;
 }
 
 .modal::-webkit-scrollbar-thumb {
-  background: var(--cs-primary);
-  border-radius: 4px;
+  background: var(--main-primary) !important;
+  border-radius: 8px !important;
+  border: 2px solid var(--main-dark) !important;
+  transition: all 0.3s ease !important;
 }
 
 .modal::-webkit-scrollbar-thumb:hover {
-  background: var(--cs-primary-dark);
+  background: var(--main-primary-dark) !important;
+  border: 1px solid var(--main-dark) !important;
+}
+
+/* Firefox */
+.modal {
+  scrollbar-width: thin !important;
+  scrollbar-color: var(--main-primary) rgba(255, 255, 255, 0.05) !important;
 }
 
 /* Адаптивность */

@@ -61,6 +61,13 @@
   position: relative;
   padding: 0.5rem 0;
   transition: color 0.3s ease;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  font-family: inherit;
+  text-decoration: none;
+  display: inline-block;
 }
 
 .navLink:hover {
@@ -88,75 +95,6 @@
 
 .navLink:hover::after {
   width: 100%;
-}
-
-.searchContainer {
-  position: relative;
-  display: flex;
-  align-items: center;
-  background: var(--main-dark);
-  border-radius: 2rem;
-  padding: 0.5rem 1.5rem;
-  transition: all 0.3s ease;
-  max-width: 600px;
-  border: 2px solid transparent;
-}
-
-.searchContainer.focused {
-  border-color: var(--main-primary);
-  box-shadow: 0 0 0 3px rgba(255, 70, 85, 0.2);
-}
-
-.searchIcon {
-  color: var(--main-gray);
-  font-size: 1.25rem;
-}
-
-.search {
-  width: 100%;
-  padding: 0.5rem 1rem;
-  background: transparent;
-  border: none;
-  color: var(--main-accent);
-  font-size: 1rem;
-  outline: none;
-}
-
-.search::placeholder {
-  color: var(--main-gray);
-}
-
-.searchResults {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  right: 0;
-  background: var(--main-dark);
-  border-radius: 0.5rem;
-  margin-top: 0.5rem;
-  padding: 0.5rem;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.searchResultItem {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.75rem 1rem;
-  color: var(--main-accent);
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  border-radius: 0.25rem;
-}
-
-.searchResultItem:hover {
-  background: rgba(255, 255, 255, 0.05);
-}
-
-.searchResultItem svg {
-  color: var(--main-gray);
-  font-size: 1rem;
 }
 
 .auth {
@@ -277,8 +215,8 @@
   height: 40px;
   background: rgba(255, 70, 85, 0.1);
   border: 2px solid var(--main-primary);
-  color: var(--main-primary);
   border-radius: 50%;
+  color: var(--main-primary);
   font-size: 1.1rem;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -321,33 +259,23 @@
 
 @media (max-width: 1200px) {
   .header {
-    flex-wrap: wrap;
-    gap: 1rem;
+    padding: 1rem 2rem;
   }
   
   .headerLeft {
-    order: 1;
-    width: 100%;
-    justify-content: space-between;
+    gap: 2rem;
   }
   
-  .headerRight {
-    order: 3;
-    width: 100%;
-    justify-content: space-between;
-  }
-  
-  .searchContainer {
-    order: 2;
-    width: 100%;
-  }
-  
-  .auth {
-    order: 1;
+  .nav {
+    gap: 1.5rem;
   }
 }
 
 @media (max-width: 768px) {
+  .header {
+    padding: 1rem;
+  }
+
   .nav {
     position: fixed;
     top: 0;
@@ -392,6 +320,19 @@
 
   .userInfo {
     flex: 1;
+  }
+
+  .userAvatar {
+    width: 36px;
+    height: 36px;
+  }
+
+  .userName {
+    font-size: 0.9rem;
+  }
+
+  .userRole {
+    font-size: 0.75rem;
   }
 
   .logoutButton {

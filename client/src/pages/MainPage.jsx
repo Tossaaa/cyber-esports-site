@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import styles from "../styles/MainPage.module.css";
 import logo from "../assets/logo.png";
 import { 
@@ -24,6 +24,7 @@ import NewsModal from "../components/NewsModal";
 import LoginForm from '../components/LoginForm.jsx';
 import RegisterForm from '../components/RegisterForm';
 import DisciplinesModal from '../components/DisciplinesModal';
+import InDevelopmentModal from '../components/InDevelopmentModal';
 
 const disciplines = [
   { id: "cs2", name: "CS2", image: "/images/cs2.jpg", bgColor: "#2a475e", status: "active" },
@@ -77,6 +78,9 @@ const MainPage = () => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [showInDevelopmentModal, setShowInDevelopmentModal] = useState(false);
+  const [devSection, setDevSection] = useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Загружаем данные пользователя при монтировании компонента
@@ -237,6 +241,17 @@ const MainPage = () => {
     }
   };
 
+  const handleDisciplineClick = (e, disciplineId) => {
+    console.log('Clicked discipline:', disciplineId);
+    if (disciplineId !== "cs2") {
+      e.preventDefault();
+      const discipline = disciplines.find(d => d.id === disciplineId);
+      setDevSection(discipline.name);
+      console.log('Showing development modal for:', discipline.name);
+      setShowInDevelopmentModal(true);
+    }
+  };
+
   return (
     <div className={styles.wrapper}>
       {/* Основной контент */}
@@ -248,7 +263,7 @@ const MainPage = () => {
             <p>Присоединяйтесь к сообществу, участвуйте в турнирах и станьте частью киберспортивной истории</p>
             <button 
               className={styles.heroButton}
-              onClick={() => setShowDisciplinesModal(true)}
+              onClick={() => navigate('/tournaments')}
             >
               Смотреть турниры <FiArrowRight />
             </button>
@@ -273,6 +288,7 @@ const MainPage = () => {
                 to={`/discipline/${discipline.id}`} 
                 className={styles.disciplineCard}
                 style={{ '--card-bg': discipline.bgColor }}
+                onClick={(e) => handleDisciplineClick(e, discipline.id)}
               >
                 <div className={styles.cardImageContainer}>
                   <img src={discipline.image} alt={discipline.name} className={styles.cardImage} />
@@ -411,6 +427,17 @@ const MainPage = () => {
           onClose={() => setShowRegisterForm(false)}
           onSwitchToLogin={handleSwitchToLogin}
           onLoginSuccess={handleLoginSuccess}
+        />
+      )}
+
+      {showInDevelopmentModal && (
+        <InDevelopmentModal
+          isOpen={showInDevelopmentModal}
+          onClose={() => {
+            console.log('Closing modal');
+            setShowInDevelopmentModal(false);
+          }}
+          section={devSection}
         />
       )}
     </div>

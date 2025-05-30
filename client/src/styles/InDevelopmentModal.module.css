@@ -22,6 +22,8 @@
   border: 1px solid var(--cs-border);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
   animation: slideUp 0.3s ease;
+  scrollbar-width: thin !important;
+  scrollbar-color: var(--main-primary) rgba(255, 255, 255, 0.05) !important;
 }
 
 .modalContent {
@@ -153,4 +155,32 @@
     padding: 0.625rem 1.75rem;
     font-size: 0.95rem;
   }
+}
+
+.modal::-webkit-scrollbar {
+  width: 10px !important;
+}
+
+.modal::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border-radius: 8px !important;
+  margin: 4px !important;
+}
+
+.modal::-webkit-scrollbar-thumb {
+  background: var(--main-primary) !important;
+  border-radius: 8px !important;
+  border: 2px solid var(--main-dark) !important;
+  transition: all 0.3s ease !important;
+}
+
+.modal::-webkit-scrollbar-thumb:hover {
+  background: var(--main-primary-dark) !important;
+  border: 1px solid var(--main-dark) !important;
+}
+
+/* Firefox */
+.modal {
+  scrollbar-width: thin !important;
+  scrollbar-color: var(--main-primary) rgba(255, 255, 255, 0.05) !important;
 } 

@@ -1,19 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import styles from '../styles/Header.module.css';
-import { FiSearch, FiUser, FiLogIn, FiPlus, FiMenu, FiX, FiLogOut } from 'react-icons/fi';
-import ConfirmModal from './ConfirmModal';
+import { FiUser, FiLogIn, FiPlus, FiMenu, FiX, FiLogOut, FiTool } from 'react-icons/fi';
+import InDevelopmentModal from './InDevelopmentModal';
 import logo from '../assets/logo.png';
 
 const Header = ({ onLoginClick, onRegisterClick }) => {
-  const [searchFocused, setSearchFocused] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [showSearchResults, setShowSearchResults] = useState(false);
   const [user, setUser] = useState(null);
-  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+  const [showDevModal, setShowDevModal] = useState(false);
+  const [devSection, setDevSection] = useState('');
   const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -25,51 +24,22 @@ const Header = ({ onLoginClick, onRegisterClick }) => {
   }, []);
 
   useEffect(() => {
-    // Проверяем наличие данных пользователя в localStorage
     const userData = localStorage.getItem('user');
     if (userData) {
       setUser(JSON.parse(userData));
     }
-
-    // Добавляем слушатель события userLoggedIn
-    const handleUserLoggedIn = (event) => {
-      setUser(event.detail);
-    };
-
-    const header = document.querySelector('header');
-    if (header) {
-      header.addEventListener('userLoggedIn', handleUserLoggedIn);
-    }
-
-    return () => {
-      if (header) {
-        header.removeEventListener('userLoggedIn', handleUserLoggedIn);
-      }
-    };
   }, []);
 
-  const handleSearchChange = (e) => {
-    setSearchQuery(e.target.value);
-    setShowSearchResults(e.target.value.length > 0);
-  };
-
-  const handleSearchBlur = () => {
-    setTimeout(() => {
-      setShowSearchResults(false);
-      setSearchFocused(false);
-    }, 200);
-  };
-
-  const handleLogoutClick = () => {
-    setShowLogoutConfirm(true);
-  };
-
-  const handleLogoutConfirm = () => {
+  const handleLogout = () => {
     localStorage.removeItem('user');
     localStorage.removeItem('token');
     setUser(null);
-    setShowLogoutConfirm(false);
-    window.location.href = '/';
+    navigate('/');
+  };
+
+  const handleDevClick = (section) => {
+    setDevSection(section);
+    setShowDevModal(true);
   };
 
   return (
@@ -93,38 +63,16 @@ const Header = ({ onLoginClick, onRegisterClick }) => {
               <Link to="/tournaments" className={`${styles.navLink} ${location.pathname === '/tournaments' ? styles.active : ''}`}>
                 Турниры
               </Link>
-              <Link to="/teams" className={`${styles.navLink} ${location.pathname === '/teams' ? styles.active : ''}`}>
+              <button 
+                className={styles.navLink} 
+                onClick={() => handleDevClick('Команды')}
+              >
                 Команды
-              </Link>
+              </button>
             </nav>
           </div>
 
           <div className={styles.headerRight}>
-            <div className={`${styles.searchContainer} ${searchFocused ? styles.focused : ''}`}>
-              <FiSearch className={styles.searchIcon} />
-              <input
-                type="text"
-                className={styles.search}
-                placeholder="Поиск..."
-                value={searchQuery}
-                onChange={handleSearchChange}
-                onFocus={() => setSearchFocused(true)}
-                onBlur={handleSearchBlur}
-              />
-              {showSearchResults && (
-                <div className={styles.searchResults}>
-                  <div className={styles.searchResultItem}>
-                    <FiSearch />
-                    <span>Результат поиска 1</span>
-                  </div>
-                  <div className={styles.searchResultItem}>
-                    <FiSearch />
-                    <span>Результат поиска 2</span>
-                  </div>
-                </div>
-              )}
-            </div>
-
             {user ? (
               <div className={styles.userMenu}>
                 <Link to="/profile" className={styles.userInfo}>
@@ -143,7 +91,7 @@ const Header = ({ onLoginClick, onRegisterClick }) => {
                     <span className={styles.userRole}>{user.role === 'admin' ? 'Администратор' : 'Пользователь'}</span>
                   </div>
                 </Link>
-                <button className={styles.logoutButton} onClick={handleLogoutClick} title="Выйти">
+                <button className={styles.logoutButton} onClick={handleLogout} title="Выйти">
                   <FiLogOut />
                 </button>
               </div>
@@ -159,20 +107,14 @@ const Header = ({ onLoginClick, onRegisterClick }) => {
                 </button>
               </div>
             )}
-
-            <button className={styles.mobileMenuButton} onClick={() => setShowMobileMenu(true)}>
-              <FiMenu />
-            </button>
           </div>
         </div>
       </header>
 
-      <ConfirmModal
-        isOpen={showLogoutConfirm}
-        onClose={() => setShowLogoutConfirm(false)}
-        onConfirm={handleLogoutConfirm}
-        title="Подтверждение выхода"
-        message="Вы уверены, что хотите выйти из аккаунта?"
+      <InDevelopmentModal
+        isOpen={showDevModal}
+        onClose={() => setShowDevModal(false)}
+        section={devSection}
       />
     </>
   );

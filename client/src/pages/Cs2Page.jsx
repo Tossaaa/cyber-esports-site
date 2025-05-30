@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import styles from '../styles/CS2Page.module.css';
 import { FiStar, FiTarget, FiMap, FiUsers, FiAward, FiClock, FiCalendar, FiPlus, FiArrowRight, FiUser, FiTrash2, FiEdit2, FiAlertCircle, FiDollarSign, FiMapPin } from 'react-icons/fi';
 import { FaUsers, FaTrophy, FaCrosshairs, FaMap, FaClock, FaCalendarAlt, FaUser, FaGamepad, FaTrash } from 'react-icons/fa';
@@ -35,6 +35,7 @@ const Cs2Page = () => {
   const [selectedTournament, setSelectedTournament] = useState(null);
   const [editingTournament, setEditingTournament] = useState(null);
   const [showInDevelopmentModal, setShowInDevelopmentModal] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Загружаем данные пользователя при монтировании компонента
@@ -460,17 +461,11 @@ const Cs2Page = () => {
               <div className={styles.bannerActions}>
                 <button 
                   className={styles.primaryButton}
-                  onClick={() => {
-                    document.getElementById('tournaments-section').scrollIntoView({ behavior: 'smooth' });
-                    setActiveTab('tournaments');
-                  }}
+                  onClick={() => navigate('/tournaments')}
                 >
-                  Смотреть матчи
+                  Смотреть турниры
                 </button>
-                <button 
-                  className={styles.secondaryButton}
-                  onClick={() => setShowInDevelopmentModal(true)}
-                >
+                <button className={styles.secondaryButton} onClick={() => setShowInDevelopmentModal(true)}>
                   Добавить в избранное
                 </button>
               </div>
@@ -504,13 +499,21 @@ const Cs2Page = () => {
         <section id="tournaments-section" className={styles.section}>
           <div className={styles.sectionHeader}>
             <h2 className={styles.sectionTitle}>Турниры</h2>
-            <button className={styles.addButton} onClick={() => setShowTournamentForm(true)}>
-              <FiPlus className={styles.addIcon} />
-              Добавить турнир
-            </button>
+            <div className={styles.sectionActions}>
+              <button className={styles.addButton} onClick={() => setShowTournamentForm(true)}>
+                <FiPlus className={styles.addIcon} />
+                Добавить турнир
+              </button>
+              <Link to="/tournaments" className={styles.viewAll}>
+                Все турниры <FiArrowRight />
+              </Link>
+            </div>
           </div>
           <div className={styles.tournamentsGrid}>
-            {tournaments.map(tournament => (
+            {tournaments
+              .sort((a, b) => new Date(b.start_date) - new Date(a.start_date))
+              .slice(0, 3)
+              .map(tournament => (
               <div
                 key={tournament.id}
                 className={styles.tournamentCard}

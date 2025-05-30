@@ -2,7 +2,9 @@ import React from 'react';
 import styles from '../styles/InDevelopmentModal.module.css';
 import { FiAlertCircle, FiX } from 'react-icons/fi';
 
-const InDevelopmentModal = ({ onClose }) => {
+const InDevelopmentModal = ({ isOpen, onClose, section }) => {
+  if (!isOpen) return null;
+
   return (
     <div className={styles.modalOverlay}>
       <div className={styles.modal}>
@@ -14,7 +16,7 @@ const InDevelopmentModal = ({ onClose }) => {
             <FiAlertCircle className={styles.icon} />
           </div>
           <h2>Функция в разработке</h2>
-          <p>Данная функция находится в разработке и будет доступна в ближайшее время.</p>
+          <p>Раздел '{section}' находится в разработке и будет доступен в ближайшее время.</p>
           <button className={styles.okButton} onClick={onClose}>
             Понятно
           </button>

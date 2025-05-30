@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { FiPlus, FiTrash2, FiCalendar, FiUser, FiTag, FiFilter } from "react-icons/fi";
+import { FiPlus, FiTrash2, FiCalendar, FiUser, FiTag, FiFilter, FiLoader, FiAlertCircle, FiFileText, FiSearch } from "react-icons/fi";
 import styles from "../styles/NewsPage.module.css";
 import AddNewsForm from "../components/AddNewsForm";
 import NewsModal from "../components/NewsModal";
@@ -23,6 +23,7 @@ const NewsPage = () => {
   const [news, setNews] = useState([]);
   const [filteredNews, setFilteredNews] = useState([]);
   const [selectedTag, setSelectedTag] = useState('all');
+  const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showAddNewsForm, setShowAddNewsForm] = useState(false);
@@ -173,8 +174,23 @@ const NewsPage = () => {
     }
   }, [selectedTag, news]);
 
+  useEffect(() => {
+    const filtered = news.filter(item => {
+      const matchesTag = selectedTag === 'all' || item.game_tag === selectedTag;
+      const matchesSearch = searchQuery === '' || 
+        item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        item.description.toLowerCase().includes(searchQuery.toLowerCase());
+      return matchesTag && matchesSearch;
+    });
+    setFilteredNews(filtered);
+  }, [selectedTag, news, searchQuery]);
+
   const handleTagChange = (e) => {
     setSelectedTag(e.target.value);
+  };
+
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
   };
 
   if (loading) {
@@ -203,79 +219,110 @@ const NewsPage = () => {
         <div className={styles.pageHeader}>
           <h1 className={styles.pageTitle}>Новости</h1>
           <div className={styles.headerActions}>
-            <div className={styles.filterContainer}>
-              <FiFilter className={styles.filterIcon} />
-              <select 
-                className={`${styles.tagFilter} ${selectedTag === 'all' ? styles.tagFilterDefault : ''}`}
-                value={selectedTag}
-                onChange={handleTagChange}
+            {user?.role === 'admin' && (
+              <button 
+                className={styles.addNewsButton}
+                onClick={() => setShowAddNewsForm(true)}
               >
-                {Object.entries(gameTags).map(([key, value]) => (
-                  <option key={key} value={key}>
-                    {value}
-                  </option>
-                ))}
-              </select>
-            </div>
-          {user?.role === 'admin' && (
-            <button 
-              className={styles.addNewsButton}
-              onClick={() => setShowAddNewsForm(true)}
-            >
-              <FiPlus />
-              Добавить новость
-            </button>
-          )}
+                <FiPlus />
+                Добавить новость
+              </button>
+            )}
           </div>
         </div>
 
-        <div className={styles.newsGrid}>
-          {filteredNews.map((item) => (
-            <div 
-              key={item.id} 
-              className={styles.newsCard}
-              onClick={() => handleNewsClick(item)}
+        <div className={styles.filters}>
+          <div className={styles.searchBar}>
+            <FiSearch className={styles.searchIcon} />
+            <input
+              type="text"
+              placeholder="Поиск новостей..."
+              value={searchQuery}
+              onChange={handleSearchChange}
+              className={styles.searchInput}
+            />
+          </div>
+          <div className={styles.filterContainer}>
+            <FiFilter className={styles.filterIcon} />
+            <select 
+              className={`${styles.tagFilter} ${selectedTag === 'all' ? styles.tagFilterDefault : ''}`}
+              value={selectedTag}
+              onChange={handleTagChange}
             >
-              {item.image_url && (
-                <div className={styles.newsImageContainer}>
-                  <img 
-                    src={item.image_url} 
-                    alt={item.title} 
-                    className={styles.newsImage}
-                    onError={(e) => {
-                      e.target.onerror = null;
-                      e.target.src = '/images/default-news.jpg';
-                    }}
-                  />
-                </div>
-              )}
-              <div className={styles.newsContent}>
-                <h3 className={styles.newsTitle}>{item.title}</h3>
-                <p className={styles.newsDescription}>{item.description}</p>
-                <div className={styles.newsMeta}>
-                  <div className={styles.newsMetaLeft}>
-                    <span className={styles.newsDate}>
-                      <FiCalendar /> {new Date(item.created_at).toLocaleDateString('ru-RU')}
-                    </span>
-                    {item.author_name && (
-                      <span className={styles.newsAuthor}>
-                        <FiUser /> {item.author_name}
+              {Object.entries(gameTags).map(([key, value]) => (
+                <option key={key} value={key}>
+                  {value}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        {loading ? (
+          <div className={styles.loadingState}>
+            <FiLoader size={32} />
+            <p>Загрузка новостей...</p>
+          </div>
+        ) : error ? (
+          <div className={styles.errorState}>
+            <FiAlertCircle size={32} />
+            <p>Ошибка при загрузке новостей: {error}</p>
+          </div>
+        ) : filteredNews.length === 0 ? (
+          <div className={styles.emptyState}>
+            <FiFileText size={32} />
+            <p>Новостей не найдено</p>
+            <span>Попробуйте изменить параметры поиска или фильтры</span>
+          </div>
+        ) : (
+          <div className={styles.newsGrid}>
+            {filteredNews.map((item) => (
+              <div 
+                key={item.id} 
+                className={styles.newsCard}
+                onClick={() => handleNewsClick(item)}
+              >
+                {item.image_url && (
+                  <div className={styles.newsImageContainer}>
+                    <img 
+                      src={item.image_url} 
+                      alt={item.title} 
+                      className={styles.newsImage}
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = '/images/default-news.jpg';
+                      }}
+                    />
+                  </div>
+                )}
+                <div className={styles.newsContent}>
+                  <h3 className={styles.newsTitle}>{item.title}</h3>
+                  <p className={styles.newsDescription}>{item.description}</p>
+                  <div className={styles.newsMeta}>
+                    <div className={styles.newsMetaLeft}>
+                      <span className={styles.newsDate}>
+                        <FiCalendar /> {new Date(item.created_at).toLocaleDateString('ru-RU')}
                       </span>
+                      {item.author_name && (
+                        <span className={styles.newsAuthor}>
+                          <FiUser /> {item.author_name}
+                        </span>
+                      )}
+                    </div>
+                    {user && user.role === 'admin' && (
+                      <button 
+                        className={styles.deleteNewsButton}
+                        onClick={(e) => handleDeleteNews(item.id, e)}
+                      >
+                        <FiTrash2 /> Удалить
+                      </button>
                     )}
                   </div>
-                  {user && user.role === 'admin' && (
-                    <button 
-                      className={styles.deleteNewsButton}
-                      onClick={(e) => handleDeleteNews(item.id, e)}
-                    >
-                      <FiTrash2 /> Удалить
-                    </button>
-                  )}
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {showAddNewsForm && (
