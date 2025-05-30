@@ -86,6 +86,16 @@ const Cs2Page = () => {
           logo: team.logo && !team.logo.startsWith('http') ? `http://localhost:5001${team.logo}` : team.logo
         }));
         setTeams(teamsWithFullUrls);
+
+        // Загружаем турниры
+        console.log('Fetching tournaments...');
+        const tournamentsResponse = await fetch('http://localhost:5001/api/tournaments?game=cs2');
+        if (!tournamentsResponse.ok) {
+          throw new Error('Ошибка при загрузке турниров');
+        }
+        const tournamentsData = await tournamentsResponse.json();
+        console.log('Tournaments data:', tournamentsData);
+        setTournaments(tournamentsData);
       } catch (err) {
         console.error('Error fetching data:', err);
         setError(err.message);
@@ -527,22 +537,78 @@ const Cs2Page = () => {
             </button>
           </div>
           <div className={styles.tournamentsGrid}>
-            {tournaments.map(tournament => (
-              <div key={tournament.id} className={styles.tournamentCard}>
-                <h3>{tournament.name}</h3>
-                <p>{tournament.description}</p>
-                <p>Дата начала: {new Date(tournament.start_date).toLocaleDateString()}</p>
-                <p>Дата окончания: {new Date(tournament.end_date).toLocaleDateString()}</p>
-                <div className={styles.tournamentTeams}>
-                  <h4>Участники:</h4>
-                  <ul>
-                    {tournament.teams.map(team => (
-                      <li key={team.id}>{team.name}</li>
-                    ))}
-                  </ul>
+            {tournaments.map(tournament => {
+              // Определяем статус турнира
+              const now = new Date();
+              const startDate = new Date(tournament.start_date);
+              const endDate = new Date(tournament.end_date);
+              let status = 'upcoming';
+              let statusText = 'Предстоящий';
+              
+              if (now > endDate) {
+                status = 'completed';
+                statusText = 'Завершен';
+              } else if (now >= startDate && now <= endDate) {
+                status = 'ongoing';
+                statusText = 'Идет сейчас';
+              }
+
+              return (
+                <div key={tournament.id} className={`${styles.tournamentCard} ${styles[status]}`}>
+              <div className={styles.tournamentHeader}>
+                    <h3>{tournament.name}</h3>
+                    <span className={`${styles.tournamentStatus} ${styles[status]}`}>
+                      {statusText}
+                    </span>
+              </div>
+                  
+                  <div className={styles.tournamentInfo}>
+                    <div className={styles.tournamentDates}>
+                      <div className={styles.dateItem}>
+                        <FiCalendar className={styles.dateIcon} />
+                        <span>Начало: {new Date(tournament.start_date).toLocaleDateString()}</span>
+              </div>
+                      <div className={styles.dateItem}>
+                        <FiCalendar className={styles.dateIcon} />
+                        <span>Окончание: {new Date(tournament.end_date).toLocaleDateString()}</span>
+                      </div>
+            </div>
+
+                    <div className={styles.tournamentDetails}>
+                      <div className={styles.detailItem}>
+                        <FaTrophy className={styles.detailIcon} />
+                        <span>Призовой фонд: {tournament.prize_pool}</span>
+              </div>
+                      <div className={styles.detailItem}>
+                        <FiMap className={styles.detailIcon} />
+                        <span>Локация: {tournament.location || 'Не указана'}</span>
+              </div>
+                      <div className={styles.detailItem}>
+                        <FiUsers className={styles.detailIcon} />
+                        <span>Организатор: {tournament.organizer || 'Не указан'}</span>
+                      </div>
+                      <div className={styles.detailItem}>
+                        <FiTarget className={styles.detailIcon} />
+                        <span>Формат: {tournament.format || 'BO1'}</span>
+                      </div>
+            </div>
+
+                    <div className={styles.tournamentTeams}>
+                      <h4>Участники</h4>
+                      <ul>
+                        {tournament.teams && tournament.teams.length > 0 ? (
+                          tournament.teams.map(team => (
+                            <li key={team.id}>{team.name}</li>
+                          ))
+                        ) : (
+                          <li>Нет участников</li>
+                        )}
+                      </ul>
               </div>
               </div>
-            ))}
+            </div>
+              );
+            })}
           </div>
         </section>
 
@@ -591,64 +657,64 @@ const Cs2Page = () => {
                 {[...teams]
                   .sort((a, b) => b.points - a.points)
                   .map((team, index) => (
-                <div key={team.id} className={styles.teamRow}>
+                    <div key={team.id} className={styles.teamRow}>
                       <div className={styles.tableCell}>
-                  <span className={styles.rank}>#{index + 1}</span>
+                        <span className={styles.rank}>#{index + 1}</span>
                       </div>
                       <div className={styles.tableCell}>
-                  <div className={styles.teamInfo}>
-                    {team.logo ? (
-                      <img 
-                        src={team.logo} 
-                        alt={team.name} 
-                        className={styles.teamLogo}
-                      />
-                    ) : (
-                      <div className={styles.defaultIcon}>
-                        <FiUsers />
-                      </div>
-                    )}
-                    <span className={styles.teamName}>{team.name}</span>
-                  </div>
-                      </div>
-                      <div className={styles.tableCell}>
-                  <span className={styles.points}>{team.points}</span>
+                        <div className={styles.teamInfo}>
+                          {team.logo ? (
+                            <img 
+                              src={team.logo} 
+                              alt={team.name} 
+                              className={styles.teamLogo}
+                            />
+                          ) : (
+                            <div className={styles.defaultIcon}>
+                              <FiUsers />
+                            </div>
+                          )}
+                          <span className={styles.teamName}>{team.name}</span>
+                        </div>
                       </div>
                       <div className={styles.tableCell}>
-                  <span className={styles.teamCountry}>
-                    <FiMap /> {team.country || 'Не указана'}
-                  </span>
+                        <span className={styles.points}>{team.points}</span>
                       </div>
                       <div className={styles.tableCell}>
-                  <span className={styles.teamFounded}>
-                    {team.founded || 'Не указан'}
-                  </span>
+                        <span className={styles.teamCountry}>
+                          <FiMap /> {team.country || 'Не указана'}
+                        </span>
+                      </div>
+                      <div className={styles.tableCell}>
+                        <span className={styles.teamFounded}>
+                          {team.founded || 'Не указан'}
+                        </span>
                       </div>
                       {user && user.role === 'admin' && (
                         <div className={styles.tableCell}>
-                  <div className={styles.teamActions}>
-                    <button 
-                      className={styles.editButton}
-                      onClick={() => {
-                        setEditingTeam(team);
-                        setShowTeamForm(true);
-                      }}
-                      title="Редактировать команду"
-                    >
-                      <FiEdit2 />
-                    </button>
-                    <button 
-                      className={styles.deleteButton}
-                      onClick={() => handleDeleteTeam(team.id)}
-                      title="Удалить команду"
-                    >
-                      <FiTrash2 />
-                    </button>
-                  </div>
+                          <div className={styles.teamActions}>
+                            <button 
+                              className={styles.editButton}
+                              onClick={() => {
+                                setEditingTeam(team);
+                                setShowTeamForm(true);
+                              }}
+                              title="Редактировать команду"
+                            >
+                              <FiEdit2 />
+                            </button>
+                            <button 
+                              className={styles.deleteButton}
+                              onClick={() => handleDeleteTeam(team.id)}
+                              title="Удалить команду"
+                            >
+                              <FiTrash2 />
+                            </button>
+                          </div>
                         </div>
                       )}
-                </div>
-              ))}
+                    </div>
+                  ))}
               </div>
             </div>
           )}

@@ -59,32 +59,32 @@ const runQuery = (sql, params = []) => {
 // Пересоздаем таблицу турниров
 const recreateTournamentsTable = async () => {
   try {
-    // Удаляем старую таблицу
-    await runQuery('DROP TABLE IF EXISTS tournaments');
+    const tableExists = await checkTableExists('tournaments');
     
-    // Создаем новую таблицу с расширенными полями
-    await runQuery(`
-      CREATE TABLE tournaments (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT NOT NULL,
-        description TEXT,
-        start_date TEXT NOT NULL,
-        end_date TEXT NOT NULL,
-        prize_pool TEXT,
-        status TEXT DEFAULT 'Предстоящий' CHECK (status IN ('Предстоящий', 'Идет', 'Завершен')),
-        organizer TEXT,
-        location TEXT,
-        format TEXT,
-        max_teams INTEGER DEFAULT 16,
-        rules TEXT,
-        logo TEXT,
-        created_at TEXT NOT NULL,
-        updated_at TEXT NOT NULL
-      )
-    `);
-    console.log('Tournaments table recreated successfully');
+    if (!tableExists) {
+      // Создаем новую таблицу с расширенными полями
+      await runQuery(`
+        CREATE TABLE tournaments (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          name TEXT NOT NULL,
+          description TEXT,
+          game TEXT NOT NULL,
+          start_date TEXT NOT NULL,
+          end_date TEXT NOT NULL,
+          prize_pool TEXT,
+          location TEXT,
+          organizer TEXT,
+          format TEXT,
+          status TEXT DEFAULT 'upcoming',
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        )
+      `);
+      console.log('Tournaments table created successfully');
+    } else {
+      console.log('Tournaments table already exists');
+    }
   } catch (err) {
-    console.error('Error recreating tournaments table:', err);
+    console.error('Error creating tournaments table:', err);
     throw err;
   }
 };

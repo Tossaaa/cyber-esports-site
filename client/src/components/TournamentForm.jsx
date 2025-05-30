@@ -12,9 +12,7 @@ const TournamentForm = ({ onClose, onSave }) => {
     prize_pool: '',
     organizer: '',
     location: '',
-    format: 'BO1',
-    rules: '',
-    logo: ''
+    format: 'BO1'
   });
   const [teams, setTeams] = useState([]);
   const [error, setError] = useState('');
@@ -79,6 +77,10 @@ const TournamentForm = ({ onClose, onSave }) => {
       throw new Error('Дата окончания обязательна');
     }
 
+    if (!formData.prize_pool.trim()) {
+      throw new Error('Призовой фонд обязателен');
+    }
+
     const startDate = new Date(formData.start_date);
     const endDate = new Date(formData.end_date);
     const now = new Date();
@@ -119,17 +121,12 @@ const TournamentForm = ({ onClose, onSave }) => {
       // Преобразуем данные для отправки
       const tournamentData = {
         ...formData,
-        teams: formData.teamIds, // Переименовываем teamIds в teams
-        startDate: formData.start_date, // Переименовываем start_date в startDate
-        endDate: formData.end_date, // Переименовываем end_date в endDate
-        prizePool: formData.prize_pool, // Переименовываем prize_pool в prizePool
+        game: 'cs2', // Добавляем игру по умолчанию
+        teams: formData.teamIds // Переименовываем teamIds в teams
       };
 
-      // Удаляем старые поля
+      // Удаляем teamIds, так как мы его переименовали
       delete tournamentData.teamIds;
-      delete tournamentData.start_date;
-      delete tournamentData.end_date;
-      delete tournamentData.prize_pool;
 
       console.log('Отправка данных турнира:', tournamentData);
 
@@ -208,13 +205,14 @@ const TournamentForm = ({ onClose, onSave }) => {
           </div>
 
           <div className={styles.formGroup}>
-            <label htmlFor="prize_pool">Призовой фонд</label>
+            <label htmlFor="prize_pool">Призовой фонд *</label>
             <input
               type="text"
               id="prize_pool"
               name="prize_pool"
               value={formData.prize_pool}
               onChange={handleChange}
+              required
               disabled={isSubmitting}
               placeholder="Например: $100,000"
             />
@@ -259,19 +257,6 @@ const TournamentForm = ({ onClose, onSave }) => {
               <option value="BO2">BO2 (Best of 2)</option>
               <option value="BO3">BO3 (Best of 3)</option>
             </select>
-          </div>
-
-          <div className={styles.formGroup}>
-            <label htmlFor="rules">Правила турнира</label>
-            <textarea
-              id="rules"
-              name="rules"
-              value={formData.rules}
-              onChange={handleChange}
-              rows="4"
-              disabled={isSubmitting}
-              placeholder="Введите правила турнира"
-            />
           </div>
 
           <div className={styles.formGroup}>
