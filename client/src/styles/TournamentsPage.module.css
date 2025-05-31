@@ -1,9 +1,10 @@
 .wrapper {
-  min-height: 100vh;
+  min-height: calc(100vh - 80px);
   background: var(--main-secondary);
-  padding: 2rem 0;
+  padding: 1rem 0;
   color: var(--main-accent);
   font-family: 'Poppins', 'Arial', sans-serif;
+  margin-bottom: 0;
 }
 
 .wrapper::before {
@@ -21,16 +22,15 @@
 .container {
   max-width: 1600px;
   margin: 0 auto;
-  padding: 0 2rem;
+  padding: 0 1rem;
 }
 
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 2rem;
-  padding-bottom: 1.5rem;
-  border-bottom: 1px solid var(--main-border);
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
 }
 
 .header h1 {

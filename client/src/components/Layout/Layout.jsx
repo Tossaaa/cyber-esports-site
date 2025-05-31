@@ -10,14 +10,9 @@ const Layout = ({ children }) => {
   const [showRegisterForm, setShowRegisterForm] = useState(false);
 
   const handleLoginSuccess = (userData, token) => {
-    localStorage.setItem('user', JSON.stringify(userData));
-    localStorage.setItem('token', token);
-    // Обновляем состояние пользователя в Header
-    const header = document.querySelector('header');
-    if (header) {
-      const event = new CustomEvent('userLoggedIn', { detail: userData });
-      header.dispatchEvent(event);
-    }
+    // Генерируем событие userLoggedIn
+    const event = new CustomEvent('userLoggedIn', { detail: userData });
+    window.dispatchEvent(event);
   };
 
   const handleSwitchToRegister = () => {

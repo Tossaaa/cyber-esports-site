@@ -98,7 +98,6 @@ const DisciplinesModal = ({ onClose }) => {
                   </div>
                   <div className={styles.modalCardContent}>
                     <h4>{discipline.name}</h4>
-                    <span>12 активных турниров</span>
                   </div>
                 </Link>
               ))}
@@ -123,7 +122,6 @@ const DisciplinesModal = ({ onClose }) => {
                   </div>
                   <div className={styles.modalCardContent}>
                     <h4>{discipline.name}</h4>
-                    <span>Скоро</span>
                   </div>
                 </div>
               ))}

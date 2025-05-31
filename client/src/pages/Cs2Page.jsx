@@ -10,6 +10,8 @@ import TeamForm from '../components/TeamForm';
 import TournamentForm from '../components/TournamentForm';
 import TournamentModal from '../components/TournamentModal';
 import InDevelopmentModal from '../components/InDevelopmentModal';
+import AuthRequiredModal from '../components/AuthRequiredModal';
+import LoginForm from '../components/LoginForm';
 
 const Cs2Page = () => {
   const [activeTab, setActiveTab] = useState('tournaments');
@@ -35,6 +37,8 @@ const Cs2Page = () => {
   const [selectedTournament, setSelectedTournament] = useState(null);
   const [editingTournament, setEditingTournament] = useState(null);
   const [showInDevelopmentModal, setShowInDevelopmentModal] = useState(false);
+  const [showAuthRequired, setShowAuthRequired] = useState(false);
+  const [showLoginForm, setShowLoginForm] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -43,6 +47,18 @@ const Cs2Page = () => {
     if (userData) {
       setUser(JSON.parse(userData));
     }
+
+    // Добавляем обработчик события userLoggedIn
+    const handleUserLoggedIn = (event) => {
+      setUser(event.detail);
+    };
+
+    window.addEventListener('userLoggedIn', handleUserLoggedIn);
+
+    // Очищаем обработчик при размонтировании
+    return () => {
+      window.removeEventListener('userLoggedIn', handleUserLoggedIn);
+    };
   }, []);
 
   useEffect(() => {
@@ -118,6 +134,10 @@ const Cs2Page = () => {
   }, []);
 
   const handleNewsClick = (item) => {
+    if (!user) {
+      setShowAuthRequired(true);
+      return;
+    }
     setSelectedNews(item);
   };
 
@@ -381,6 +401,10 @@ const Cs2Page = () => {
   };
 
   const handleTournamentClick = (tournament) => {
+    if (!user) {
+      setShowAuthRequired(true);
+      return;
+    }
     setSelectedTournament(tournament);
   };
 
@@ -443,6 +467,48 @@ const Cs2Page = () => {
     return date.toLocaleDateString('ru-RU');
   };
 
+  const handleLoginSuccess = (userData, token) => {
+    setUser(userData);
+    localStorage.setItem('user', JSON.stringify(userData));
+    localStorage.setItem('token', token);
+  };
+
+  const handleViewAllNews = (e) => {
+    if (!user) {
+      e.preventDefault();
+      setShowAuthRequired(true);
+      return;
+    }
+  };
+
+  const handleViewAllTournaments = (e) => {
+    if (!user) {
+      e.preventDefault();
+      setShowAuthRequired(true);
+      return;
+    }
+    navigate('/tournaments');
+  };
+
+  const handleViewAllTeams = (e) => {
+    if (!user) {
+      e.preventDefault();
+      setShowAuthRequired(true);
+      return;
+    }
+    e.preventDefault();
+    setShowInDevelopmentModal(true);
+  };
+
+  const handleAddToFavorites = (e) => {
+    if (!user) {
+      e.preventDefault();
+      setShowAuthRequired(true);
+      return;
+    }
+    setShowInDevelopmentModal(true);
+  };
+
   return (
     <div className={styles.wrapper}>
       <div className={styles.container}>
@@ -461,11 +527,14 @@ const Cs2Page = () => {
               <div className={styles.bannerActions}>
                 <button 
                   className={styles.primaryButton}
-                  onClick={() => navigate('/tournaments')}
+                  onClick={handleViewAllTournaments}
                 >
                   Смотреть турниры
                 </button>
-                <button className={styles.secondaryButton} onClick={() => setShowInDevelopmentModal(true)}>
+                <button 
+                  className={styles.secondaryButton} 
+                  onClick={handleAddToFavorites}
+                >
                   Добавить в избранное
                 </button>
               </div>
@@ -500,11 +569,13 @@ const Cs2Page = () => {
           <div className={styles.sectionHeader}>
             <h2 className={styles.sectionTitle}>Турниры</h2>
             <div className={styles.sectionActions}>
-              <button className={styles.addButton} onClick={() => setShowTournamentForm(true)}>
-                <FiPlus className={styles.addIcon} />
-                Добавить турнир
-              </button>
-              <Link to="/tournaments" className={styles.viewAll}>
+              {user && user.role === 'admin' && (
+                <button className={styles.addButton} onClick={() => setShowTournamentForm(true)}>
+                  <FiPlus className={styles.addIcon} />
+                  Добавить турнир
+                </button>
+              )}
+              <Link to="/tournaments" className={styles.viewAll} onClick={handleViewAllTournaments}>
                 Все турниры <FiArrowRight />
               </Link>
             </div>
@@ -615,7 +686,7 @@ const Cs2Page = () => {
                   Добавить команду
                 </button>
               )}
-              <Link to="/teams" className={styles.viewAll}>
+              <Link to="/teams" className={styles.viewAll} onClick={handleViewAllTeams}>
                 Все команды <FiArrowRight />
               </Link>
             </div>
@@ -790,7 +861,7 @@ const Cs2Page = () => {
                   <FiPlus /> Добавить новость
                 </button>
               )}
-              <Link to="/news" className={styles.viewAll}>
+              <Link to="/news" className={styles.viewAll} onClick={handleViewAllNews}>
                 Все новости <FiArrowRight />
               </Link>
             </div>
@@ -927,7 +998,26 @@ const Cs2Page = () => {
 
         {showInDevelopmentModal && (
           <InDevelopmentModal
+            isOpen={showInDevelopmentModal}
             onClose={() => setShowInDevelopmentModal(false)}
+            section="Команды"
+          />
+        )}
+
+        {showAuthRequired && (
+          <AuthRequiredModal 
+            onClose={() => setShowAuthRequired(false)}
+            onLoginClick={() => {
+              setShowAuthRequired(false);
+              setShowLoginForm(true);
+            }}
+          />
+        )}
+
+        {showLoginForm && (
+          <LoginForm 
+            onClose={() => setShowLoginForm(false)}
+            onLoginSuccess={handleLoginSuccess}
           />
         )}
       </div>

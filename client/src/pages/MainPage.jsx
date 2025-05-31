@@ -25,6 +25,7 @@ import LoginForm from '../components/LoginForm.jsx';
 import RegisterForm from '../components/RegisterForm';
 import DisciplinesModal from '../components/DisciplinesModal';
 import InDevelopmentModal from '../components/InDevelopmentModal';
+import AuthRequiredModal from '../components/AuthRequiredModal';
 
 const disciplines = [
   { id: "cs2", name: "CS2", image: "/images/cs2.jpg", bgColor: "#2a475e", status: "active" },
@@ -81,6 +82,7 @@ const MainPage = () => {
   const [showInDevelopmentModal, setShowInDevelopmentModal] = useState(false);
   const [devSection, setDevSection] = useState('');
   const navigate = useNavigate();
+  const [showAuthRequired, setShowAuthRequired] = useState(false);
 
   useEffect(() => {
     // Загружаем данные пользователя при монтировании компонента
@@ -88,6 +90,13 @@ const MainPage = () => {
     if (userData) {
       setUser(JSON.parse(userData));
     }
+
+    // Добавляем обработчик события userLoggedIn
+    const handleUserLoggedIn = (event) => {
+      setUser(event.detail);
+    };
+
+    window.addEventListener('userLoggedIn', handleUserLoggedIn);
 
     // Загружаем новости
     const fetchNews = async () => {
@@ -127,18 +136,19 @@ const MainPage = () => {
     };
 
     fetchNews();
+
+    // Очищаем обработчик при размонтировании
+    return () => {
+      window.removeEventListener('userLoggedIn', handleUserLoggedIn);
+    };
   }, []);
 
   const handleLoginSuccess = (userData, token) => {
     setUser(userData);
     localStorage.setItem('user', JSON.stringify(userData));
     localStorage.setItem('token', token);
-    // Обновляем состояние пользователя в Header
-    const header = document.querySelector('header');
-    if (header) {
-      const event = new CustomEvent('userLoggedIn', { detail: userData });
-      header.dispatchEvent(event);
-    }
+    // Открываем модальное окно с дисциплинами после успешной авторизации
+    setShowDisciplinesModal(true);
   };
 
   useEffect(() => {
@@ -173,6 +183,10 @@ const MainPage = () => {
   };
 
   const handleNewsClick = (newsItem) => {
+    if (!user) {
+      setShowAuthRequired(true);
+      return;
+    }
     setSelectedNews(newsItem);
   };
 
@@ -242,14 +256,38 @@ const MainPage = () => {
   };
 
   const handleDisciplineClick = (e, disciplineId) => {
-    console.log('Clicked discipline:', disciplineId);
     if (disciplineId !== "cs2") {
       e.preventDefault();
       const discipline = disciplines.find(d => d.id === disciplineId);
       setDevSection(discipline.name);
-      console.log('Showing development modal for:', discipline.name);
       setShowInDevelopmentModal(true);
     }
+  };
+
+  const handleViewAllDisciplines = (e) => {
+    if (!user) {
+      e.preventDefault();
+      setShowAuthRequired(true);
+      return false;
+    }
+    return true;
+  };
+
+  const handleViewAllNews = (e) => {
+    if (!user) {
+      e.preventDefault();
+      setShowAuthRequired(true);
+      return;
+    }
+  };
+
+  const handleViewTournaments = (e) => {
+    if (!user) {
+      e.preventDefault();
+      setShowAuthRequired(true);
+      return;
+    }
+    navigate('/tournaments');
   };
 
   return (
@@ -263,7 +301,7 @@ const MainPage = () => {
             <p>Присоединяйтесь к сообществу, участвуйте в турнирах и станьте частью киберспортивной истории</p>
             <button 
               className={styles.heroButton}
-              onClick={() => navigate('/tournaments')}
+              onClick={handleViewTournaments}
             >
               Смотреть турниры <FiArrowRight />
             </button>
@@ -275,7 +313,12 @@ const MainPage = () => {
           <div className={styles.sectionHeader}>
             <h2 className={styles.sectionTitle}>Популярные дисциплины</h2>
             <button 
-              onClick={() => setShowDisciplinesModal(true)} 
+              onClick={(e) => {
+                e.preventDefault();
+                if (handleViewAllDisciplines(e)) {
+                  setShowDisciplinesModal(true);
+                }
+              }} 
               className={styles.viewAll}
             >
               Все дисциплины <FiArrowRight />
@@ -295,9 +338,6 @@ const MainPage = () => {
                 </div>
                 <div className={styles.cardContent}>
                   <h3 className={styles.cardTitle}>{discipline.name}</h3>
-                  <div className={styles.cardMeta}>
-                    <span>12 активных турниров</span>
-                  </div>
                 </div>
               </Link>
             ))}
@@ -309,15 +349,15 @@ const MainPage = () => {
           <div className={styles.sectionHeader}>
             <h2 className={styles.sectionTitle}>Последние новости</h2>
             <div className={styles.sectionActions}>
-            {user && user.role === 'admin' && (
-              <button 
-                className={styles.addNewsButton}
-                onClick={() => setShowAddNewsForm(true)}
-              >
-                <FiPlus /> Добавить новость
-              </button>
-            )}
-              <Link to="/news" className={styles.viewAll}>
+              {user && user.role === 'admin' && (
+                <button 
+                  className={styles.addNewsButton}
+                  onClick={() => setShowAddNewsForm(true)}
+                >
+                  <FiPlus /> Добавить новость
+                </button>
+              )}
+              <Link to="/news" className={styles.viewAll} onClick={handleViewAllNews}>
                 Все новости <FiArrowRight />
               </Link>
             </div>
@@ -438,6 +478,16 @@ const MainPage = () => {
             setShowInDevelopmentModal(false);
           }}
           section={devSection}
+        />
+      )}
+
+      {showAuthRequired && (
+        <AuthRequiredModal 
+          onClose={() => setShowAuthRequired(false)}
+          onLoginClick={() => {
+            setShowAuthRequired(false);
+            setShowLoginForm(true);
+          }}
         />
       )}
     </div>
