@@ -212,8 +212,13 @@ const Cs2Page = () => {
 
   const handleAddNews = async (newNews) => {
     try {
-      // Обновляем список новостей с полученными данными
-      setNews(prev => [newNews, ...prev]);
+      // Загружаем свежий список новостей
+      const response = await fetch('http://localhost:5001/api/news/tag/cs2');
+      if (!response.ok) {
+        throw new Error('Ошибка при загрузке новостей');
+      }
+      const newsData = await response.json();
+      setNews(newsData);
       setShowAddNewsForm(false);
     } catch (err) {
       setError(err.message);
@@ -468,9 +473,9 @@ const Cs2Page = () => {
   };
 
   const handleLoginSuccess = (userData, token) => {
-    setUser(userData);
-    localStorage.setItem('user', JSON.stringify(userData));
-    localStorage.setItem('token', token);
+    // Генерируем событие userLoggedIn
+    const event = new CustomEvent('userLoggedIn', { detail: userData });
+    window.dispatchEvent(event);
   };
 
   const handleViewAllNews = (e) => {

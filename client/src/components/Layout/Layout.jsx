@@ -3,13 +3,16 @@ import Header from '../Header';
 import Footer from '../Footer';
 import LoginForm from '../LoginForm';
 import RegisterForm from '../RegisterForm';
-import './Layout.css';
 
 const Layout = ({ children }) => {
   const [showLoginForm, setShowLoginForm] = useState(false);
   const [showRegisterForm, setShowRegisterForm] = useState(false);
 
   const handleLoginSuccess = (userData, token) => {
+    // Сохраняем данные пользователя и токен
+    localStorage.setItem('user', JSON.stringify(userData));
+    localStorage.setItem('token', token);
+    
     // Генерируем событие userLoggedIn
     const event = new CustomEvent('userLoggedIn', { detail: userData });
     window.dispatchEvent(event);
@@ -26,12 +29,12 @@ const Layout = ({ children }) => {
   };
 
   return (
-    <div className="layout">
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       <Header 
         onLoginClick={() => setShowLoginForm(true)}
         onRegisterClick={() => setShowRegisterForm(true)}
       />
-      <main className="main-content">
+      <main style={{ flex: 1 }}>
         {children}
       </main>
       <Footer />

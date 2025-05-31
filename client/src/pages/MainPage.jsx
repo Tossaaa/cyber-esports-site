@@ -144,9 +144,9 @@ const MainPage = () => {
   }, []);
 
   const handleLoginSuccess = (userData, token) => {
-    setUser(userData);
-    localStorage.setItem('user', JSON.stringify(userData));
-    localStorage.setItem('token', token);
+    // Генерируем событие userLoggedIn
+    const event = new CustomEvent('userLoggedIn', { detail: userData });
+    window.dispatchEvent(event);
     // Открываем модальное окно с дисциплинами после успешной авторизации
     setShowDisciplinesModal(true);
   };
@@ -174,8 +174,30 @@ const MainPage = () => {
 
   const handleAddNews = async (newNews) => {
     try {
-      // Обновляем список новостей с полученными данными
-      setNews(prev => [newNews, ...prev]);
+      // Загружаем свежий список новостей
+      const response = await fetch('http://localhost:5001/api/news', {
+        method: 'GET',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error(`Ошибка сервера: ${response.status}`);
+      }
+
+      const data = await response.json();
+      // Удаляем дубликаты по id
+      const uniqueNews = data.reduce((acc, current) => {
+        const x = acc.find(item => item.id === current.id);
+        if (!x) {
+          return acc.concat([current]);
+        } else {
+          return acc;
+        }
+      }, []);
+      setNews(uniqueNews);
       setShowAddNewsForm(false);
     } catch (err) {
       setError(err.message);

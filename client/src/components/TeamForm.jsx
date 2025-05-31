@@ -114,14 +114,14 @@ const TeamForm = ({ onClose, onSave, initialData }) => {
     }
 
     try {
-    console.log("Saving team data:", formData);
+      console.log("Saving team data:", formData);
       await onSave(formData);
-    onClose();
+      onClose();
     } catch (err) {
       console.error('Error saving team:', err);
       setError(err.message || 'Ошибка при сохранении команды');
     } finally {
-    setIsSubmitting(false);
+      setIsSubmitting(false);
     }
   };
 
@@ -148,6 +148,7 @@ const TeamForm = ({ onClose, onSave, initialData }) => {
               onChange={handleChange}
               required
               disabled={isSubmitting}
+              placeholder="Например: Natus Vincere"
             />
           </div>
 
@@ -161,6 +162,7 @@ const TeamForm = ({ onClose, onSave, initialData }) => {
               onChange={handleChange}
               required
               disabled={isSubmitting}
+              placeholder="Например: Украина"
             />
           </div>
 
@@ -175,6 +177,7 @@ const TeamForm = ({ onClose, onSave, initialData }) => {
               min="1900"
               max={new Date().getFullYear()}
               disabled={isSubmitting}
+              placeholder="Например: 2009"
             />
           </div>
 
@@ -188,6 +191,7 @@ const TeamForm = ({ onClose, onSave, initialData }) => {
               onChange={handleChange}
               required
               disabled={isSubmitting}
+              placeholder="Например: 750"
             />
           </div>
 
@@ -200,6 +204,7 @@ const TeamForm = ({ onClose, onSave, initialData }) => {
               onChange={handleChange}
               disabled={isSubmitting}
               rows="4"
+              placeholder="Расскажите о команде, её достижениях и истории..."
             />
           </div>
 
@@ -247,4 +252,4 @@ const TeamForm = ({ onClose, onSave, initialData }) => {
   );
 };
 
-export default TeamForm; 
+export default TeamForm;
