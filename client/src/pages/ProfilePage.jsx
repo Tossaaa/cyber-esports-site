@@ -95,6 +95,8 @@ const ProfilePage = () => {
         setAvatar(e.target.result);
         // Сохраняем аватар в localStorage
         localStorage.setItem(`avatar_${user.id}`, e.target.result);
+        // Отправляем пользовательское событие для обновления хедера
+        window.dispatchEvent(new CustomEvent('avatarUpdated'));
       };
       reader.readAsDataURL(file);
 
@@ -118,6 +120,8 @@ const ProfilePage = () => {
   const confirmRemoveAvatar = () => {
     setAvatar(null);
     localStorage.removeItem(`avatar_${user.id}`);
+    // Отправляем пользовательское событие для обновления хедера
+    window.dispatchEvent(new CustomEvent('avatarUpdated'));
     setShowDeleteConfirm(false);
   };
 

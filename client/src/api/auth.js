@@ -1,9 +1,9 @@
-const API_URL = 'http://localhost:5001/api';
+import { API_BASE_URL } from '../config';
 
 export const authAPI = {
     // Регистрация
     register: async (formData) => {
-        const response = await fetch(`${API_URL}/auth/register`, {
+        const response = await fetch(`${API_BASE_URL}/auth/register`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -16,7 +16,7 @@ export const authAPI = {
 
     // Вход
     login: async (formData) => {
-        const response = await fetch(`${API_URL}/auth/login`, {
+        const response = await fetch(`${API_BASE_URL}/auth/login`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -39,7 +39,7 @@ export const authAPI = {
             throw new Error('Ошибка авторизации. Пожалуйста, войдите в систему заново.');
         }
 
-        const response = await fetch(`${API_URL}/auth/change-password`, {
+        const response = await fetch(`${API_BASE_URL}/auth/change-password`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -58,7 +58,7 @@ export const authAPI = {
         }
 
         try {
-            const response = await fetch(`${API_URL}/auth/change-username`, {
+            const response = await fetch(`${API_BASE_URL}/auth/change-username`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -83,7 +83,7 @@ export const authAPI = {
 
     changeEmail: async (newEmail, password) => {
         try {
-            const response = await fetch(`${API_URL}/auth/change-email`, {
+            const response = await fetch(`${API_BASE_URL}/auth/change-email`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

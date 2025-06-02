@@ -43,8 +43,15 @@ const Header = ({ onLoginClick, onRegisterClick }) => {
 
     window.addEventListener('userLoggedIn', handleUserLoggedIn);
 
+    const handleAvatarUpdated = () => {
+      setUser(prevUser => ({ ...prevUser }));
+    };
+
+    window.addEventListener('avatarUpdated', handleAvatarUpdated);
+
     return () => {
       window.removeEventListener('userLoggedIn', handleUserLoggedIn);
+      window.removeEventListener('avatarUpdated', handleAvatarUpdated);
     };
   }, []);
 

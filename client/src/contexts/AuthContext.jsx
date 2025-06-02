@@ -1,4 +1,5 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
+import { API_BASE_URL } from '../config';
 
 const AuthContext = createContext(null);
 
@@ -34,50 +35,54 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     try {
-      const response = await fetch('http://localhost:5001/api/auth/login', {
+      const response = await fetch(`${API_BASE_URL}/auth/login`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email, password })
+        credentials: 'include',
+        body: JSON.stringify({ email, password }),
       });
 
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || 'Ошибка входа');
+        throw new Error(data.message || 'Ошибка при входе');
       }
 
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('user', JSON.stringify(data.user));
       setUser(data.user);
+      localStorage.setItem('user', JSON.stringify(data.user));
+      localStorage.setItem('token', data.token);
       return data;
     } catch (error) {
+      console.error('Login error:', error);
       throw error;
     }
   };
 
   const register = async (userData) => {
     try {
-      const response = await fetch('http://localhost:5001/api/auth/register', {
+      const response = await fetch(`${API_BASE_URL}/auth/register`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify(userData)
+        credentials: 'include',
+        body: JSON.stringify(userData),
       });
 
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || 'Ошибка регистрации');
+        throw new Error(data.message || 'Ошибка при регистрации');
       }
 
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('user', JSON.stringify(data.user));
       setUser(data.user);
+      localStorage.setItem('user', JSON.stringify(data.user));
+      localStorage.setItem('token', data.token);
       return data;
     } catch (error) {
+      console.error('Registration error:', error);
       throw error;
     }
   };

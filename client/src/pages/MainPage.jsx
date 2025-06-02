@@ -17,7 +17,10 @@ import {
   FiArrowUp,
   FiTrash2,
   FiCalendar,
-  FiTag
+  FiTag,
+  FiLoader,
+  FiAlertCircle,
+  FiFileText
 } from "react-icons/fi";
 import AddNewsForm from "../components/AddNewsForm";
 import NewsModal from "../components/NewsModal";
@@ -26,6 +29,7 @@ import RegisterForm from '../components/RegisterForm';
 import DisciplinesModal from '../components/DisciplinesModal';
 import InDevelopmentModal from '../components/InDevelopmentModal';
 import AuthRequiredModal from '../components/AuthRequiredModal';
+import { API_BASE_URL } from '../config';
 
 const disciplines = [
   { id: "cs2", name: "CS2", image: "/images/cs2.jpg", bgColor: "#2a475e", status: "active" },
@@ -104,7 +108,7 @@ const MainPage = () => {
         setLoading(true);
         setError(null);
         
-        const response = await fetch('http://localhost:5001/api/news', {
+        const response = await fetch(`${API_BASE_URL}/news`, {
           method: 'GET',
           credentials: 'include',
           headers: {
@@ -175,7 +179,7 @@ const MainPage = () => {
   const handleAddNews = async (newNews) => {
     try {
       // Загружаем свежий список новостей
-      const response = await fetch('http://localhost:5001/api/news', {
+      const response = await fetch(`${API_BASE_URL}/news`, {
         method: 'GET',
         credentials: 'include',
         headers: {
@@ -237,7 +241,7 @@ const MainPage = () => {
 
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:5001/api/news/${newsId}`, {
+      const response = await fetch(`${API_BASE_URL}/news/${newsId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -262,16 +266,14 @@ const MainPage = () => {
     setSelectedNews(null);
   };
 
-  const handleUpdateNews = async (updatedNews) => {
+  const handleUpdateNews = async () => {
     try {
-      // Загружаем свежий список новостей
-      const response = await fetch('http://localhost:5001/api/news');
+      const response = await fetch(`${API_BASE_URL}/news`);
       if (!response.ok) {
         throw new Error('Ошибка при загрузке новостей');
       }
-      const newsData = await response.json();
-      setNews(newsData);
-      setEditingNews(null);
+      const data = await response.json();
+      setNews(data);
     } catch (err) {
       setError(err.message);
     }

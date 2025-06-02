@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FiX, FiLoader } from 'react-icons/fi';
 import styles from '../styles/CS2Page.module.css';
+import { API_BASE_URL } from '../config';
 
 const TournamentForm = ({ onClose, onSave, initialData, isEditing = false }) => {
   const [formData, setFormData] = useState({
@@ -23,7 +24,7 @@ const TournamentForm = ({ onClose, onSave, initialData, isEditing = false }) => 
     const fetchTeams = async () => {
       setIsLoadingTeams(true);
       try {
-        const response = await fetch('http://localhost:5001/api/teams/cs2');
+        const response = await fetch(`${API_BASE_URL}/teams/cs2`);
         if (!response.ok) {
           throw new Error('Ошибка при загрузке команд');
         }
@@ -171,8 +172,8 @@ const TournamentForm = ({ onClose, onSave, initialData, isEditing = false }) => 
       delete tournamentData.teamIds;
 
       const url = isEditing 
-        ? `http://localhost:5001/api/tournaments/${initialData.id}`
-        : 'http://localhost:5001/api/tournaments';
+        ? `${API_BASE_URL}/tournaments/${initialData.id}`
+        : `${API_BASE_URL}/tournaments`;
 
       const method = isEditing ? 'PUT' : 'POST';
 
@@ -252,7 +253,7 @@ const TournamentForm = ({ onClose, onSave, initialData, isEditing = false }) => 
           </div>
 
           <div className={styles.formGroup}>
-            <label htmlFor="prize_pool">Призовой фонд *</label>
+            <label htmlFor="prize_pool">Призовой фонд</label>
             <input
               type="text"
               id="prize_pool"

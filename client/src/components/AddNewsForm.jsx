@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { FiX, FiUpload } from 'react-icons/fi';
+import { FiX, FiUpload, FiLoader } from 'react-icons/fi';
 import { FaTimes } from 'react-icons/fa';
 import styles from '../styles/AddNewsForm.module.css';
+import { API_BASE_URL } from '../config';
 
 const gameTags = [
   { id: 'cs2', name: 'CS2' },
@@ -25,6 +26,7 @@ const AddNewsForm = ({ onClose, onAddNews, initialData, isEditing }) => {
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [previewImage, setPreviewImage] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (initialData) {
@@ -72,7 +74,7 @@ const AddNewsForm = ({ onClose, onAddNews, initialData, isEditing }) => {
         return;
       }
 
-      const response = await fetch('http://localhost:5001/api/upload', {
+      const response = await fetch(`${API_BASE_URL}/upload`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -86,7 +88,7 @@ const AddNewsForm = ({ onClose, onAddNews, initialData, isEditing }) => {
       }
 
       const data = await response.json();
-      const imageUrl = data.imageUrl.startsWith('http') ? data.imageUrl : `http://localhost:5001${data.imageUrl}`;
+      const imageUrl = data.imageUrl.startsWith('http') ? data.imageUrl : `${API_BASE_URL}${data.imageUrl}`;
       
       setFormData(prev => ({
         ...prev,
@@ -104,45 +106,43 @@ const AddNewsForm = ({ onClose, onAddNews, initialData, isEditing }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (isSubmitting) return;
-    setError('');
-    setIsSubmitting(true);
+    setLoading(true);
+    setError(null);
 
     try {
-      const url = isEditing 
-        ? `http://localhost:5001/api/news/${formData.id}`
-        : 'http://localhost:5001/api/news';
-      
-      const method = isEditing ? 'PUT' : 'POST';
+      const newsDataToSubmit = { ...formData };
 
       const token = localStorage.getItem('token');
       if (!token) {
-        setError('Необходимо авторизоваться для добавления новости');
-        setIsSubmitting(false);
-        return;
+        throw new Error('Необходимо авторизоваться для сохранения новости');
       }
 
-      const response = await fetch(url, {
-        method: method,
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify(formData)
-      });
+      const newsResponse = await fetch(
+        isEditing
+          ? `${API_BASE_URL}/news/${initialData._id}`
+          : `${API_BASE_URL}/news`,
+        {
+          method: isEditing ? 'PUT' : 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify(newsDataToSubmit)
+        }
+      );
 
-      if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.message || `Ошибка при ${isEditing ? 'обновлении' : 'добавлении'} новости`);
+      if (!newsResponse.ok) {
+        const errorData = await newsResponse.json();
+        throw new Error(errorData.message || 'Ошибка при сохранении новости');
       }
 
-      const data = await response.json();
+      const newsData = await newsResponse.json();
+      onAddNews(newsData);
       onClose();
-      onAddNews(data);
     } catch (err) {
-      setError(err.message || `Ошибка при ${isEditing ? 'обновлении' : 'добавлении'} новости. Проверьте подключение к серверу.`);
+      setError(err.message);
     } finally {
-      setIsSubmitting(false);
+      setLoading(false);
     }
   };
 

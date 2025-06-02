@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { FiX, FiUpload } from 'react-icons/fi';
+import { FiX, FiUpload, FiLoader } from 'react-icons/fi';
 import styles from '../styles/CS2Page.module.css';
 import { FaTimes } from 'react-icons/fa';
+import { API_BASE_URL } from '../config';
 
 const PlayerOfMonthForm = ({ onClose, onSave, initialData }) => {
   const [formData, setFormData] = useState({
@@ -17,6 +18,7 @@ const PlayerOfMonthForm = ({ onClose, onSave, initialData }) => {
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [previewImage, setPreviewImage] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (initialData) {
@@ -68,7 +70,7 @@ const PlayerOfMonthForm = ({ onClose, onSave, initialData }) => {
 
       console.log('Sending request to upload image...');
 
-      const response = await fetch('http://localhost:5001/api/upload', {
+      const response = await fetch(`${API_BASE_URL}/upload`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -86,7 +88,7 @@ const PlayerOfMonthForm = ({ onClose, onSave, initialData }) => {
       const data = await response.json();
       console.log('Upload response data:', data);
       
-      const imageUrl = data.imageUrl.startsWith('http') ? data.imageUrl : `http://localhost:5001${data.imageUrl}`;
+      const imageUrl = data.imageUrl.startsWith('http') ? data.imageUrl : `${API_BASE_URL}${data.imageUrl}`;
       setFormData(prev => ({
         ...prev,
         image: imageUrl
@@ -106,15 +108,17 @@ const PlayerOfMonthForm = ({ onClose, onSave, initialData }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (isSubmitting) return;
-    setError('');
-    setIsSubmitting(true);
+    setLoading(true);
+    setError(null);
 
-    console.log("Saving player data:", formData);
-    onSave(formData);
-    onClose();
-
-    setIsSubmitting(false);
+    try {
+      await onSave({ ...formData });
+      onClose();
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

@@ -12,6 +12,7 @@ import TournamentModal from '../components/TournamentModal';
 import InDevelopmentModal from '../components/InDevelopmentModal';
 import AuthRequiredModal from '../components/AuthRequiredModal';
 import LoginForm from '../components/LoginForm';
+import { API_BASE_URL } from '../config';
 
 const Cs2Page = () => {
   const [activeTab, setActiveTab] = useState('tournaments');
@@ -69,7 +70,7 @@ const Cs2Page = () => {
         
         // Загружаем новости
         console.log('Fetching news...');
-        const newsResponse = await fetch('http://localhost:5001/api/news/tag/cs2');
+        const newsResponse = await fetch(`${API_BASE_URL}/news/tag/cs2`);
         if (!newsResponse.ok) {
           throw new Error('Ошибка при загрузке новостей');
         }
@@ -81,14 +82,14 @@ const Cs2Page = () => {
         console.log('Fetching player of month...');
         setLoadingPlayer(true);
         setPlayerError(null);
-        const playerResponse = await fetch('http://localhost:5001/api/player-of-month/cs2');
+        const playerResponse = await fetch(`${API_BASE_URL}/player-of-month/cs2`);
         if (!playerResponse.ok) {
           throw new Error('Ошибка при загрузке данных игрока');
         }
         const playerData = await playerResponse.json();
         console.log('Player data:', playerData);
         if (playerData.image && !playerData.image.startsWith('http')) {
-          playerData.image = `http://localhost:5001${playerData.image}`;
+          playerData.image = `${API_BASE_URL}${playerData.image}`;
         }
         setPlayerOfMonth(playerData);
 
@@ -96,7 +97,7 @@ const Cs2Page = () => {
         console.log('Fetching teams...');
         setLoadingTeams(true);
         setTeamError(null);
-        const teamsResponse = await fetch('http://localhost:5001/api/teams/cs2');
+        const teamsResponse = await fetch(`${API_BASE_URL}/teams/cs2`);
         if (!teamsResponse.ok) {
           throw new Error('Ошибка при загрузке команд');
         }
@@ -105,13 +106,13 @@ const Cs2Page = () => {
         // Убедимся, что URL логотипов полные
         const teamsWithFullUrls = teamsData.map(team => ({
           ...team,
-          logo: team.logo && !team.logo.startsWith('http') ? `http://localhost:5001${team.logo}` : team.logo
+          logo: team.logo && !team.logo.startsWith('http') ? `${API_BASE_URL}${team.logo}` : team.logo
         }));
         setTeams(teamsWithFullUrls);
 
         // Загружаем турниры
         console.log('Fetching tournaments...');
-        const tournamentsResponse = await fetch('http://localhost:5001/api/tournaments?game=cs2');
+        const tournamentsResponse = await fetch(`${API_BASE_URL}/tournaments?game=cs2`);
         if (!tournamentsResponse.ok) {
           throw new Error('Ошибка при загрузке турниров');
         }
@@ -156,7 +157,7 @@ const Cs2Page = () => {
 
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:5001/api/news/${id}`, {
+      const response = await fetch(`${API_BASE_URL}/news/${id}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -184,7 +185,7 @@ const Cs2Page = () => {
   const handleUpdateNews = async (updatedNews) => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:5001/api/news/${updatedNews._id}`, {
+      const response = await fetch(`${API_BASE_URL}/news/${updatedNews._id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -198,7 +199,7 @@ const Cs2Page = () => {
       }
 
       // Обновляем список новостей после успешного редактирования
-      const newsResponse = await fetch('http://localhost:5001/api/news/tag/cs2');
+      const newsResponse = await fetch(`${API_BASE_URL}/news/tag/cs2`);
       if (!newsResponse.ok) {
         throw new Error('Ошибка при загрузке новостей');
       }
@@ -213,7 +214,7 @@ const Cs2Page = () => {
   const handleAddNews = async (newNews) => {
     try {
       // Загружаем свежий список новостей
-      const response = await fetch('http://localhost:5001/api/news/tag/cs2');
+      const response = await fetch(`${API_BASE_URL}/news/tag/cs2`);
       if (!response.ok) {
         throw new Error('Ошибка при загрузке новостей');
       }
@@ -232,7 +233,7 @@ const Cs2Page = () => {
         throw new Error('Необходимо авторизоваться');
       }
 
-      const response = await fetch(`http://localhost:5001/api/player-of-month/${playerOfMonth.id}`, {
+      const response = await fetch(`${API_BASE_URL}/player-of-month/${playerOfMonth.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -252,7 +253,7 @@ const Cs2Page = () => {
       const data = await response.json();
       // Убедимся, что URL изображения полный
       if (data.image && !data.image.startsWith('http')) {
-        data.image = `http://localhost:5001${data.image}`;
+        data.image = `${API_BASE_URL}${data.image}`;
       }
       // Сразу обновляем состояние с новыми данными
       setPlayerOfMonth(data);
@@ -295,8 +296,8 @@ const Cs2Page = () => {
       }
 
       const url = editingTeam 
-        ? `http://localhost:5001/api/teams/${editingTeam.id}`
-        : 'http://localhost:5001/api/teams';
+        ? `${API_BASE_URL}/teams/${editingTeam.id}`
+        : `${API_BASE_URL}/teams`;
       
       const method = editingTeam ? 'PUT' : 'POST';
 
@@ -326,7 +327,7 @@ const Cs2Page = () => {
 
       // Убедимся, что URL логотипа полный
       if (data.logo && !data.logo.startsWith('http')) {
-        data.logo = `http://localhost:5001${data.logo}`;
+        data.logo = `${API_BASE_URL}${data.logo}`;
       }
 
       if (editingTeam) {
@@ -352,7 +353,7 @@ const Cs2Page = () => {
 
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:5001/api/teams/${id}`, {
+      const response = await fetch(`${API_BASE_URL}/teams/${id}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -372,7 +373,7 @@ const Cs2Page = () => {
 
   const fetchTournaments = async () => {
     try {
-      const response = await fetch('http://localhost:5001/api/tournaments');
+      const response = await fetch(`${API_BASE_URL}/tournaments`);
       if (!response.ok) {
         throw new Error('Ошибка при загрузке турниров');
       }
@@ -391,7 +392,7 @@ const Cs2Page = () => {
   const handleSaveTournament = async (tournamentData) => {
     try {
       // Обновляем список турниров
-      const response = await fetch('http://localhost:5001/api/tournaments?game=cs2');
+      const response = await fetch(`${API_BASE_URL}/tournaments?game=cs2`);
       if (!response.ok) {
         throw new Error('Ошибка при загрузке турниров');
       }
@@ -426,7 +427,7 @@ const Cs2Page = () => {
   const handleDeleteTournament = async (tournament) => {
     if (window.confirm('Вы уверены, что хотите удалить этот турнир?')) {
       try {
-        await fetch(`http://localhost:5001/api/tournaments/${tournament.id}`, {
+        await fetch(`${API_BASE_URL}/tournaments/${tournament.id}`, {
           method: 'DELETE',
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`

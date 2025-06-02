@@ -6,6 +6,7 @@ import AddNewsForm from "../components/AddNewsForm";
 import NewsModal from "../components/NewsModal";
 import LoginForm from '../components/LoginForm';
 import RegisterForm from '../components/RegisterForm';
+import { API_BASE_URL } from '../config';
 
 const gameTags = {
   all: 'Все новости',
@@ -46,7 +47,7 @@ const NewsPage = () => {
 
   const fetchNews = async () => {
     try {
-      const response = await fetch('http://localhost:5001/api/news');
+      const response = await fetch(`${API_BASE_URL}/news`);
       if (!response.ok) {
         throw new Error('Ошибка при загрузке новостей');
       }
@@ -71,14 +72,18 @@ const NewsPage = () => {
     }
   };
 
-  const handleDeleteNews = async (newsId) => {
+  const handleDeleteNews = async (newsId, e) => {
+    if (e) {
+      e.stopPropagation();
+    }
+
     if (!window.confirm('Вы уверены, что хотите удалить эту новость?')) {
       return;
     }
 
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:5001/api/news/${newsId}`, {
+      const response = await fetch(`${API_BASE_URL}/news/${newsId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -114,7 +119,7 @@ const NewsPage = () => {
   const handleUpdateNews = async (updatedNews) => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:5001/api/news/${updatedNews.id}`, {
+      const response = await fetch(`${API_BASE_URL}/news/${updatedNews.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -128,7 +133,7 @@ const NewsPage = () => {
       }
 
       // Обновляем список новостей после успешного редактирования
-      const newsResponse = await fetch('http://localhost:5001/api/news');
+      const newsResponse = await fetch(`${API_BASE_URL}/news`);
       if (!newsResponse.ok) {
         throw new Error('Ошибка при загрузке новостей');
       }
@@ -312,7 +317,10 @@ const NewsPage = () => {
                     {user && user.role === 'admin' && (
                       <button 
                         className={styles.deleteNewsButton}
-                        onClick={(e) => handleDeleteNews(item.id, e)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDeleteNews(item.id, e);
+                        }}
                       >
                         <FiTrash2 /> Удалить
                       </button>

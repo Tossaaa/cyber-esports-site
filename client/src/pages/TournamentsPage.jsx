@@ -13,10 +13,13 @@ import {
   FiPlus,
   FiClock,
   FiAward,
-  FiEye
+  FiEye,
+  FiTrash2,
+  FiEdit2
 } from 'react-icons/fi';
 import TournamentModal from '../components/TournamentModal';
 import TournamentForm from '../components/TournamentForm';
+import { API_BASE_URL } from '../config';
 
 const gameTags = {
   all: 'Все игры',
@@ -50,6 +53,7 @@ const TournamentsPage = () => {
   const [selectedTournament, setSelectedTournament] = useState(null);
   const [showTournamentForm, setShowTournamentForm] = useState(false);
   const [user, setUser] = useState(null);
+  const [editingTournament, setEditingTournament] = useState(null);
 
   useEffect(() => {
     const userData = localStorage.getItem('user');
@@ -66,7 +70,7 @@ const TournamentsPage = () => {
     try {
       setLoading(true);
       console.log('Fetching tournaments...');
-      const response = await fetch('http://localhost:5001/api/tournaments');
+      const response = await fetch(`${API_BASE_URL}/tournaments`);
       if (!response.ok) {
         throw new Error('Ошибка при загрузке турниров');
       }
@@ -179,38 +183,56 @@ const TournamentsPage = () => {
 
   const handleEditTournament = (tournament) => {
     setSelectedTournament(null);
+    setEditingTournament(tournament);
     setShowTournamentForm(true);
   };
 
   const handleDeleteTournament = async (tournament) => {
-    if (window.confirm('Вы уверены, что хотите удалить этот турнир?')) {
-      try {
-        await fetch(`http://localhost:5001/api/tournaments/${tournament.id}`, {
-          method: 'DELETE',
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-          }
-        });
-        setTournaments(tournaments.filter(t => t.id !== tournament.id));
-        setSelectedTournament(null);
-      } catch (error) {
-        console.error('Error deleting tournament:', error);
-        alert('Ошибка при удалении турнира');
-      }
+    if (!window.confirm('Вы уверены, что хотите удалить этот турнир?')) {
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem('token');
+      await fetch(`${API_BASE_URL}/tournaments/${tournament.id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      setTournaments(prev => prev.filter(t => t.id !== tournament.id));
+      setSelectedTournament(null);
+    } catch (err) {
+      setError(err.message);
     }
   };
 
   const handleSaveTournament = async (tournamentData) => {
     try {
-      const response = await fetch('http://localhost:5001/api/tournaments');
+      const response = await fetch(`${API_BASE_URL}/tournaments`);
       if (!response.ok) {
         throw new Error('Ошибка при загрузке турниров');
       }
       const tournaments = await response.json();
       setTournaments(tournaments);
       setShowTournamentForm(false);
+      setEditingTournament(null);
     } catch (err) {
       console.error('Error saving tournament:', err);
+      setError(err.message);
+    }
+  };
+
+  const handleUpdateTournaments = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/tournaments`);
+      if (!response.ok) {
+        throw new Error('Ошибка при загрузке турниров');
+      }
+      const data = await response.json();
+      setTournaments(data);
+    } catch (err) {
       setError(err.message);
     }
   };
@@ -223,7 +245,10 @@ const TournamentsPage = () => {
           {user && user.role === 'admin' && (
             <button 
               className={styles.addButton}
-              onClick={() => setShowTournamentForm(true)}
+              onClick={() => {
+                setEditingTournament(null);
+                setShowTournamentForm(true);
+              }}
             >
               <FiPlus /> Добавить турнир
             </button>
@@ -394,8 +419,13 @@ const TournamentsPage = () => {
 
         {showTournamentForm && (
           <TournamentForm
-            onClose={() => setShowTournamentForm(false)}
+            onClose={() => {
+              setShowTournamentForm(false);
+              setEditingTournament(null);
+            }}
             onSave={handleSaveTournament}
+            initialData={editingTournament}
+            isEditing={!!editingTournament}
           />
         )}
       </div>

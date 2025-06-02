@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { FiX, FiUpload } from 'react-icons/fi';
+import { FiX, FiUpload, FiLoader } from 'react-icons/fi';
 import styles from '../styles/CS2Page.module.css';
 import { FaTimes } from 'react-icons/fa';
+import { API_BASE_URL } from '../config';
 
 const TeamForm = ({ onClose, onSave, initialData }) => {
   const [formData, setFormData] = useState({
@@ -15,6 +16,7 @@ const TeamForm = ({ onClose, onSave, initialData }) => {
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [previewImage, setPreviewImage] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (initialData) {
@@ -69,7 +71,7 @@ const TeamForm = ({ onClose, onSave, initialData }) => {
       }
 
       console.log('Sending request to upload image...');
-      const response = await fetch('http://localhost:5001/api/upload', {
+      const response = await fetch(`${API_BASE_URL}/upload`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`
